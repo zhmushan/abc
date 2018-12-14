@@ -7,7 +7,7 @@
 ## Hello World
 
 ```ts
-import { Abc, Status } from 'https://deno.land/x/net/abc/index.ts'
+import { Abc } from 'https://deno.land/x/net/abc/index.ts'
 
 const abc = new Abc()
 abc.get('/hello', c => {
