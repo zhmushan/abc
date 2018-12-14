@@ -45,6 +45,7 @@ export class Abc {
 
   use(...m: middlewareFunc[]) {
     this.middleware.push(...m)
+    return this
   }
   connect(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
     return this.add('CONNECT', path, h, ...m)
@@ -81,6 +82,7 @@ export class Abc {
       }
       return h(c)
     })
+    return this
   }
 }
 
