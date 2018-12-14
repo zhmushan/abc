@@ -9,7 +9,7 @@ export class Router {
   }
   add(method: string, path: string, h: handlerFunc) {
     if (path[0] !== '/') {
-      console.error("path must begin with '/' in path '" + path + "'")
+      console.error(`path must begin with '/' in path '${path}'`)
     }
 
     if (!this.trees) {
@@ -129,15 +129,9 @@ export class Node {
               }
               let prefix = fullPath.slice(0, fullPath.indexOf(pathSeg)) + node.path
               console.error(
-                "'" +
-                  pathSeg +
-                  "' in new path '" +
-                  fullPath +
-                  "' conflicts with existing wildcard '" +
-                  node.path +
-                  "' in existing prefix '" +
-                  prefix +
-                  "'"
+                `'${pathSeg}' in new path '${fullPath}' conflicts with existing wildcard '${
+                  node.path
+                }' in existing prefix '${prefix}'`
               )
             }
           }
@@ -172,10 +166,10 @@ export class Node {
           }
           node.insertChild(numParams, path, fullPath, handle)
           return
-        } else if (i == path.length) {
+        } else if (i === path.length) {
           // Make node a (in-path) leaf
           if (node.handle) {
-            console.error("a handle is already registered for path '" + fullPath + "'")
+            console.error(`a handle is already registered for path '${fullPath}'`)
           }
           node.handle = handle
         }
@@ -250,11 +244,9 @@ export class Node {
           case ':':
           case '*':
             console.error(
-              "only one wildcard per path segment is allowed, has: '" +
-                path.slice(i) +
-                "' in path '" +
-                fullPath +
-                "'"
+              `only one wildcard per path segment is allowed, has: '${path.slice(
+                i
+              )}' in path '${fullPath}'`
             )
           default:
             end++
@@ -265,20 +257,19 @@ export class Node {
       // unreachable if we insert the wildcard here
       if (node.children.length > 0) {
         console.error(
-          "wildcard route '" +
-            path.slice(i, end) +
-            "' conflicts with existing children in path '" +
-            fullPath +
-            "'"
+          `wildcard route '${path.slice(
+            i,
+            end
+          )}' conflicts with existing children in path '${fullPath}'`
         )
       }
 
       // check if the wildcard has a name
       if (end - i < 2) {
-        console.error("wildcards must be named with a non-empty name in path '" + fullPath + "'")
+        console.error(`wildcards must be named with a non-empty name in path '${fullPath}'`)
       }
 
-      if (c == ':') {
+      if (c === ':') {
         // param
         // split path at the beginning of the wildcard
         if (i > 0) {
@@ -313,22 +304,20 @@ export class Node {
         // catchAll
         if (end !== max || numParams > 1) {
           console.error(
-            "catch-all routes are only allowed at the end of the path in path '" + fullPath + "'"
+            `catch-all routes are only allowed at the end of the path in path '${fullPath}'`
           )
         }
 
         if (node.path.length > 0 && node.path[node.path.length - 1] === '/') {
           console.error(
-            "catch-all conflicts with existing handle for the path segment root in path '" +
-              fullPath +
-              "'"
+            `catch-all conflicts with existing handle for the path segment root in path '${fullPath}'`
           )
         }
 
         // currently fixed width 1 for '/'
         i--
         if (path[i] !== '/') {
-          console.error("no / before catch-all in path '" + fullPath + "'")
+          console.error(`no / before catch-all in path '${fullPath}'`)
         }
 
         node.path = path.slice(offset, i)
@@ -419,7 +408,7 @@ export class Node {
                 }
 
                 // ... but we can't
-                tsr = path.length == end + 1
+                tsr = path.length === end + 1
                 break walk
               }
 
@@ -430,7 +419,7 @@ export class Node {
                 // No handle found. Check if a handle for this path + a
                 // trailing slash exists for TSR recommendation
                 node = node.children[0]
-                tsr = node.handle && node.path == '/'
+                tsr = node.handle && node.path === '/'
               }
               break walk
 
@@ -473,7 +462,7 @@ export class Node {
             node = node.children[i]
             tsr =
               (node.handle && node.path.length === 1) ||
-              (node.children[0].handle && node.nType == NodeType.CatchAll)
+              (node.children[0].handle && node.nType === NodeType.CatchAll)
             break walk
           }
         }
@@ -484,8 +473,8 @@ export class Node {
       // Nothing found. We can recommend to redirect to the same URL with an
       // extra trailing slash if a leaf exists for that path
       tsr =
-        path == '/' ||
-        (node.path.length == path.length + 1 &&
+        path === '/' ||
+        (node.path.length === path.length + 1 &&
           node.path[path.length] === '/' &&
           node.handle &&
           path === node.path.slice(0, node.path.length - 1))
