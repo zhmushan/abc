@@ -74,6 +74,19 @@ export class Abc {
   trace(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
     return this.add('TRACE', path, h, ...m)
   }
+  any(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+    const methods = ['CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT', 'TRACE']
+    for (const method of methods) {
+      this.add(method, path, h, ...m)
+    }
+    return this
+  }
+  match(methods: string[], path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+    for (const method of methods) {
+      this.add(method, path, h, ...m)
+    }
+    return this
+  }
   add(method: string, path: string, handler: handlerFunc, ...middleware: middlewareFunc[]) {
     this.router.add(method, path, c => {
       let h = handler
