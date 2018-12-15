@@ -9,11 +9,11 @@
 ```ts
 import { Abc } from 'https://deno.land/x/abc/index.ts'
 
-const abc = new Abc()
-abc.get('/hello', c => {
-  return 'Hello World'
-})
-abc.start('0.0.0.0:8080')
+new Abc()
+  .get('/hello', c => {
+    return 'Hello, Abc!'
+  })
+  .start('0.0.0.0:8080')
 ```
 
 ## Getting Started
