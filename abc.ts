@@ -6,11 +6,12 @@ import { logger, response } from './middleware/index'
 export class Abc {
   router: Router
   middleware: middlewareFunc[]
-  preMiddleware: middlewareFunc[]
+  premiddleware: middlewareFunc[]
 
   constructor() {
     this.router = new Router()
     this.middleware = []
+    this.premiddleware = []
 
     this.use(response)
   }
@@ -19,30 +20,51 @@ export class Abc {
     const s = serve(addr)
 
     // Print all routes that added
-    function nestNode(n: Node) {
-      console.log(n)
-      for (const nc of n.children) {
-        if (nc.children) {
-          nestNode(nc)
+    for (const t of this.router.trees) {
+      function p(n: Node) {
+        console.log(
+          `method: '${t[0]}', path: '${n.path}', priority: '${n.priority}', wildChild: '${
+            n.wildChild
+          }', type: '${n.nType}', indices: '${n.indices}', maxParams: '${n.maxParams}'`
+        )
+        for (const nc of n.children) {
+          if (nc.children) {
+            p(nc)
+          }
         }
       }
-    }
-    for (const t of this.router.trees) {
-      console.log(t[0])
-      nestNode(t[1])
+      p(t[1])
     }
 
     for await (const req of s) {
       const c = new Context(req)
+      c.abc = this
       let h = this.router.find(req.method, req.url, c) || NotFoundHandler
-      for (const m of this.middleware) {
-        h = m(h)
+
+      if (this.premiddleware.length) {
+        h = c => {
+          for (let i = this.middleware.length - 1; i >= 0; i--) {
+            h = this.middleware[i](h)
+          }
+          return h(c)
+        }
+        for (let i = this.premiddleware.length - 1; i >= 0; i--) {
+          h = this.premiddleware[i](h)
+        }
+      } else {
+        for (let i = this.middleware.length - 1; i >= 0; i--) {
+          h = this.middleware[i](h)
+        }
       }
+
       h(c)
       await req.respond(c.response)
     }
   }
 
+  pre(...m: middlewareFunc[]) {
+    this.premiddleware.push(...m)
+  }
   use(...m: middlewareFunc[]) {
     this.middleware.push(...m)
     return this

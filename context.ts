@@ -1,4 +1,5 @@
 import { ServerRequest, Response, Status } from './package'
+import { Abc } from './abc'
 
 export class Context {
   private _request: ServerRequest
@@ -17,12 +18,12 @@ export class Context {
     return this._response
   }
 
-  private _path: string
-  set path(p: string) {
-    this._path = p
-  }
+  // private _path: string
+  // set path(p: string) {
+  //   this._path = p
+  // }
   get path() {
-    return this._path
+    return this.request.url
   }
 
   private _params: { [key: string]: any }
@@ -33,10 +34,17 @@ export class Context {
     return this._params
   }
 
+  private _abc: Abc
+  set abc(abc: Abc) {
+    this._abc = abc
+  }
+  get abc() {
+    return this._abc
+  }
+
   constructor(r: ServerRequest) {
     this.request = r
     this.response = {}
-    this.path = r.url
     this.params = {}
   }
 
