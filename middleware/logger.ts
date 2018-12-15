@@ -1,3 +1,3 @@
 import { middlewareFunc } from '../abc'
 
-export const logger: middlewareFunc = h => c => {}
+export const logger: middlewareFunc = h => h
