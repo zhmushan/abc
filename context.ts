@@ -25,6 +25,9 @@ export class Context {
   get path() {
     return this.request.url
   }
+  get method() {
+    return this.request.method
+  }
 
   private _params: { [key: string]: any }
   set params(p) {
