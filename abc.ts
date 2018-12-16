@@ -1,7 +1,6 @@
 import { serve, Status, STATUS_TEXT } from './package'
 import { Context } from './context'
 import { Router, Node } from './router'
-import { logger, response } from './middleware/index'
 
 export class Abc {
   router: Router
@@ -12,8 +11,6 @@ export class Abc {
     this.router = new Router()
     this.middleware = []
     this.premiddleware = []
-
-    this.use(response)
   }
 
   async start(addr: string) {
@@ -57,7 +54,8 @@ export class Abc {
         }
       }
 
-      h(c)
+      this.transformResult(c, h(c))
+
       await req.respond(c.response)
     }
   }
@@ -118,6 +116,20 @@ export class Abc {
       return h(c)
     })
     return this
+  }
+  private transformResult(c: Context, result: any) {
+    if (result !== undefined) {
+      switch (typeof result) {
+        case 'object':
+          c.json(result)
+          break
+        case 'string':
+          ;/^\s*</.test(result) ? c.html(result) : c.string(result)
+          break
+        default:
+          c.string(result)
+      }
+    }
   }
 }
 
