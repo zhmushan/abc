@@ -29,9 +29,9 @@ Although it is not yet powerful, I hope it can provide a more convenient way to 
 
 Let us look forward to it.
 
-## Contributing To Abc
+## Contributing
 
-What are you waiting for? We are happy to follow every suggestion from the community.
+We would love for you to contribute to Abc and help make it even better than it is today! 
 
 ## Getting Started
 
