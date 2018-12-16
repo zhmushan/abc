@@ -78,3 +78,7 @@ export class Context {
     this.response.body = new TextEncoder().encode(v)
   }
 }
+
+// If you want to know why there is an empty interface here
+// you need to jump to the definition of handlerFunc
+export interface IContext extends Context {}

@@ -1,5 +1,5 @@
 import { serve, Status, STATUS_TEXT } from './package'
-import { Context } from './context'
+import { Context, IContext } from './context'
 import { Router, Node } from './router'
 
 export class Abc {
@@ -133,7 +133,9 @@ export class Abc {
   }
 }
 
-export type handlerFunc = (c: Context) => any
+// Use IContext can avoid type assignment errors that occur
+// when middleware references this type
+export type handlerFunc = (c: IContext) => any
 export type middlewareFunc = (h: handlerFunc) => handlerFunc
 
 export const NotFoundHandler: handlerFunc = c => {
