@@ -1,7 +1,7 @@
 import { ServerRequest, Response, Status } from './package'
 import { Abc } from './abc'
 
-export class Context {
+class ContextImpl implements Context {
   private _request: ServerRequest
   set request(r: ServerRequest) {
     this._request = r
@@ -22,10 +22,10 @@ export class Context {
   // set path(p: string) {
   //   this._path = p
   // }
-  get path() {
+  get path(): string {
     return this.request.url
   }
-  get method() {
+  get method(): string {
     return this.request.method
   }
 
@@ -79,6 +79,19 @@ export class Context {
   }
 }
 
-// If you want to know why there is an empty interface here
-// you need to jump to the definition of handlerFunc
-export interface IContext extends Context {}
+export interface Context {
+  request: ServerRequest
+  response: Response
+  path: string
+  method: string
+  params: { [key: string]: any }
+  abc: Abc
+  string(v: string, code?: number): void
+  json(v: string, code?: number): void
+  html(v: string, code?: number): void
+}
+
+export function createContext(r: ServerRequest) {
+  const c = new ContextImpl(r) as Context
+  return c
+}

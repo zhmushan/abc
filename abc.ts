@@ -1,8 +1,33 @@
 import { serve, Status, STATUS_TEXT } from './package'
-import { Context, IContext } from './context'
+import { Context, createContext } from './context'
 import { Router, Node } from './router'
 
-export class Abc {
+export interface Abc {
+  router: Router
+  middleware: middlewareFunc[]
+  premiddleware: middlewareFunc[]
+  start(addr: string): Promise<void>
+  pre(...m: middlewareFunc[]): Abc
+  use(...m: middlewareFunc[]): Abc
+  connect(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc
+  delete(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc
+  get(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc
+  head(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc
+  options(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc
+  patch(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc
+  post(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc
+  put(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc
+  trace(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc
+  any(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc
+  match(methods: string[], path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc
+  add(method: string, path: string, handler: handlerFunc, ...middleware: middlewareFunc[]): Abc
+
+  // no implements
+  group(prefix: string, ...m: middlewareFunc[]): Abc
+  static(prefix: string, root: string): Abc
+}
+
+class AbcImpl implements Abc {
   router: Router
   middleware: middlewareFunc[]
   premiddleware: middlewareFunc[]
@@ -34,7 +59,7 @@ export class Abc {
     }
 
     for await (const req of s) {
-      const c = new Context(req)
+      const c = createContext(req)
       c.abc = this
       let h = this.router.find(req.method, req.url, c) || NotFoundHandler
 
@@ -62,6 +87,7 @@ export class Abc {
 
   pre(...m: middlewareFunc[]) {
     this.premiddleware.push(...m)
+    return this
   }
   use(...m: middlewareFunc[]) {
     this.middleware.push(...m)
@@ -117,6 +143,14 @@ export class Abc {
     })
     return this
   }
+  group(prefix: string, ...m: middlewareFunc[]) {
+    console.error('no implements')
+    return this
+  }
+  static(prefix: string, root: string) {
+    console.error('no implements')
+    return this
+  }
   private transformResult(c: Context, result: any) {
     if (result !== undefined) {
       switch (typeof result) {
@@ -133,12 +167,15 @@ export class Abc {
   }
 }
 
-// Use IContext can avoid type assignment errors that occur
-// when middleware references this type
-export type handlerFunc = (c: IContext) => any
+export type handlerFunc = (c: Context) => any
 export type middlewareFunc = (h: handlerFunc) => handlerFunc
 
 export const NotFoundHandler: handlerFunc = c => {
   c.response.status = Status.NotFound
   c.response.body = new TextEncoder().encode(STATUS_TEXT.get(Status.NotFound))
+}
+
+export function abc() {
+  const abc = new AbcImpl() as Abc
+  return abc
 }
