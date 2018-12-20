@@ -1,15 +1,15 @@
 import { test, assertEqual } from 'https://deno.land/x/testing/testing.ts'
 import { Router } from './router'
-import { createContext } from './context'
+import { context } from './context'
 
 test(function testRouter() {
   const r = new Router()
   r.add('GET', '/hello', c => true)
-  let c = createContext({} as any)
+  let c = context({} as any)
   assertEqual(r.find('GET', '/hello', c)(c), true)
 
   r.add('GET', '/hello/:p', c => true)
-  c = createContext({} as any)
+  c = context({} as any)
   assertEqual(r.find('GET', '/hello/a', c)(c), true)
   assertEqual(r.find('GET', '/hello/b', c)(c), true)
   assertEqual(r.find('GET', '/hello/a/a', c), undefined)

@@ -1,5 +1,5 @@
 import { serve, Status, STATUS_TEXT } from './package'
-import { Context, createContext } from './context'
+import { Context, context } from './context'
 import { Router, Node } from './router'
 
 export interface Abc {
@@ -22,7 +22,7 @@ export interface Abc {
   match(methods: string[], path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc
   add(method: string, path: string, handler: handlerFunc, ...middleware: middlewareFunc[]): Abc
 
-  // no implements
+  // not implements
   group(prefix: string, ...m: middlewareFunc[]): Abc
   static(prefix: string, root: string): Abc
 }
@@ -59,7 +59,7 @@ class AbcImpl implements Abc {
     }
 
     for await (const req of s) {
-      const c = createContext(req)
+      const c = context(req)
       c.abc = this
       let h = this.router.find(req.method, req.url, c) || NotFoundHandler
 

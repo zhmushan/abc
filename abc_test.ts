@@ -1,6 +1,6 @@
 import { test, assertEqual } from 'https://deno.land/x/testing/testing.ts'
 import { NotFoundHandler, abc } from './abc'
-import { createContext } from './context'
+import { context } from './context'
 
 const data = {
   string: 'hello, world',
@@ -14,7 +14,7 @@ test(function testHandler() {
   const app = abc()
 
   // create a fake context
-  let ctx = createContext({} as any)
+  let ctx = context({} as any)
 
   app.any('/string', c => data.string)
   app.any('/html', c => data.html)

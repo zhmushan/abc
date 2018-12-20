@@ -77,6 +77,11 @@ class ContextImpl implements Context {
     this.response.status = code
     this.response.body = new TextEncoder().encode(v)
   }
+
+  async bind<T extends Function>(cls?: T): Promise<Error> {
+    // TODO
+    return new Error()
+  }
 }
 
 export interface Context {
@@ -89,9 +94,13 @@ export interface Context {
   string(v: string, code?: number): void
   json(v: string, code?: number): void
   html(v: string, code?: number): void
+
+  // not implements
+  // Ideally, automatically match based on user defined interface
+  bind<T extends Function>(cls?: T): Promise<Error>
 }
 
-export function createContext(r: ServerRequest) {
+export function context(r: ServerRequest) {
   const c = new ContextImpl(r) as Context
   return c
 }
