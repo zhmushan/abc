@@ -1,6 +1,25 @@
 import { ServerRequest, Response, Status } from './package'
 import { Abc } from './abc'
 
+export interface Context {
+  request: ServerRequest
+  response: Response
+  path: string
+  method: string
+  params: { [key: string]: any }
+  abc: Abc
+  string(v: string, code?: number): void
+  json(v: string, code?: number): void
+  html(v: string, code?: number): void
+
+  /**
+   * WIP:
+   * bind request body into provided type `cls`
+   * default based on Content-Type
+   */
+  bind<T extends object>(cls: T): Promise<Error>
+}
+
 class ContextImpl implements Context {
   private _request: ServerRequest
   set request(r: ServerRequest) {
@@ -78,26 +97,9 @@ class ContextImpl implements Context {
     this.response.body = new TextEncoder().encode(v)
   }
 
-  async bind<T extends Function>(cls?: T): Promise<Error> {
-    // TODO
-    return new Error()
+  bind<T extends object>(cls: T): Promise<Error> {
+    return this.abc.binder.bind(cls, this)
   }
-}
-
-export interface Context {
-  request: ServerRequest
-  response: Response
-  path: string
-  method: string
-  params: { [key: string]: any }
-  abc: Abc
-  string(v: string, code?: number): void
-  json(v: string, code?: number): void
-  html(v: string, code?: number): void
-
-  // not implements
-  // Ideally, automatically match based on user defined interface
-  bind<T extends Function>(cls?: T): Promise<Error>
 }
 
 export function context(r: ServerRequest) {
