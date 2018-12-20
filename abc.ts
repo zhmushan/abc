@@ -1,14 +1,21 @@
 import { serve, Status, STATUS_TEXT } from './package'
 import { Context, context } from './context'
 import { Router, Node } from './router'
+import { Binder, binder } from './binder'
 
 export interface Abc {
   router: Router
   middleware: middlewareFunc[]
   premiddleware: middlewareFunc[]
+  binder: Binder
   start(addr: string): Promise<void>
+
+  /** add middleware which is run before router. */
   pre(...m: middlewareFunc[]): Abc
+
+  /** add middleware which is run after router. */
   use(...m: middlewareFunc[]): Abc
+
   connect(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc
   delete(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc
   get(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc
@@ -22,8 +29,16 @@ export interface Abc {
   match(methods: string[], path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc
   add(method: string, path: string, handler: handlerFunc, ...middleware: middlewareFunc[]): Abc
 
-  // not implements
+  /**
+   * not implemented.
+   * maybe it can add middleware to all routes which start with prefix.
+   */
   group(prefix: string, ...m: middlewareFunc[]): Abc
+
+  /**
+   * not implemented.
+   * reference net/file_server
+   */
   static(prefix: string, root: string): Abc
 }
 
@@ -31,11 +46,13 @@ class AbcImpl implements Abc {
   router: Router
   middleware: middlewareFunc[]
   premiddleware: middlewareFunc[]
+  binder: Binder
 
   constructor() {
     this.router = new Router()
     this.middleware = []
     this.premiddleware = []
+    this.binder = binder()
   }
 
   async start(addr: string) {
@@ -144,11 +161,11 @@ class AbcImpl implements Abc {
     return this
   }
   group(prefix: string, ...m: middlewareFunc[]) {
-    console.error('no implements')
+    console.error(`abc.group: ${notImplemented().message}`)
     return this
   }
   static(prefix: string, root: string) {
-    console.error('no implements')
+    console.error(`abc.static: ${notImplemented().message}`)
     return this
   }
   private transformResult(c: Context, result: any) {
@@ -178,4 +195,16 @@ export const NotFoundHandler: handlerFunc = c => {
 export function abc() {
   const abc = new AbcImpl() as Abc
   return abc
+}
+
+export class HttpError extends Error {
+  code: number
+  constructor(code: number, message?: any) {
+    super(message)
+    this.code = code
+  }
+}
+
+export function notImplemented() {
+  return new Error('Not Implemented')
 }
