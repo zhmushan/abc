@@ -6,7 +6,7 @@ install:
 
 script:
   - deno --version
-  - deno ./test.ts --allow-net
+  - deno ./test.ts --allow-net --reload
 
 cache:
   directories:
