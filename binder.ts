@@ -1,5 +1,5 @@
 import { Context } from './context'
-import { HttpError, notImplemented } from './abc'
+import { HttpError } from './abc'
 import { Status } from './package'
 import { Parser } from './parser'
 
@@ -9,12 +9,12 @@ export interface Binder {
 
 class BinderImpl implements Binder {
   async bind<T extends object>(cls: T, c: Context): Promise<Error> {
-    let err: Error
+    let data: {}, err: Error
     const req = c.request
     const body = new TextDecoder().decode(await req.body())
     const cType = req.headers.get('Content-Type')
+    console.log(cType)
     if (cType.includes('application/json')) {
-      let data: {}
       ;[data, err] = Parser.json(body)
       if (err) {
         return err
@@ -22,12 +22,24 @@ class BinderImpl implements Binder {
       for (const key of Reflect.ownKeys(cls)) {
         cls[key] = data[key]
       }
-    } else if (cType.includes('application/xml')) {
-      return notImplemented()
     } else if (cType.includes('application/x-www-form-urlencoded')) {
-      return notImplemented()
+      ;[data, err] = Parser.form(body)
+      if (err) {
+        return err
+      }
+      for (const key of Reflect.ownKeys(cls)) {
+        cls[key] = data[key]
+      }
+    } else if (cType.includes('multipart/form-data')) {
+      ;[data, err] = Parser.form(body)
+      if (err) {
+        return err
+      }
+      for (const key of Reflect.ownKeys(cls)) {
+        cls[key] = data[key]
+      }
     } else {
-      return new HttpError(Status.UnsupportedMediaType)
+      err = new HttpError(Status.UnsupportedMediaType)
     }
     return err
   }

@@ -200,6 +200,10 @@ export function abc() {
 export class HttpError extends Error {
   code: number
   constructor(code: number, message?: any) {
+    if (!message) {
+      message = Status[code]
+    }
+    console.log(message)
     super(message)
     this.code = code
   }

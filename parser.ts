@@ -1,3 +1,5 @@
+import { parse } from 'https://raw.githubusercontent.com/denolib/qs/master/index.ts'
+
 export class Parser {
   static json(data: string): [{}, Error] {
     let result: {}, err: Error
@@ -15,11 +17,20 @@ export class Parser {
     }
     return [result, err]
   }
+  static form(data: string): [{}, Error] {
+    let result: {}, err: Error
+    try {
+      result = parse(data)
+    } catch (e) {
+      err = e
+    }
+    return [result, err]
+  }
 }
 
 /**
  * RegExp to match the first non-space in a string.
- * 
+ *
  * https://tools.ietf.org/html/rfc7159
  *    ws = *(
  *            %x20 /              ; Space
