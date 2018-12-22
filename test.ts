@@ -1,2 +1,5 @@
 import './abc_test'
 import './router_test'
+import './context_test'
+import './binder_test'
+import './parser_test'
