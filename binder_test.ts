@@ -18,10 +18,10 @@ class Obj {
 
 t('bind', async () => {
   const c = injectContext({
-    body: () => 'foo=foo',
+    body: () => new TextEncoder().encode('foo=foo'),
     headers: new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' })
   })
   const obj = new Obj()
   await binder().bind(obj, c)
-  assertEqual(obj, { foo: 'foo' })
+  assertEqual(obj, { foo: 'foo', bar: undefined })
 })
