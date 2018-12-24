@@ -1,2 +1,2 @@
-import './abc_test'
-import './router_test'
+import "abc_test.ts";
+import "router_test.ts";
