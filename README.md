@@ -7,13 +7,13 @@
 ## Hello World
 
 ```ts
-import { abc } from 'https://deno.land/x/abc/index.ts'
+import { abc } from "https://deno.land/x/abc/index.ts";
 
 abc()
-  .get('/hello', c => {
-    return 'Hello, Abc!'
+  .get("/hello", c => {
+    return "Hello, Abc!";
   })
-  .start('0.0.0.0:8080')
+  .start("0.0.0.0:8080");
 ```
 
 ## Better Middleware And HandlerFunc Design
@@ -22,6 +22,7 @@ abc()
 - In the handler function, we can return the result directly, and `Abc` will automatically fill this result into response.
 
 ### Official Middleware
+
 - [logger](https://github.com/zhmushan/abc_logger)
 
 ## More Powerful Context
@@ -34,7 +35,7 @@ Let us look forward to it.
 
 ## Contributing
 
-We would love for you to contribute to Abc and help make it even better than it is today! 
+We would love for you to contribute to Abc and help make it even better than it is today!
 
 ## Getting Started
 
