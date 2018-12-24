@@ -1,30 +1,30 @@
-import { parse } from 'https://raw.githubusercontent.com/denolib/qs/master/index.ts'
+import { parse } from "https://raw.githubusercontent.com/denolib/qs/master/index.ts";
 
 export class Parser {
   static json(data: string): [{}, Error] {
-    let result: {}, err: Error
+    let result: {}, err: Error;
     if (data.length === 0) {
-      result = {}
+      result = {};
     }
-    const first = firstchar(data)
-    if (first !== '{' && first !== '[') {
-      err = new SyntaxError(data)
+    const first = firstchar(data);
+    if (first !== "{" && first !== "[") {
+      err = new SyntaxError(data);
     }
     try {
-      result = JSON.parse(data)
+      result = JSON.parse(data);
     } catch (e) {
-      err = e
+      err = e;
     }
-    return [result, err]
+    return [result, err];
   }
   static form(data: string): [{}, Error] {
-    let result: {}, err: Error
+    let result: {}, err: Error;
     try {
-      result = parse(data)
+      result = parse(data);
     } catch (e) {
-      err = e
+      err = e;
     }
-    return [result, err]
+    return [result, err];
   }
 }
 
@@ -39,5 +39,5 @@ export class Parser {
  *            %x0D )              ; Carriage return
  */
 function firstchar(str: string) {
-  return /^[\x20\x09\x0a\x0d]*(.)/.exec(str)[1]
+  return /^[\x20\x09\x0a\x0d]*(.)/.exec(str)[1];
 }
