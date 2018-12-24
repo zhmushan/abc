@@ -9,7 +9,7 @@ export interface Context {
   params: { [key: string]: any };
   abc: Abc;
   string(v: string, code?: number): void;
-  json(v: string, code?: number): void;
+  json(v: {}, code?: number): void;
   html(v: string, code?: number): void;
 
   /**
