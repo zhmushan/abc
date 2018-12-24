@@ -13,7 +13,6 @@ class BinderImpl implements Binder {
     const req = c.request;
     const body = new TextDecoder().decode(await req.body());
     const cType = req.headers.get("Content-Type");
-    console.log(cType);
     if (cType.includes("application/json")) {
       [data, err] = Parser.json(body);
       if (err) {
