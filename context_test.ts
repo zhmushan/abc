@@ -6,7 +6,7 @@ function injectContext(r = {}) {
   return context(r as any);
 }
 
-t("string", () => {
+t("context string", () => {
   let c = injectContext();
   c.string("{foo: 'bar'}");
   assertEqual(c.response.status, 200);
@@ -14,7 +14,7 @@ t("string", () => {
   assertEqual(c.response.headers.get("Content-Type"), "text/plain");
 });
 
-t("json", () => {
+t("context json", () => {
   let c = injectContext();
   c.json({ foo: "bar" });
   assertEqual(c.response.status, 200);
@@ -25,7 +25,7 @@ t("json", () => {
   assertEqual(c.response.headers.get("Content-Type"), "application/json");
 });
 
-t("html", () => {
+t("context html", () => {
   let c = injectContext();
   c.html("{foo: 'bar'}");
   assertEqual(c.response.status, 200);

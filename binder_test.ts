@@ -16,7 +16,7 @@ class Obj {
   }
 }
 
-t("bind", async () => {
+t("binder urlencoded", async () => {
   const c = injectContext({
     body: () => new TextEncoder().encode("foo=foo"),
     headers: new Headers({
@@ -27,3 +27,27 @@ t("bind", async () => {
   await binder().bind(obj, c);
   assertEqual(obj, { foo: "foo", bar: undefined });
 });
+
+t("binder json", async () => {
+  const c = injectContext({
+    body: () => new TextEncoder().encode(`{"foo": "foo"}`),
+    headers: new Headers({
+      "Content-Type": "application/json"
+    })
+  });
+  const obj = new Obj();
+  await binder().bind(obj, c);
+  assertEqual(obj, { foo: "foo", bar: undefined });
+});
+
+// t("binder multipart", async () => {
+//   const c = injectContext({
+//     body: () => new TextEncoder().encode("foo=foo"),
+//     headers: new Headers({
+//       "Content-Type": "multipart/form-data"
+//     })
+//   });
+//   const obj = new Obj();
+//   await binder().bind(obj, c);
+//   assertEqual(obj, { foo: "foo", bar: undefined });
+// });

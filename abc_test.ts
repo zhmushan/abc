@@ -1,6 +1,7 @@
-import { test, assertEqual } from "https://deno.land/x/testing/testing.ts";
-import { NotFoundHandler, abc } from "abc.ts";
-import { context } from "context.ts";
+import { assertEqual } from "https://deno.land/x/testing/testing.ts";
+import { t } from "https://raw.githubusercontent.com/zhmushan/deno_test/master/index.ts";
+import { abc } from "abc.ts";
+import { exit } from "deno";
 
 const data = {
   string: "hello, world",
@@ -20,22 +21,34 @@ const methods = [
   "TRACE"
 ];
 
-test(function testHandler() {
+t("abc handler", async () => {
   const app = abc();
+  app
+    .any("/string", c => data.string)
+    .any("/html", c => data.html)
+    .any("/json", c => data.json)
+    .start("0.0.0.0:4500");
 
-  // create a fake context
-  let ctx = context({} as any);
+  let res = await fetch("http://localhost:4500/string");
+  assertEqual(res.status, 200);
+  assertEqual(new TextDecoder().decode(await res.arrayBuffer()), data.string);
 
-  app.any("/string", c => data.string);
-  app.any("/html", c => data.html);
-  app.any("/json", c => data.json);
-  for (const method of methods) {
-    assertEqual(app.router.find(method, "/string", ctx)(ctx), data.string);
-    assertEqual(app.router.find(method, "/html", ctx)(ctx), data.html);
-    assertEqual(app.router.find(method, "/json", ctx)(ctx), data.json);
-    assertEqual(
-      app.router.find(method, "/", ctx) || NotFoundHandler,
-      NotFoundHandler
-    );
-  }
+  res = await fetch("http://localhost:4500/html");
+  assertEqual(res.status, 200);
+  assertEqual(new TextDecoder().decode(await res.arrayBuffer()), data.html);
+
+  res = await fetch("http://localhost:4500/json");
+  assertEqual(res.status, 200);
+  assertEqual(
+    new TextDecoder().decode(await res.arrayBuffer()),
+    JSON.stringify(data.json)
+  );
+
+  maybeCompleteTests();
 });
+
+function maybeCompleteTests() {
+  setTimeout(() => {
+    exit();
+  }, 0);
+}

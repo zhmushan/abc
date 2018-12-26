@@ -1,8 +1,9 @@
-import { test, assertEqual } from "https://deno.land/x/testing/testing.ts";
+import { assertEqual } from "https://deno.land/x/testing/testing.ts";
+import { t } from "https://raw.githubusercontent.com/zhmushan/deno_test/master/index.ts";
 import { Router } from "router.ts";
 import { context } from "context.ts";
 
-test(function testRouter() {
+t("router", () => {
   const r = new Router();
   r.add("GET", "/hello", c => true);
   let c = context({} as any);
