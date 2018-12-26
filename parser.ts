@@ -1,4 +1,5 @@
 import { parse } from "https://raw.githubusercontent.com/denolib/qs/master/index.ts";
+import { notImplemented } from "abc.ts";
 
 export class Parser {
   static json(data: string): [{}, Error] {
@@ -17,7 +18,7 @@ export class Parser {
     }
     return [result, err];
   }
-  static form(data: string): [{}, Error] {
+  static urlencoded(data: string): [{}, Error] {
     let result: {}, err: Error;
     try {
       result = parse(data);
@@ -25,6 +26,9 @@ export class Parser {
       err = e;
     }
     return [result, err];
+  }
+  static multipart(data: string): [{}, Error] {
+    return [undefined, notImplemented()];
   }
 }
 

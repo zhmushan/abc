@@ -22,7 +22,7 @@ class BinderImpl implements Binder {
         cls[key] = data[key];
       }
     } else if (cType.includes("application/x-www-form-urlencoded")) {
-      [data, err] = Parser.form(body);
+      [data, err] = Parser.urlencoded(body);
       if (err) {
         return err;
       }
@@ -30,7 +30,7 @@ class BinderImpl implements Binder {
         cls[key] = data[key];
       }
     } else if (cType.includes("multipart/form-data")) {
-      [data, err] = Parser.form(body);
+      [data, err] = Parser.multipart(body);
       if (err) {
         return err;
       }
