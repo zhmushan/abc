@@ -2,6 +2,8 @@ import { serve, Status, STATUS_TEXT } from "package.ts";
 import { Context, context } from "context.ts";
 import { Router, Node } from "router.ts";
 import { Binder, binder } from "binder.ts";
+import { cwd, stat } from "deno";
+import { serveDir, serveFile, serveFallback } from "file_server.ts";
 
 export interface Abc {
   router: Router;
@@ -49,7 +51,7 @@ export interface Abc {
    * not implemented.
    * reference net/file_server
    */
-  static(prefix: string, root: string): Abc;
+  static(path: string): Abc;
 }
 
 class AbcImpl implements Abc {
@@ -195,9 +197,22 @@ class AbcImpl implements Abc {
     console.error(`abc.group: ${notImplemented().message}`);
     return this;
   }
-  static(prefix: string, root: string) {
-    console.error(`abc.static: ${notImplemented().message}`);
-    return this;
+  static(path: string) {
+    // TODO: replace with middleware
+    const h: handlerFunc = async c => {
+      const filepath = cwd() + c.path;
+      try {
+        const fileInfo = await stat(filepath);
+        if (fileInfo.isDirectory()) {
+          return serveDir(filepath, c.path);
+        } else {
+          return serveFile(filepath);
+        }
+      } catch (e) {
+        return serveFallback(c, e);
+      }
+    };
+    return this.get(path, h);
   }
   private transformResult(c: Context, result: any) {
     if (result !== undefined) {
@@ -221,6 +236,12 @@ export type middlewareFunc = (h: handlerFunc) => handlerFunc;
 export const NotFoundHandler: handlerFunc = async c => {
   c.response.status = Status.NotFound;
   c.response.body = new TextEncoder().encode(STATUS_TEXT.get(Status.NotFound));
+};
+export const InternalServerErrorHandler: handlerFunc = async c => {
+  c.response.status = Status.InternalServerError;
+  c.response.body = new TextEncoder().encode(
+    STATUS_TEXT.get(Status.InternalServerError)
+  );
 };
 
 export function abc() {
