@@ -396,7 +396,7 @@ export class Node {
           // handle wildcard child
           node = node.children[0];
           switch (node.nType) {
-            case NodeType.Param:
+            case NodeType.Param: {
               // find param end (either '/' or path end)
               let end = 0;
               while (end < path.length && path[end] !== "/") {
@@ -437,14 +437,14 @@ export class Node {
                 tsr = node.handle && node.path === "/";
               }
               break walk;
-
-            case NodeType.CatchAll:
+            }
+            case NodeType.CatchAll: {
               // save param value
               if (!p) {
                 // lazy allocation
                 p = [];
               }
-              i = p.length;
+              let i = p.length;
               p[i] = {
                 key: node.path.slice(2),
                 value: path
@@ -452,9 +452,10 @@ export class Node {
 
               handle = node.handle;
               break walk;
-
-            default:
+            }
+            default: {
               console.error("invalid node type");
+            }
           }
         }
       } else if (path === node.path) {
