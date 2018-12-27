@@ -5,11 +5,11 @@ import { context } from "context.ts";
 
 t("router", () => {
   const r = new Router();
-  r.add("GET", "/hello", c => true);
+  r.add("GET", "/hello", async c => true);
   let c = context({} as any);
   assertEqual(r.find("GET", "/hello", c)(c), true);
 
-  r.add("GET", "/hello/:p", c => true);
+  r.add("GET", "/hello/:p", async c => true);
   c = context({} as any);
   assertEqual(r.find("GET", "/hello/a", c)(c), true);
   assertEqual(r.find("GET", "/hello/b", c)(c), true);

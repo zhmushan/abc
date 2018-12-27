@@ -24,9 +24,9 @@ const methods = [
 t("abc handler", async () => {
   const app = abc();
   app
-    .any("/string", c => data.string)
-    .any("/html", c => data.html)
-    .any("/json", c => data.json)
+    .any("/string", async c => data.string)
+    .any("/html", async c => data.html)
+    .any("/json", async c => data.json)
     .start("0.0.0.0:4500");
 
   let res = await fetch("http://localhost:4500/string");

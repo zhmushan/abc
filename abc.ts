@@ -107,8 +107,7 @@ class AbcImpl implements Abc {
           h = this.middleware[i](h);
         }
       }
-
-      this.transformResult(c, h(c));
+      this.transformResult(c, await h(c));
 
       await req.respond(c.response);
     }
@@ -216,10 +215,10 @@ class AbcImpl implements Abc {
   }
 }
 
-export type handlerFunc = (c: Context) => any;
+export type handlerFunc = (c: Context) => Promise<any>;
 export type middlewareFunc = (h: handlerFunc) => handlerFunc;
 
-export const NotFoundHandler: handlerFunc = c => {
+export const NotFoundHandler: handlerFunc = async c => {
   c.response.status = Status.NotFound;
   c.response.body = new TextEncoder().encode(STATUS_TEXT.get(Status.NotFound));
 };

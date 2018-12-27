@@ -10,7 +10,7 @@
 import { abc } from "https://deno.land/x/abc/index.ts";
 
 abc()
-  .get("/hello", c => {
+  .get("/hello", async c => {
     return "Hello, Abc!";
   })
   .start("0.0.0.0:8080");
