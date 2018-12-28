@@ -2,8 +2,7 @@ import { serve, Status, STATUS_TEXT } from "package.ts";
 import { Context, context } from "context.ts";
 import { Router, Node } from "router.ts";
 import { Binder, binder } from "binder.ts";
-import { cwd, stat } from "deno";
-import { serveDir, serveFile, serveFallback } from "file_server.ts";
+import { cwd, stat, readFile } from "deno";
 
 export interface Abc {
   router: Router;
@@ -198,19 +197,21 @@ class AbcImpl implements Abc {
     return this;
   }
   static(path: string) {
-    // TODO: replace with middleware
     const h: handlerFunc = async c => {
-      const filepath = cwd() + c.path;
+      let filepath = cwd() + c.path;
+      const fileinfo = await stat(filepath);
+      let resp = await NotFoundHandler(c);
       try {
-        const fileInfo = await stat(filepath);
-        if (fileInfo.isDirectory()) {
-          return serveDir(filepath, c.path);
-        } else {
-          return serveFile(filepath);
+        if (
+          fileinfo.isDirectory() &&
+          (await stat(filepath + "index.html")).isFile()
+        ) {
+          filepath += "index.html";
         }
-      } catch (e) {
-        return serveFallback(c, e);
-      }
+        resp = new TextDecoder().decode(await readFile(filepath));
+      } catch {}
+
+      return resp;
     };
     return this.get(path, h);
   }
