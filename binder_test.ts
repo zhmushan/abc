@@ -1,5 +1,5 @@
 import { t } from "https://raw.githubusercontent.com/zhmushan/deno_test/master/index.ts";
-import { assertEqual } from "https://deno.land/x/testing/testing.ts";
+import { assertEqual } from "https://deno.land/x/testing/mod.ts";
 import { binder } from "binder.ts";
 import { context } from "context.ts";
 

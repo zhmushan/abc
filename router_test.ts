@@ -1,4 +1,4 @@
-import { assertEqual } from "https://deno.land/x/testing/testing.ts";
+import { assertEqual } from "https://deno.land/x/testing/mod.ts";
 import { t } from "https://raw.githubusercontent.com/zhmushan/deno_test/master/index.ts";
 import { Router } from "router.ts";
 import { context } from "context.ts";

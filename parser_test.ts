@@ -1,6 +1,6 @@
 import { t } from "https://raw.githubusercontent.com/zhmushan/deno_test/master/index.ts";
 import { Parser } from "parser.ts";
-import { assertEqual } from "https://deno.land/x/testing/testing.ts";
+import { assertEqual } from "https://deno.land/x/testing/mod.ts";
 
 t("parser urlencoded", () => {
   const urlencodedCases: [[string, {}]] = [[`foo=bar`, { foo: "bar" }]];
