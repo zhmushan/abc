@@ -7,7 +7,7 @@
 ## Hello World
 
 ```ts
-import { abc } from "https://deno.land/x/abc/index.ts";
+import { abc } from "https://deno.land/x/abc/mod.ts";
 
 abc()
   .get("/hello", async c => {
