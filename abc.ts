@@ -211,7 +211,7 @@ class AbcImpl implements Abc {
     return this.get(path, h);
   }
   private transformResult(c: Context, result: any) {
-    if (result !== undefined) {
+    if (c.response.status == undefined) {
       switch (typeof result) {
         case "object":
           c.json(result);

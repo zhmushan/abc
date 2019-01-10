@@ -6,7 +6,8 @@ import { exit } from "deno";
 const data = {
   string: "hello, world",
   html: "<h1>hello, world</h1>",
-  json: { hello: "world" }
+  json: { hello: "world" },
+  undefined: "undefined"
 };
 
 const methods = [
@@ -27,6 +28,10 @@ t("abc handler", async () => {
     .any("/string", async c => data.string)
     .any("/html", async c => data.html)
     .any("/json", async c => data.json)
+    .any("/undefined_0", async c => undefined)
+    .any("/undefined_1", async c => {
+      c.string(data.undefined);
+    })
     .start("0.0.0.0:4500");
 
   let res = await fetch("http://localhost:4500/string");
@@ -42,6 +47,17 @@ t("abc handler", async () => {
   assertEqual(
     new TextDecoder().decode(await res.arrayBuffer()),
     JSON.stringify(data.json)
+  );
+
+  res = await fetch("http://localhost:4500/undefined_0");
+  assertEqual(res.status, 200);
+  assertEqual(new TextDecoder().decode(await res.arrayBuffer()), "");
+
+  res = await fetch("http://localhost:4500/undefined_1");
+  assertEqual(res.status, 200);
+  assertEqual(
+    new TextDecoder().decode(await res.arrayBuffer()),
+    data.undefined
   );
 
   maybeCompleteTests();
