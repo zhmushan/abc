@@ -226,14 +226,14 @@ class AbcImpl implements Abc {
   }
 }
 
-export type handlerFunc = (c: Context) => Promise<any>;
+export type handlerFunc = (c: Context) => Promise<any> | any;
 export type middlewareFunc = (h: handlerFunc) => handlerFunc;
 
-export const NotFoundHandler: handlerFunc = async c => {
+export const NotFoundHandler: handlerFunc = c => {
   c.response.status = Status.NotFound;
   c.response.body = new TextEncoder().encode(STATUS_TEXT.get(Status.NotFound));
 };
-export const InternalServerErrorHandler: handlerFunc = async c => {
+export const InternalServerErrorHandler: handlerFunc = c => {
   c.response.status = Status.InternalServerError;
   c.response.body = new TextEncoder().encode(
     STATUS_TEXT.get(Status.InternalServerError)

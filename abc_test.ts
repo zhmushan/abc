@@ -25,11 +25,11 @@ const methods = [
 t("abc handler", async () => {
   const app = abc();
   app
-    .any("/string", async c => data.string)
-    .any("/html", async c => data.html)
-    .any("/json", async c => data.json)
-    .any("/undefined_0", async c => undefined)
-    .any("/undefined_1", async c => {
+    .any("/string", c => data.string)
+    .any("/html", c => data.html)
+    .any("/json", c => data.json)
+    .any("/undefined_0", c => undefined)
+    .any("/undefined_1", c => {
       c.string(data.undefined);
     })
     .start("0.0.0.0:4500");

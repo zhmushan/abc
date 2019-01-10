@@ -4,11 +4,11 @@ import { Context } from "https://deno.land/x/abc/mod.ts";
 let catId = 1;
 const cats = [] as Cat[];
 
-export async function findAll() {
+export function findAll() {
   return cats;
 }
 
-export async function findOne(c: Context) {
+export function findOne(c: Context) {
   const { id } = c.params as { id: string };
   return cats.find(cat => cat.id.toString() === id);
 }
