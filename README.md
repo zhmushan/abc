@@ -9,34 +9,52 @@
 ```ts
 import { abc } from "https://deno.land/x/abc/mod.ts";
 
-abc()
-  .get("/hello", async c => {
+const app = abc();
+
+app
+  .get("/hello", c => {
     return "Hello, Abc!";
   })
   .start("0.0.0.0:8080");
 ```
 
-## Better Middleware And HandlerFunc Design
+## Routing
 
-- The middleware passes through **return** instead of `next()`
-- In the handler function, we can return the result directly, and `Abc` will automatically fill this result into response.
+```ts
+app
+  .post("/", findAll)
+  .get("/:id", findOne)
+  .put("/", create)
+  .delete("/users/:id", deleteUser);
+```
 
-### Official Middleware
+## Path Parameters
+
+```ts
+// app.get("/users/:id", getUser)
+function getUser(c: Context) {
+  // User ID from path `users/:id`
+  const { id } = c.param;
+  return id;
+}
+```
+
+Browse to http://localhost:8080/users/zhmushan and you should see "zhmushan" on the page.
+
+## Static Content
+
+Serve any file from static directory for path `/static/*`.
+
+```ts
+app.static("/static");
+```
+
+## Middleware
+
+coming soon...
+
+## Official Middleware
 
 - [logger](https://github.com/zhmushan/abc_logger)
 
-## More Powerful Context
-
-Although it is not yet powerful, I hope it can provide a more convenient way to parse parameters.
-
-## Abc's Route Really Fast.
-
-Let us look forward to it.
-
-## Contributing
-
-We would love for you to contribute to Abc and help make it even better than it is today!
-
-## Getting Started
-
-- [tutorial](https://github.com/zhmushan/abc/wiki)
+## [Tutorial](https://github.com/zhmushan/abc/wiki)
