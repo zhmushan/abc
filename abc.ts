@@ -39,18 +39,13 @@ export interface Abc {
     handler: handlerFunc,
     ...middleware: middlewareFunc[]
   ): Abc;
+  static(path: string): Abc;
 
   /**
    * not implemented.
    * maybe it can add middleware to all routes which start with prefix.
    */
   group(prefix: string, ...m: middlewareFunc[]): Abc;
-
-  /**
-   * not implemented.
-   * reference net/file_server
-   */
-  static(path: string): Abc;
 }
 
 class AbcImpl implements Abc {
