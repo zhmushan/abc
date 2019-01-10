@@ -43,10 +43,10 @@ Browse to http://localhost:8080/users/zhmushan and you should see "zhmushan" on 
 
 ## Static Content
 
-Serve any file from static directory for path `/static/*`.
+Serve any file from static directory.
 
 ```ts
-app.static("/static");
+app.static("/static/*files");
 ```
 
 ## Middleware
