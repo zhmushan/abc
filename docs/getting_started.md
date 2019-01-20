@@ -1,14 +1,3 @@
-# Abc
-
-> **A** **b**etter Deno framework to **c**reate web application
-
-![DenoLib](https://denolib.com/badge?scope=zhmushan&repo=abc)
-![Build Status](https://img.shields.io/travis/zhmushan/abc.svg?style=flat-square)
-
-#### Quick links
-
-[Documentation, demos, and guides](docs/table_of_contents.md)
-
 ## Hello World
 
 ```ts
@@ -23,13 +12,13 @@ app
   .start("0.0.0.0:8080");
 ```
 
-## Routing
+## Router
 
 ```ts
 app
-  .get("/", findAll)
+  .post("/", findAll)
   .get("/:id", findOne)
-  .post("/", create)
+  .put("/", create)
   .delete("/users/:id", deleteUser);
 ```
 
@@ -56,10 +45,4 @@ app.static("/static/*files");
 
 ## Middleware
 
-coming soon...
-
-## Official Middleware
-
-- [logger](https://github.com/zhmushan/abc_logger)
-
-## [Tutorial](https://github.com/zhmushan/abc/wiki)
+## Testing
