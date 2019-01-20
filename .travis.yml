@@ -1,12 +1,12 @@
 language: python
 
 install:
-  - curl -L https://deno.land/x/install/install.py | python - v0.2.7
+  - curl -L https://deno.land/x/install/install.py | python - v0.2.8
   - export PATH="$HOME/.deno/bin:$PATH"
 
 script:
   - deno --version
-  - deno ./test.ts --allow-net --reload
+  - deno test.ts --allow-net --reload --recompile
 
 cache:
   directories:
