@@ -9,7 +9,7 @@
 - [Middleware 中间件](middleware.md)
 - [Testing 测试](testing.md)
 
-## Techniques
+## 技术
 
 - [Authentication 认证](authentication.md)
 - [Database 数据库](database.md)
