@@ -1,5 +1,4 @@
-import { t } from "https://raw.githubusercontent.com/zhmushan/deno_test/master/index.ts";
-import { assertEqual } from "https://deno.land/x/testing/mod.ts";
+import { assertEqual, test } from "https://deno.land/x/testing/mod.ts";
 import { binder } from "binder.ts";
 import { context } from "context.ts";
 
@@ -16,38 +15,47 @@ class Obj {
   }
 }
 
-t("binder urlencoded", async () => {
-  const c = injectContext({
-    body: () => new TextEncoder().encode("foo=foo"),
-    headers: new Headers({
-      "Content-Type": "application/x-www-form-urlencoded"
-    })
-  });
-  const obj = new Obj();
-  await binder().bind(obj, c);
-  assertEqual(obj, { foo: "foo", bar: undefined });
+test({
+  name: "binder urlencoded",
+  async fn() {
+    const c = injectContext({
+      body: () => new TextEncoder().encode("foo=foo"),
+      headers: new Headers({
+        "Content-Type": "application/x-www-form-urlencoded"
+      })
+    });
+    const obj = new Obj();
+    await binder().bind(obj, c);
+    assertEqual(obj, { foo: "foo", bar: undefined });
+  }
 });
 
-t("binder json", async () => {
-  const c = injectContext({
-    body: () => new TextEncoder().encode(`{"foo": "foo"}`),
-    headers: new Headers({
-      "Content-Type": "application/json"
-    })
-  });
-  const obj = new Obj();
-  await binder().bind(obj, c);
-  assertEqual(obj, { foo: "foo", bar: undefined });
+test({
+  name: "binder json",
+  async fn() {
+    const c = injectContext({
+      body: () => new TextEncoder().encode(`{"foo": "foo"}`),
+      headers: new Headers({
+        "Content-Type": "application/json"
+      })
+    });
+    const obj = new Obj();
+    await binder().bind(obj, c);
+    assertEqual(obj, { foo: "foo", bar: undefined });
+  }
 });
 
-// t("binder multipart", async () => {
-//   const c = injectContext({
-//     body: () => new TextEncoder().encode("foo=foo"),
-//     headers: new Headers({
-//       "Content-Type": "multipart/form-data"
-//     })
-//   });
-//   const obj = new Obj();
-//   await binder().bind(obj, c);
-//   assertEqual(obj, { foo: "foo", bar: undefined });
+// test({
+//   name: "binder multipart",
+//   async fn() {
+//     const c = injectContext({
+//       body: () => new TextEncoder().encode("foo=foo"),
+//       headers: new Headers({
+//         "Content-Type": "multipart/form-data"
+//       })
+//     });
+//     const obj = new Obj();
+//     await binder().bind(obj, c);
+//     assertEqual(obj, { foo: "foo", bar: undefined });
+//   }
 // });
