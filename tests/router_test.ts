@@ -1,6 +1,6 @@
 import { assertEqual, test } from "https://deno.land/x/testing/mod.ts";
-import { Router } from "../router.ts";
-import { context } from "../context.ts";
+import { Router } from "../source/router.ts";
+import { context } from "../source/context.ts";
 
 test({
   name: "router",

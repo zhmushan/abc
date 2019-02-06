@@ -1,4 +1,4 @@
-import { Parser } from "../parser.ts";
+import { Parser } from "../source/parser.ts";
 import { assertEqual, test } from "https://deno.land/x/testing/mod.ts";
 
 test({

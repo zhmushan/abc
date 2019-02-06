@@ -1,6 +1,6 @@
 import { assertEqual, test } from "https://deno.land/x/testing/mod.ts";
-import { binder } from "../binder.ts";
-import { context } from "../context.ts";
+import { binder } from "../source/binder.ts";
+import { context } from "../source/context.ts";
 
 function injectContext(r = {}) {
   return context(r as any);
