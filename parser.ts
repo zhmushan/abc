@@ -1,4 +1,4 @@
-import { parse } from "https://raw.githubusercontent.com/denolib/qs/master/index.ts";
+import { parse } from "package.ts";
 import { notImplemented } from "abc.ts";
 
 export class Parser {

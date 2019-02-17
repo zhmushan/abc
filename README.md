@@ -2,7 +2,8 @@
 
 > **A** **b**etter Deno framework to **c**reate web application
 
-![Build Status](https://api.travis-ci.org/zhmushan/abc.svg?branch=master)
+![DenoLib](https://denolib.com/badge?scope=zhmushan&repo=abc)
+![Build Status](https://img.shields.io/travis/zhmushan/abc.svg?style=flat-square)
 
 ## Hello World
 
