@@ -23,9 +23,9 @@ app
 
 ```ts
 app
-  .post("/", findAll)
+  .get("/", findAll)
   .get("/:id", findOne)
-  .put("/", create)
+  .post("/", create)
   .delete("/users/:id", deleteUser);
 ```
 
