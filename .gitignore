@@ -3,3 +3,6 @@
 /examples
 .DS_Store
 /benchmarks
+/.vscode
+/node_modules
+/package*.json
