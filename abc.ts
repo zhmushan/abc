@@ -1,8 +1,8 @@
-import { serve, Status, STATUS_TEXT } from "package.ts";
-import { Context, context } from "context.ts";
-import { Router, Node } from "router.ts";
-import { Binder, binder } from "binder.ts";
-import { cwd, stat, readFile } from "deno";
+import { serve, Status, STATUS_TEXT } from "./package.ts";
+import { Context, context } from "./context.ts";
+import { Router, Node } from "./router.ts";
+import { Binder, binder } from "./binder.ts";
+const { cwd, stat, readFile } = Deno;
 
 export interface Abc {
   router: Router;

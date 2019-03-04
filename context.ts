@@ -1,5 +1,5 @@
-import { ServerRequest, Response, Status } from "package.ts";
-import { Abc } from "abc.ts";
+import { ServerRequest, Response, Status } from "./package.ts";
+import { Abc } from "./abc.ts";
 
 export interface Context {
   request: ServerRequest;

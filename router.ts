@@ -1,8 +1,8 @@
 // Copyright (c) 2013 Julien Schmidt. All rights reserved.
 // Based on https://github.com/julienschmidt/httprouter
 
-import { handlerFunc } from "abc.ts";
-import { Context } from "context.ts";
+import { handlerFunc } from "./abc.ts";
+import { Context } from "./context.ts";
 
 export class Router {
   trees = new Map<string, Node>();

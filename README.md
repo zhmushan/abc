@@ -53,13 +53,3 @@ Serve any file from static directory.
 ```ts
 app.static("/static/*files");
 ```
-
-## Middleware
-
-coming soon...
-
-## Official Middleware
-
-- [logger](https://github.com/zhmushan/abc_logger)
-
-## [Tutorial](https://github.com/zhmushan/abc/wiki)

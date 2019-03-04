@@ -1,5 +1,5 @@
-import { parse } from "package.ts";
-import { notImplemented } from "abc.ts";
+import { parse } from "./package.ts";
+import { notImplemented } from "./abc.ts";
 
 export class Parser {
   static json(data: string): [{}, Error] {

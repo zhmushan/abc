@@ -1,7 +1,7 @@
-import { Context } from "context.ts";
-import { HttpError } from "abc.ts";
-import { Status } from "package.ts";
-import { Parser } from "parser.ts";
+import { Context } from "./context.ts";
+import { HttpError } from "./abc.ts";
+import { Status } from "./package.ts";
+import { Parser } from "./parser.ts";
 
 export interface Binder {
   bind<T extends object>(cls: T, c: Context): Promise<Error>;

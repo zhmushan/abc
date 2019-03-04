@@ -1,6 +1,6 @@
 import { assertEqual, test } from "https://deno.land/x/testing/mod.ts";
-import { abc } from "abc.ts";
-import { exit } from "deno";
+import { abc } from "./abc.ts";
+const { exit } = Deno;
 
 const data = {
   string: "hello, world",

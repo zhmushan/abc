@@ -1,4 +1,4 @@
-import { context } from "context.ts";
+import { context } from "./context.ts";
 import { assertEqual, test } from "https://deno.land/x/testing/mod.ts";
 
 function injectContext(r = {}) {

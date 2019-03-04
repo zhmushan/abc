@@ -1,4 +1,4 @@
-import { Cat } from "cat.ts";
+import { Cat } from "./cat.ts";
 import { Context } from "https://deno.land/x/abc/mod.ts";
 
 let catId = 1;
