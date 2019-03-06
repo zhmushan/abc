@@ -1,6 +1,6 @@
 import { serve, Status, STATUS_TEXT } from "./package.ts";
 import { Context, context } from "./context.ts";
-import { Router, Node } from "./router.ts";
+import { Router } from "./router.ts";
 import { Binder, binder } from "./binder.ts";
 const { cwd, stat, readFile } = Deno;
 
@@ -63,25 +63,6 @@ class AbcImpl implements Abc {
 
   async start(addr: string) {
     const s = serve(addr);
-
-    // Print all routes that added
-    for (const t of this.router.trees) {
-      function p(n: Node) {
-        console.log(
-          `method: '${t[0]}', path: '${n.path}', priority: '${
-            n.priority
-          }', wildChild: '${n.wildChild}', type: '${n.nType}', indices: '${
-            n.indices
-          }', maxParams: '${n.maxParams}'`
-        );
-        for (const nc of n.children) {
-          if (nc.children) {
-            p(nc);
-          }
-        }
-      }
-      p(t[1]);
-    }
 
     for await (const req of s) {
       const c = context(req);

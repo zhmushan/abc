@@ -13,7 +13,7 @@ app
   .start("0.0.0.0:8080");
 ```
 
-## Routing
+## 路由
 
 ```ts
 app
@@ -23,7 +23,7 @@ app
   .delete("/users/:id", deleteUser);
 ```
 
-## Path Parameters
+## 路径参数
 
 ```ts
 // app.get("/users/:id", getUser)
@@ -34,22 +34,22 @@ function getUser(c: Context) {
 }
 ```
 
-Browse to http://localhost:8080/users/zhmushan and you should see "zhmushan" on the page.
+从浏览器访问 http://localhost:8080/users/zhmushan 可以看到页面上显示 "zhmushan".
 
-## Static Content
+## 静态资源
 
-Serve any file from static directory.
+将 static 作为静态资源目录.
 
 ```ts
 app.static("/static/*files");
 ```
 
-## Middleware
+## 中间件
 
 ```ts
 import { logger } from "https://deno.sh/abc/middleware.ts";
 
-// Root middleware
+// 顶级中间件, 在路由注册之前运行
 app.use(logger());
 ```
 
