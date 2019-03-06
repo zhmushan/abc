@@ -2,7 +2,7 @@
 
 ```ts
 import { abc } from "https://deno.sh/abc/mod.ts";
-// Or import { abc } from "https://deno.land/x/abc/mod.ts";
+// OR import { abc } from "https://deno.land/x/abc/mod.ts";
 
 const app = abc();
 
