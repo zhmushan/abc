@@ -12,7 +12,8 @@
 ## Hello World
 
 ```ts
-import { abc } from "https://deno.land/x/abc/mod.ts";
+import { abc } from "https://deno.sh/abc/mod.ts";
+// or import { abc } from "https://deno.land/x/abc/mod.ts";
 
 const app = abc();
 
