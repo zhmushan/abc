@@ -12,8 +12,8 @@
 ## Hello World
 
 ```ts
-import { abc } from "https://deno.sh/abc/mod.ts";
-// or import { abc } from "https://deno.land/x/abc/mod.ts";
+import { abc } from "https://deno.sh/abc@v0.1.0/mod.ts";
+// OR import { abc } from "https://deno.land/x/abc/mod.ts";
 
 const app = abc();
 
@@ -53,4 +53,13 @@ Serve any file from static directory.
 
 ```ts
 app.static("/static/*files");
+```
+
+## Middleware
+
+```ts
+import { logger } from "https://deno.sh/abc/middleware.ts";
+
+// Root middleware
+app.use(logger());
 ```

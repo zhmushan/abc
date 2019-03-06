@@ -11,12 +11,6 @@ export interface Context {
   string(v: string, code?: number): void;
   json(v: {}, code?: number): void;
   html(v: string, code?: number): void;
-
-  /**
-   * WIP:
-   * bind request body into provided type `cls`
-   * default based on Content-Type
-   */
   bind<T extends object>(cls: T): Promise<Error>;
 }
 
@@ -37,10 +31,6 @@ class ContextImpl implements Context {
     return this._response;
   }
 
-  // private _path: string
-  // set path(p: string) {
-  //   this._path = p
-  // }
   get path(): string {
     return this.request.url;
   }
