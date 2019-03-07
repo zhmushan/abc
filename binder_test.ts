@@ -1,4 +1,5 @@
-import { assertEqual, test } from "https://deno.land/x/testing/mod.ts";
+import { assertEquals } from "https://deno.land/x/testing/asserts.ts";
+import { test } from "https://deno.land/x/testing/mod.ts";
 import { binder } from "./binder.ts";
 import { context } from "./context.ts";
 
@@ -26,7 +27,7 @@ test({
     });
     const obj = new Obj();
     await binder().bind(obj, c);
-    assertEqual(obj, { foo: "foo", bar: undefined });
+    assertEquals(obj, { foo: "foo", bar: undefined });
   }
 });
 
@@ -41,7 +42,7 @@ test({
     });
     const obj = new Obj();
     await binder().bind(obj, c);
-    assertEqual(obj, { foo: "foo", bar: undefined });
+    assertEquals(obj, { foo: "foo", bar: undefined });
   }
 });
 
@@ -56,6 +57,6 @@ test({
 //     });
 //     const obj = new Obj();
 //     await binder().bind(obj, c);
-//     assertEqual(obj, { foo: "foo", bar: undefined });
+//     assertEquals(obj, { foo: "foo", bar: undefined });
 //   }
 // });
