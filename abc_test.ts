@@ -1,4 +1,5 @@
-import { assertEqual, test } from "https://deno.land/x/testing/mod.ts";
+import { assertEquals } from "https://deno.land/x/testing/asserts.ts";
+import { test } from "https://deno.land/x/testing/mod.ts";
 import { abc } from "./abc.ts";
 const { exit } = Deno;
 
@@ -36,27 +37,27 @@ test({
       .start("0.0.0.0:4500");
 
     let res = await fetch("http://localhost:4500/string");
-    assertEqual(res.status, 200);
-    assertEqual(new TextDecoder().decode(await res.arrayBuffer()), data.string);
+    assertEquals(res.status, 200);
+    assertEquals(new TextDecoder().decode(await res.arrayBuffer()), data.string);
 
     res = await fetch("http://localhost:4500/html");
-    assertEqual(res.status, 200);
-    assertEqual(new TextDecoder().decode(await res.arrayBuffer()), data.html);
+    assertEquals(res.status, 200);
+    assertEquals(new TextDecoder().decode(await res.arrayBuffer()), data.html);
 
     res = await fetch("http://localhost:4500/json");
-    assertEqual(res.status, 200);
-    assertEqual(
+    assertEquals(res.status, 200);
+    assertEquals(
       new TextDecoder().decode(await res.arrayBuffer()),
       JSON.stringify(data.json)
     );
 
     res = await fetch("http://localhost:4500/undefined_0");
-    assertEqual(res.status, 200);
-    assertEqual(new TextDecoder().decode(await res.arrayBuffer()), "");
+    assertEquals(res.status, 200);
+    assertEquals(new TextDecoder().decode(await res.arrayBuffer()), "");
 
     res = await fetch("http://localhost:4500/undefined_1");
-    assertEqual(res.status, 200);
-    assertEqual(
+    assertEquals(res.status, 200);
+    assertEquals(
       new TextDecoder().decode(await res.arrayBuffer()),
       data.undefined
     );
