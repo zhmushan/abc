@@ -1,5 +1,5 @@
-import { assertEquals } from "https://deno.land/x/testing/asserts.ts";
-import { test } from "https://deno.land/x/testing/mod.ts";
+import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
+import { test } from "https://deno.land/std/testing/mod.ts";
 import { context } from "./context.ts";
 import { Router } from "./router.ts";
 
