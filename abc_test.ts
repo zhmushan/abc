@@ -38,7 +38,10 @@ test({
 
     let res = await fetch("http://localhost:4500/string");
     assertEquals(res.status, 200);
-    assertEquals(new TextDecoder().decode(await res.arrayBuffer()), data.string);
+    assertEquals(
+      new TextDecoder().decode(await res.arrayBuffer()),
+      data.string
+    );
 
     res = await fetch("http://localhost:4500/html");
     assertEquals(res.status, 200);
