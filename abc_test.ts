@@ -1,5 +1,4 @@
-import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
-import { test } from "https://deno.land/std/testing/mod.ts";
+import { test, assertEquals } from "./dev_package.ts";
 import { abc } from "./abc.ts";
 const { exit } = Deno;
 
