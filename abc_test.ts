@@ -33,6 +33,7 @@ test({
       .any("/undefined_1", c => {
         c.string(data.undefined);
       })
+      .static("/sample/*files")
       .start("0.0.0.0:4500");
 
     let res = await fetch("http://localhost:4500/string");
@@ -62,6 +63,15 @@ test({
     assertEquals(
       new TextDecoder().decode(await res.arrayBuffer()),
       data.undefined
+    );
+
+    res = await fetch("http://localhost:4500/sample/01_cat_app/cat.ts");
+    assertEquals(res.status, 200);
+    assertEquals(
+      new TextDecoder().decode(await res.arrayBuffer()),
+      new TextDecoder().decode(
+        await Deno.readFile("./sample/01_cat_app/cat.ts")
+      )
     );
 
     maybeCompleteTests();
