@@ -1,6 +1,5 @@
+import { test, assertEquals } from "./dev_package.ts";
 import { Parser } from "./parser.ts";
-import { assertEquals } from "https://deno.land/x/testing/asserts.ts";
-import { test } from "https://deno.land/x/testing/mod.ts";
 
 test({
   name: "parser urlencoded",
