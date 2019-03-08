@@ -6,7 +6,7 @@ install:
 
 script:
   - deno --version
-  - deno test.ts --allow-net --reload --recompile
+  - deno test.ts --allow-net --allow-read --reload --recompile
 
 cache:
   directories:
