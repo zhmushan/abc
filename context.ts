@@ -11,6 +11,7 @@ export interface Context {
   string(v: string, code?: number): void;
   json(v: {}, code?: number): void;
   html(v: string, code?: number): void;
+  stream(r: Deno.Reader, contentType: string, code?: number): void;
   bind<T extends object>(cls: T): Promise<Error>;
 }
 
@@ -85,6 +86,12 @@ class ContextImpl implements Context {
     this.writeContentType("text/html");
     this.response.status = code;
     this.response.body = new TextEncoder().encode(v);
+  }
+
+  stream(r: Deno.Reader, contentType: string, code = Status.OK) {
+    this.writeContentType(contentType);
+    this.response.status = code;
+    Deno.copy(this.response.w, r)
   }
 
   bind<T extends object>(cls: T): Promise<Error> {
