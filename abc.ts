@@ -176,7 +176,7 @@ class AbcImpl implements Abc {
     const h: handlerFunc = async c => {
       let filepath = cwd() + c.path;
       const fileinfo = await stat(filepath);
-      let resp = await NotFoundHandler(c);
+      let resp: string;
       try {
         if (
           fileinfo.isDirectory() &&
