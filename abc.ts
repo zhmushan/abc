@@ -1,4 +1,4 @@
-import { serve, Status, STATUS_TEXT } from "./package.ts";
+import { serve, Status, STATUS_TEXT } from "./deps.ts";
 import { Context, context } from "./context.ts";
 import { Router } from "./router.ts";
 import { Binder, binder } from "./binder.ts";

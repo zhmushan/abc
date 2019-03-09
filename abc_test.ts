@@ -1,4 +1,4 @@
-import { test, assertEquals } from "./dev_package.ts";
+import { test, assertEquals } from "./dev_deps.ts";
 import { abc } from "./abc.ts";
 const { exit } = Deno;
 

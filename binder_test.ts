@@ -1,4 +1,4 @@
-import { test, assertEquals } from "./dev_package.ts";
+import { test, assertEquals } from "./dev_deps.ts";
 import { binder } from "./binder.ts";
 import { context } from "./context.ts";
 
