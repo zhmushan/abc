@@ -1,4 +1,4 @@
-import { parse } from "./package.ts";
+import { parse } from "./deps.ts";
 import { notImplemented } from "./abc.ts";
 
 export class Parser {

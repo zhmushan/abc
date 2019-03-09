@@ -1,4 +1,4 @@
-import { runTests } from "./dev_package.ts";
+import { runTests } from "./dev_deps.ts";
 import "./abc_test.ts";
 import "./router_test.ts";
 import "./context_test.ts";

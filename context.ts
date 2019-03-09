@@ -1,4 +1,4 @@
-import { ServerRequest, Response, Status } from "./package.ts";
+import { ServerRequest, Response, Status } from "./deps.ts";
 import { Abc } from "./abc.ts";
 
 export interface Context {

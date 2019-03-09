@@ -1,6 +1,6 @@
 import { Context } from "./context.ts";
 import { HttpError } from "./abc.ts";
-import { Status } from "./package.ts";
+import { Status } from "./deps.ts";
 import { Parser } from "./parser.ts";
 
 export interface Binder {
