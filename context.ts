@@ -10,7 +10,21 @@ export interface Context {
   abc: Abc;
   string(v: string, code?: number): void;
   json(v: {}, code?: number): void;
+
+  /** Sends an HTTP response with status code. */
   html(v: string, code?: number): void;
+
+  /** Sends an HTTP blob response with status code. */
+  htmlBlob(b: Uint8Array | Deno.Reader, code?: number): void;
+
+  /**
+   * Renders a template with data and sends a text/html response with status code.
+   * Abc.renderer must be registered first.
+   */
+  render<T>(name: string, data?: T, code?: number): void;
+
+  /** Sends a blob response with content type and status code. */
+  blob(b: Uint8Array | Deno.Reader, contentType: string, code?: number): void;
   bind<T extends object>(cls: T): Promise<Error>;
 }
 
@@ -85,6 +99,24 @@ class ContextImpl implements Context {
     this.writeContentType("text/html");
     this.response.status = code;
     this.response.body = new TextEncoder().encode(v);
+  }
+
+  htmlBlob(b: Uint8Array | Deno.Reader, code = Status.OK) {
+    this.blob(b, "text/html", code);
+  }
+
+  async render<T>(name: string, data = {} as T, code = Status.OK) {
+    if (!this.abc.renderer) {
+      throw new Error();
+    }
+    const r = await this.abc.renderer.render(name, data);
+    this.htmlBlob(r, code);
+  }
+
+  blob(b: Uint8Array | Deno.Reader, contentType: string, code = Status.OK) {
+    this.writeContentType(contentType);
+    this.response.status = code;
+    this.response.body = b;
   }
 
   bind<T extends object>(cls: T): Promise<Error> {

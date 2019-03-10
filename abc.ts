@@ -4,11 +4,17 @@ import { Router } from "./router.ts";
 import { Binder, binder } from "./binder.ts";
 const { cwd, stat, readFile } = Deno;
 
+export interface Renderer {
+  templates?: string;
+  render<T>(name: string, data: T): Promise<Deno.Reader>;
+}
+
 export interface Abc {
   router: Router;
   middleware: middlewareFunc[];
   premiddleware: middlewareFunc[];
   binder: Binder;
+  renderer: Renderer;
   start(addr: string): Promise<void>;
 
   /** add middleware which is run before router. */
@@ -53,6 +59,7 @@ class AbcImpl implements Abc {
   middleware: middlewareFunc[];
   premiddleware: middlewareFunc[];
   binder: Binder;
+  renderer: Renderer;
 
   constructor() {
     this.router = new Router();
