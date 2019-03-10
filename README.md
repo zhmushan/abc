@@ -2,8 +2,9 @@
 
 > **A** **b**etter Deno framework to **c**reate web application
 
-[![DenoLib](https://denolib.com/badge?scope=zhmushan&repo=abc&style=flat-square)](https://denolib.com)
-[![Build Status](https://img.shields.io/travis/zhmushan/abc.svg?style=flat-square)](https://travis-ci.org/zhmushan/abc)
+[![tag](https://img.shields.io/github/tag/zhmushan/abc.svg)](https://github.com/zhmushan/abc)
+[![Build Status](https://img.shields.io/travis/zhmushan/abc.svg)](https://travis-ci.org/zhmushan/abc)
+[![license](https://img.shields.io/github/license/zhmushan/abc.svg)](https://github.com/zhmushan/abc)
 
 #### Quick links
 
