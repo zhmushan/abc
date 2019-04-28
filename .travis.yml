@@ -5,7 +5,7 @@ install:
   - export PATH="$HOME/.deno/bin:$PATH"
 
 script:
-  - deno --version
+  - deno version
   - deno --allow-net --allow-read -r test.ts
 
 cache:
