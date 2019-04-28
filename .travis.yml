@@ -1,7 +1,7 @@
 language: sh
 
 install:
-  - curl -L https://deno.land/x/install/install.sh | sh -s v0.3.7
+  - curl -L https://deno.land/x/install/install.sh | sh -s v0.3.10
   - export PATH="$HOME/.deno/bin:$PATH"
 
 script:
