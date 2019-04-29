@@ -1,8 +1,8 @@
 import { test, assertEquals } from "./dev_deps.ts";
 import { context } from "./context.ts";
 
-function injectContext(r = {}) {
-  return context(r as any);
+function injectContext() {
+  return context();
 }
 
 test({

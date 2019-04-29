@@ -72,9 +72,8 @@ class AbcImpl implements Abc {
     const s = serve(addr);
 
     for await (const req of s) {
-      const c = context(req);
-      c.abc = this;
-      let h = this.router.find(req.method, req.url, c) || NotFoundHandler;
+      const c = context(req, new URL(req.url, addr), this);
+      let h = this.router.find(req.method, c) || NotFoundHandler;
 
       if (this.premiddleware.length) {
         h = c => {
@@ -214,7 +213,7 @@ class AbcImpl implements Abc {
   }
 }
 
-export type handlerFunc = (c: Context) => Promise<any> | any;
+export type handlerFunc = (c?: Context) => Promise<any> | any;
 export type middlewareFunc = (h: handlerFunc) => handlerFunc;
 
 export const NotFoundHandler: handlerFunc = c => {

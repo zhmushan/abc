@@ -1,36 +1,29 @@
-// Copyright (c) 2013 Julien Schmidt. All rights reserved.
-// Based on https://github.com/julienschmidt/httprouter
+// inspired by httprouter
 
 import { handlerFunc } from "./abc.ts";
 import { Context } from "./context.ts";
 
 export class Router {
-  trees = new Map<string, Node>();
+  trees: { [method: string]: Node } = {};
 
-  constructor() {
-    this.trees = new Map();
-  }
   add(method: string, path: string, h: handlerFunc) {
     if (path[0] !== "/") {
-      console.error(`path must begin with '/' in path '${path}'`);
+      path = `/${path}`;
     }
 
-    if (!this.trees) {
-      this.trees = new Map();
-    }
-
-    let root = this.trees.get(method);
+    let root = this.trees[method];
     if (!root) {
       root = new Node();
-      this.trees.set(method, root);
+      this.trees[method] = root;
     }
 
     root.addRoute(path, h);
   }
-  find(method: string, path: string, c: Context): handlerFunc {
-    const node = this.trees.get(method);
+
+  find(method: string, c: Context): handlerFunc {
+    const node = this.trees[method];
     if (node) {
-      const [handle, params, tsr] = node.getValue(path);
+      const [handle, params, tsr] = node.getValue(c.path);
       if (params) {
         for (const p of params) {
           c.params[p.key] = p.value;
@@ -55,7 +48,7 @@ export class Node {
   addRoute(path: string, handle: handlerFunc) {
     let node = this as Node;
     const fullPath = path;
-    node.priority++;
+    ++node.priority;
     let numParams = this.countParams(path);
 
     // non-empty tree
@@ -71,9 +64,7 @@ export class Node {
         // since the existing key can't contain those chars.
         let i = 0;
         let max = Math.min(path.length, node.path.length);
-        while (i < max && path[i] === node.path[i]) {
-          i++;
-        }
+        for (; i < max && path[i] === node.path[i]; ++i);
 
         // Split edge
         if (i < node.path.length) {
@@ -106,13 +97,13 @@ export class Node {
 
           if (node.wildChild) {
             node = node.children[0];
-            node.priority++;
+            ++node.priority;
 
             // Update maxParams of the child node
             if (numParams > node.maxParams) {
               node.maxParams = numParams;
             }
-            numParams--;
+            --numParams;
 
             // Check if the wildcard matches
             if (
@@ -150,12 +141,12 @@ export class Node {
             node.children.length === 1
           ) {
             node = node.children[0];
-            node.priority++;
+            ++node.priority;
             continue walk;
           }
 
           // Check if a child with the next path byte exists
-          for (let i = 0; i < node.indices.length; i++) {
+          for (let i = 0; i < node.indices.length; ++i) {
             if (c === node.indices[i]) {
               i = node.incrementChildPrio(i);
               node = node.children[i];
@@ -195,11 +186,11 @@ export class Node {
 
   countParams(path: string) {
     let n = 0;
-    for (let i = 0; i < path.length; i++) {
+    for (let i = 0; i < path.length; ++i) {
       if (path[i] !== ":" && path[i] !== "*") {
         continue;
       }
-      n++;
+      ++n;
     }
     if (n >= 255) {
       return 255;
@@ -210,7 +201,7 @@ export class Node {
   // increments priority of the given child and reorders if necessary
   incrementChildPrio(pos: number) {
     let node = this as Node;
-    node.children[pos].priority++;
+    ++node.children[pos].priority;
     let prio = node.children[pos].priority;
 
     // adjust position (move to front)
@@ -222,7 +213,7 @@ export class Node {
         node.children[newPos - 1]
       ];
 
-      newPos--;
+      --newPos;
     }
 
     // build new index char string
@@ -236,6 +227,7 @@ export class Node {
 
     return newPos;
   }
+
   insertChild(
     numParams: number,
     path: string,
@@ -246,7 +238,7 @@ export class Node {
     let offset = 0; // already handled bytes of the path
 
     // find prefix until first wildcard (beginning with ':'' or '*'')
-    for (let i = 0, max = path.length; numParams > 0; i++) {
+    for (let i = 0, max = path.length; numParams > 0; ++i) {
       let c = path[i];
       if (c !== ":" && c !== "*") {
         continue;
@@ -265,7 +257,7 @@ export class Node {
               )}' in path '${fullPath}'`
             );
           default:
-            end++;
+            ++end;
         }
       }
 
@@ -302,8 +294,8 @@ export class Node {
         node.children = [child];
         node.wildChild = true;
         node = child;
-        node.priority++;
-        numParams--;
+        ++node.priority;
+        --numParams;
 
         // if the path doesn't end with the wildcard, then there
         // will be another non-wildcard subpath starting with '/'
@@ -333,7 +325,7 @@ export class Node {
         }
 
         // currently fixed width 1 for '/'
-        i--;
+        --i;
         if (path[i] !== "/") {
           console.error(`no / before catch-all in path '${fullPath}'`);
         }
@@ -349,7 +341,7 @@ export class Node {
         node.children = [child];
         node.indices = path[i];
         node = child;
-        node.priority++;
+        ++node.priority;
 
         // second node: node holding the variable
         child = new Node();
@@ -382,7 +374,7 @@ export class Node {
           // to walk down the tree
           if (!node.wildChild) {
             let c = path[0];
-            for (let i = 0; i < node.indices.length; i++) {
+            for (let i = 0; i < node.indices.length; ++i) {
               if (c === node.indices[i]) {
                 node = node.children[i];
                 continue walk;
@@ -402,9 +394,7 @@ export class Node {
             case NodeType.Param: {
               // find param end (either '/' or path end)
               let end = 0;
-              while (end < path.length && path[end] !== "/") {
-                end++;
-              }
+              for (; end < path.length && path[end] !== "/"; ++end);
 
               // save param value
               if (!p) {
@@ -476,7 +466,7 @@ export class Node {
 
         // No handle found. Check if a handle for this path + a
         // trailing slash exists for trailing slash recommendation
-        for (let i = 0; i < node.indices.length; i++) {
+        for (let i = 0; i < node.indices.length; ++i) {
           if (node.indices[i] === "/") {
             node = node.children[i];
             tsr =

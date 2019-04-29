@@ -7,6 +7,8 @@ export interface Context {
   path: string;
   method: string;
   params: { [key: string]: any };
+  url: URL;
+  queryParams: { [key: string]: string };
   abc: Abc;
   string(v: string, code?: number): void;
   json(v: {}, code?: number): void;
@@ -46,10 +48,27 @@ class ContextImpl implements Context {
   }
 
   get path(): string {
-    return this.request.url;
+    return this.url.pathname;
   }
+
   get method(): string {
     return this.request.method;
+  }
+
+  get queryParams(): { [key: string]: string } {
+    const params = {};
+    for (const key of this.url.searchParams.keys()) {
+      params[key] = this.url.searchParams.get(key);
+    }
+    return params;
+  }
+
+  private _url: URL;
+  set url(u) {
+    this._url = u;
+  }
+  get url(): URL {
+    return this._url;
   }
 
   private _params: { [key: string]: any };
@@ -68,8 +87,10 @@ class ContextImpl implements Context {
     return this._abc;
   }
 
-  constructor(r: ServerRequest) {
+  constructor(r: ServerRequest, url: URL, abc: Abc) {
     this.request = r;
+    this.url = url;
+    this.abc = abc;
     this.response = {};
     this.params = {};
   }
@@ -124,7 +145,11 @@ class ContextImpl implements Context {
   }
 }
 
-export function context(r: ServerRequest) {
-  const c = new ContextImpl(r) as Context;
+export function context(
+  r = {} as ServerRequest,
+  url = new URL("0.0.0.0:8080"),
+  abc = {} as Abc
+) {
+  const c = new ContextImpl(r, url, abc) as Context;
   return c;
 }
