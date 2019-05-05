@@ -2,8 +2,13 @@ import { test, assertEquals } from "./dev_deps.ts";
 import { binder } from "./binder.ts";
 import { context } from "./context.ts";
 
-function injectContext(r = {}) {
-  return context(r as any);
+type FakeServerRequest = {
+  body: () => Uint8Array;
+  headers: Headers;
+};
+
+function injectContext(r: FakeServerRequest) {
+  return context({ r: r as any });
 }
 
 class Obj {

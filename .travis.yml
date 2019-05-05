@@ -1,12 +1,12 @@
 language: sh
 
 install:
-  - curl -L https://deno.land/x/install/install.sh | sh -s v0.3.10
+  - curl -L https://deno.land/x/install/install.sh | sh -s v0.4.0
   - export PATH="$HOME/.deno/bin:$PATH"
 
 script:
   - deno version
-  - deno --allow-net --allow-read -r test.ts
+  - deno run --allow-net --allow-read -r test.ts
 
 cache:
   directories:

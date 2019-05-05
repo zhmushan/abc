@@ -4,7 +4,7 @@ import { Router } from "./router.ts";
 import { handlerFunc } from "./abc.ts";
 
 function injectContext(path: string) {
-  return context({} as any, new URL(path, "0.0.0.0:8080"));
+  return context({ url: new URL(path, "0.0.0.0:8080") });
 }
 
 type RouterAddParams = [string, string, handlerFunc];

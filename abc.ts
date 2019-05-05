@@ -4,10 +4,17 @@ import { Router } from "./router.ts";
 import { Binder, binder } from "./binder.ts";
 const { cwd, stat, readFile } = Deno;
 
+/** `Renderer` is the interface that wraps the `render` function.  */
 export interface Renderer {
   templates?: string;
   render<T>(name: string, data: T): Promise<Deno.Reader>;
 }
+
+/* `handlerFunc` defines a function to serve HTTP requests. */
+export type handlerFunc = (c?: Context) => Promise<any> | any;
+
+/* `middlewareFunc` defines a function to process middleware. */
+export type middlewareFunc = (h: handlerFunc) => handlerFunc;
 
 export interface Abc {
   router: Router;
@@ -15,12 +22,14 @@ export interface Abc {
   premiddleware: middlewareFunc[];
   binder: Binder;
   renderer: Renderer;
+
+  /** `start` starts an HTTP server. */
   start(addr: string): Promise<void>;
 
-  /** add middleware which is run before router. */
+  /** `pre` adds middleware which is run before router. */
   pre(...m: middlewareFunc[]): Abc;
 
-  /** add middleware which is run after router. */
+  /** `use` adds middleware which is run after router. */
   use(...m: middlewareFunc[]): Abc;
 
   connect(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc;
@@ -45,12 +54,11 @@ export interface Abc {
     handler: handlerFunc,
     ...middleware: middlewareFunc[]
   ): Abc;
+
+  /** `static` registers a new route to serve static files from the provided root path. */
   static(path: string): Abc;
 
-  /**
-   * not implemented.
-   * maybe it can add middleware to all routes which start with prefix.
-   */
+  /** `group` creates a new router group with prefix and optional group level middleware. */
   group(prefix: string, ...m: middlewareFunc[]): Abc;
 }
 
@@ -72,7 +80,7 @@ class AbcImpl implements Abc {
     const s = serve(addr);
 
     for await (const req of s) {
-      const c = context(req, new URL(req.url, addr), this);
+      const c = context({ r: req, url: new URL(req.url, addr), abc: this });
       let h = this.router.find(req.method, c) || NotFoundHandler;
 
       if (this.premiddleware.length) {
@@ -213,9 +221,6 @@ class AbcImpl implements Abc {
   }
 }
 
-export type handlerFunc = (c?: Context) => Promise<any> | any;
-export type middlewareFunc = (h: handlerFunc) => handlerFunc;
-
 export const NotFoundHandler: handlerFunc = c => {
   c.response.status = Status.NotFound;
   c.response.body = new TextEncoder().encode(STATUS_TEXT.get(Status.NotFound));
@@ -227,6 +232,18 @@ export const InternalServerErrorHandler: handlerFunc = c => {
   );
 };
 
+/**
+ * `abc` creates an instance of `Abc`.
+ *
+ * Example:
+ *
+ *    const app = abc();
+ *    app
+ *      .get("/hello", c => {
+ *        return "Hello, Abc!";
+ *      })
+ *      .start("0.0.0.0:8080");
+ */
 export function abc() {
   const abc = new AbcImpl() as Abc;
   return abc;

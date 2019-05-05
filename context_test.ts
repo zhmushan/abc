@@ -1,14 +1,10 @@
 import { test, assertEquals } from "./dev_deps.ts";
 import { context } from "./context.ts";
 
-function injectContext() {
-  return context();
-}
-
 test({
   name: "context string",
   fn() {
-    let c = injectContext();
+    let c = context();
     c.string("{foo: 'bar'}");
     assertEquals(c.response.status, 200);
     assertEquals(c.response.body, new TextEncoder().encode("{foo: 'bar'}"));
@@ -19,7 +15,7 @@ test({
 test({
   name: "context json",
   fn() {
-    let c = injectContext();
+    let c = context();
     c.json({ foo: "bar" });
     assertEquals(c.response.status, 200);
     assertEquals(
@@ -33,7 +29,7 @@ test({
 test({
   name: "context html",
   fn() {
-    let c = injectContext();
+    let c = context();
     c.html("{foo: 'bar'}");
     assertEquals(c.response.status, 200);
     assertEquals(c.response.body, new TextEncoder().encode("{foo: 'bar'}"));

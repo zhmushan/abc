@@ -87,10 +87,11 @@ class ContextImpl implements Context {
     return this._abc;
   }
 
-  constructor(r: ServerRequest, url: URL, abc: Abc) {
-    this.request = r;
-    this.url = url;
-    this.abc = abc;
+  constructor(options: ContextOptions) {
+    this.request = options.r || ({} as ServerRequest);
+    this.url = options.url || new URL("0.0.0.0:8080");
+    this.abc = options.abc || ({} as Abc);
+
     this.response = {};
     this.params = {};
   }
@@ -145,11 +146,13 @@ class ContextImpl implements Context {
   }
 }
 
-export function context(
-  r = {} as ServerRequest,
-  url = new URL("0.0.0.0:8080"),
-  abc = {} as Abc
-) {
-  const c = new ContextImpl(r, url, abc) as Context;
+export interface ContextOptions {
+  r?: ServerRequest;
+  url?: URL;
+  abc?: Abc;
+}
+
+export function context(options = {} as ContextOptions) {
+  const c = new ContextImpl(options) as Context;
   return c;
 }

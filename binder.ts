@@ -1,5 +1,5 @@
 import { Context } from "./context.ts";
-import { HttpError } from "./abc.ts";
+import { HttpError, notImplemented } from "./abc.ts";
 import { Status } from "./deps.ts";
 import { Parser } from "./parser.ts";
 
@@ -9,6 +9,9 @@ export interface Binder {
 
 class BinderImpl implements Binder {
   async bind<T extends object>(cls: T, c: Context): Promise<Error> {
+    // TODO: wait decarator
+    console.error(`binder.bind: ${notImplemented().message}`);
+    return notImplemented();
     let data: {}, err: Error;
     const req = c.request;
     const body = new TextDecoder().decode(await req.body());
