@@ -23,12 +23,12 @@ jobs:
       - script: eslint **/*.ts --max-warnings=0
       - script: deno run --allow-net --allow-read test.ts
 
-  - job: "Windows"
-    pool:
-      vmImage: "vs2017-win2016"
-    steps:
-      - bash: npm install eslint typescript@$(TS_VERSION) @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-prettier
-      - powershell: iwr https://deno.land/x/install/install.ps1 -out install.ps1; .\install.ps1 $(DENO_VERSION)
-      - bash: echo "##vso[task.prependpath]C:\Users\VssAdministrator\.deno\\bin"
-      - bash: npx eslint **/*.ts --max-warnings=0
-      - bash: deno.exe run --allow-net --allow-read test.ts
+  # - job: "Windows"
+  #   pool:
+  #     vmImage: "vs2017-win2016"
+  #   steps:
+  #     - bash: npm install eslint typescript@$(TS_VERSION) @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-prettier
+  #     - powershell: iwr https://deno.land/x/install/install.ps1 -out install.ps1; .\install.ps1 $(DENO_VERSION)
+  #     - bash: echo "##vso[task.prependpath]C:\Users\VssAdministrator\.deno\\bin"
+  #     - bash: npx eslint **/*.ts --max-warnings=0
+  #     - bash: deno.exe run --allow-net --allow-read test.ts
