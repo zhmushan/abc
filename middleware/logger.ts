@@ -14,7 +14,7 @@ export const DefaultLoggerConfig: LoggerConfig = {
 
 export function logger(config = DefaultLoggerConfig): middlewareFunc {
   return function(next: handlerFunc): handlerFunc {
-    return function(c: Context) {
+    return function(c: Context): any {
       let outstr = config.format;
       for (const key in LoggerFlag) {
         if (LoggerFlag[key] === LoggerFlag.Time) {
