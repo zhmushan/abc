@@ -1,0 +1,34 @@
+variables:
+  DENO_VERSION: "v0.4.0"
+  TS_VERSION: "3.4.5"
+
+jobs:
+  - job: "Linux"
+    pool:
+      vmImage: "Ubuntu-16.04"
+    steps:
+      - script: npm install eslint typescript@$(TS_VERSION) @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-prettier
+      - script: curl -L https://deno.land/x/install/install.sh | sh -s $(DENO_VERSION)
+      - script: echo '##vso[task.prependpath]$(HOME)/.deno/bin/'
+      - script: npx eslint **/*.ts --max-warnings=0
+      - script: deno run --allow-net --allow-read test.ts
+
+  - job: "Mac"
+    pool:
+      vmImage: "macOS-10.13"
+    steps:
+      - script: npm -g install eslint typescript@$(TS_VERSION) @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-prettier
+      - script: curl -L https://deno.land/x/install/install.sh | sh -s $(DENO_VERSION)
+      - script: echo '##vso[task.prependpath]$(HOME)/.deno/bin/'
+      - script: eslint **/*.ts --max-warnings=0
+      - script: deno run --allow-net --allow-read test.ts
+
+  # - job: "Windows"
+  #   pool:
+  #     vmImage: "vs2017-win2016"
+  #   steps:
+  #     - bash: npm install eslint typescript@$(TS_VERSION) @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-prettier
+  #     - powershell: iwr https://deno.land/x/install/install.ps1 -out install.ps1; .\install.ps1 $(DENO_VERSION)
+  #     - bash: echo "##vso[task.prependpath]C:\Users\VssAdministrator\.deno\\bin"
+  #     - bash: npx eslint **/*.ts --max-warnings=0
+  #     - bash: deno.exe run --allow-net --allow-read test.ts

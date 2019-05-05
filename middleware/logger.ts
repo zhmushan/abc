@@ -6,9 +6,15 @@ export enum LoggerFlag {
   Path = "#{path}"
 }
 
+export const DefaultLoggerConfig: LoggerConfig = {
+  format: `time: '${LoggerFlag.Time}', method: '${LoggerFlag.Method}', path: '${
+    LoggerFlag.Path
+  }'`
+};
+
 export function logger(config = DefaultLoggerConfig): middlewareFunc {
   return function(next: handlerFunc): handlerFunc {
-    return function(c: Context) {
+    return function(c: Context): any {
       let outstr = config.format;
       for (const key in LoggerFlag) {
         if (LoggerFlag[key] === LoggerFlag.Time) {
@@ -28,9 +34,3 @@ export function logger(config = DefaultLoggerConfig): middlewareFunc {
 export interface LoggerConfig {
   format: string;
 }
-
-export const DefaultLoggerConfig: LoggerConfig = {
-  format: `time: '${LoggerFlag.Time}', method: '${LoggerFlag.Method}', path: '${
-    LoggerFlag.Path
-  }'`
-};
