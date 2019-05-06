@@ -2,6 +2,7 @@ import { serve, Status, STATUS_TEXT } from "./deps.ts";
 import { Context, context } from "./context.ts";
 import { Router } from "./router.ts";
 import { Binder, binder } from "./binder.ts";
+import { group, Group } from "./group.ts";
 const { cwd, stat, readFile } = Deno;
 
 /** `Renderer` is the interface that wraps the `render` function.  */
@@ -59,7 +60,7 @@ export interface Abc {
   static(path: string): Abc;
 
   /** `group` creates a new router group with prefix and optional group level middleware. */
-  group(prefix: string, ...m: middlewareFunc[]): Abc;
+  group(prefix: string, ...m: middlewareFunc[]): Group;
 }
 
 class AbcImpl implements Abc {
@@ -183,8 +184,8 @@ class AbcImpl implements Abc {
     return this;
   }
   group(prefix: string, ...m: middlewareFunc[]) {
-    console.error(`abc.group: ${notImplemented().message}`);
-    return this;
+    const g = group({ abc: this, prefix });
+    return g;
   }
   static(path: string) {
     const h: handlerFunc = async c => {
