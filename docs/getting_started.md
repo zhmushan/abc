@@ -1,5 +1,7 @@
 ## Hello World
 
+Create `server.ts`
+
 ```ts
 import { abc } from "https://deno.sh/abc/mod.ts";
 // OR import { abc } from "https://deno.land/x/abc/mod.ts";
@@ -13,28 +15,51 @@ app
   .start("0.0.0.0:8080");
 ```
 
+Start server
+
+```sh
+$ deno --allow-net ./server.ts
+```
+
+Browse to http://localhost:8080/hello and you should see Hello, Abc! on the page.
+
 ## Routing
 
 ```ts
 app
-  .get("/", findAll)
-  .get("/:id", findOne)
-  .post("/", create)
-  .delete("/users/:id", deleteUser);
+  .get("/users/", findAll)
+  .get("/users/:id", findOne)
+  .post("/users/", create)
+  .delete("/users/:id", deleteOne);
 ```
 
 ## Path Parameters
 
 ```ts
-// app.get("/users/:id", getUser)
-function getUser(c: Context) {
+// app.get("/users/:id", findOne)
+function findOne(c: Context) {
   // User ID from path `users/:id`
-  const { id } = c.param;
+  const { id } = c.params;
   return id;
 }
 ```
 
 Browse to http://localhost:8080/users/zhmushan and you should see "zhmushan" on the page.
+
+## Query Parameters
+
+`/list?page=0&size=5`
+
+```ts
+// app.get("/list", paging)
+function paging(c: Context) {
+  // Get page and size from the query string
+  const { page, size } = c.queryParams;
+  return `page: ${page}, size: ${size}`;
+}
+```
+
+Browse to http://localhost:8080/list?page=0&size=5 and you should see "page: 0, size: 5" on the page.
 
 ## Static Content
 
@@ -47,10 +72,26 @@ app.static("/static/*files");
 ## Middleware
 
 ```ts
-import { logger } from "https://deno.sh/abc/middleware.ts";
+function track(next: handlerFunc) {
+  return function(c: Context) {
+    console.log("request to /users");
+    return next(c);
+  };
+}
 
 // Root middleware
 app.use(logger());
-```
 
-## Testing
+// Group level middleware
+const g = app.group("/admin");
+g.use(track);
+
+// Route level middleware
+app.get(
+  "/users",
+  c => {
+    return "/users";
+  },
+  track
+);
+```
