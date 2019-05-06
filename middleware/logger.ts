@@ -1,4 +1,4 @@
-import { middlewareFunc, handlerFunc, Context } from "../mod.ts";
+import { MiddlewareFunc, HandlerFunc, Context } from "../mod.ts";
 
 export enum LoggerFlag {
   Time = "#{time}",
@@ -12,8 +12,8 @@ export const DefaultLoggerConfig: LoggerConfig = {
   }'`
 };
 
-export function logger(config = DefaultLoggerConfig): middlewareFunc {
-  return function(next: handlerFunc): handlerFunc {
+export function logger(config = DefaultLoggerConfig): MiddlewareFunc {
+  return function(next: HandlerFunc): HandlerFunc {
     return function(c: Context): any {
       let outstr = config.format;
       for (const key in LoggerFlag) {
