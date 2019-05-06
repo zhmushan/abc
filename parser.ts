@@ -1,5 +1,5 @@
 import { parse } from "./deps.ts";
-import { notImplemented } from "./abc.ts";
+import { NotImplemented } from "./abc.ts";
 
 export class Parser {
   static json(data: string): [{}, Error] {
@@ -28,7 +28,7 @@ export class Parser {
     return [result, err];
   }
   static multipart(data: string): [{}, Error] {
-    return [undefined, notImplemented()];
+    return [undefined, NotImplemented()];
   }
 }
 

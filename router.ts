@@ -1,12 +1,12 @@
 // inspired by httprouter
 
-import { handlerFunc } from "./abc.ts";
+import { HandlerFunc } from "./abc.ts";
 import { Context } from "./context.ts";
 
 export class Router {
   trees: { [method: string]: Node } = {};
 
-  add(method: string, path: string, h: handlerFunc) {
+  add(method: string, path: string, h: HandlerFunc) {
     if (path[0] !== "/") {
       path = `/${path}`;
     }
@@ -20,7 +20,7 @@ export class Router {
     root.addRoute(path, h);
   }
 
-  find(method: string, c: Context): handlerFunc {
+  find(method: string, c: Context): HandlerFunc {
     const node = this.trees[method];
     if (node) {
       const [handle, params, tsr] = node.getValue(c.path);
@@ -42,10 +42,10 @@ export class Node {
   wildChild = false;
   nType = NodeType.Static;
   indices = "";
-  handle: handlerFunc;
+  handle: HandlerFunc;
   maxParams = 0;
 
-  addRoute(path: string, handle: handlerFunc) {
+  addRoute(path: string, handle: HandlerFunc) {
     let node = this as Node;
     const fullPath = path;
     ++node.priority;
@@ -232,7 +232,7 @@ export class Node {
     numParams: number,
     path: string,
     fullPath: string,
-    handle: handlerFunc
+    handle: HandlerFunc
   ) {
     let node = this as Node;
     let offset = 0; // already handled bytes of the path
@@ -361,9 +361,9 @@ export class Node {
     node.path = path.slice(offset);
     node.handle = handle;
   }
-  getValue(path: string): [handlerFunc, Params, boolean] {
+  getValue(path: string): [HandlerFunc, Params, boolean] {
     let node = this as Node;
-    let handle: handlerFunc, p: Params, tsr: boolean;
+    let handle: HandlerFunc, p: Params, tsr: boolean;
     // outer loop for walking the tree
     walk: while (true) {
       if (path.length > node.path.length) {

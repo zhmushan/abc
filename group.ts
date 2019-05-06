@@ -1,40 +1,40 @@
-import { Abc, middlewareFunc, handlerFunc } from "./abc.ts";
+import { Abc, MiddlewareFunc, HandlerFunc } from "./abc.ts";
 
 export interface Group {
   prefix: string;
-  middleware: middlewareFunc[];
+  middleware: MiddlewareFunc[];
   abc: Abc;
 
-  use(...m: middlewareFunc[]): Group;
-  connect(path: string, h: handlerFunc, ...m: middlewareFunc[]): Group;
-  delete(path: string, h: handlerFunc, ...m: middlewareFunc[]): Group;
-  get(path: string, h: handlerFunc, ...m: middlewareFunc[]): Group;
-  head(path: string, h: handlerFunc, ...m: middlewareFunc[]): Group;
-  options(path: string, h: handlerFunc, ...m: middlewareFunc[]): Group;
-  patch(path: string, h: handlerFunc, ...m: middlewareFunc[]): Group;
-  post(path: string, h: handlerFunc, ...m: middlewareFunc[]): Group;
-  put(path: string, h: handlerFunc, ...m: middlewareFunc[]): Group;
-  trace(path: string, h: handlerFunc, ...m: middlewareFunc[]): Group;
-  any(path: string, h: handlerFunc, ...m: middlewareFunc[]): Group;
+  use(...m: MiddlewareFunc[]): Group;
+  connect(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group;
+  delete(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group;
+  get(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group;
+  head(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group;
+  options(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group;
+  patch(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group;
+  post(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group;
+  put(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group;
+  trace(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group;
+  any(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group;
   match(
     methods: string[],
     path: string,
-    h: handlerFunc,
-    ...m: middlewareFunc[]
+    h: HandlerFunc,
+    ...m: MiddlewareFunc[]
   ): Group;
   add(
     method: string,
     path: string,
-    handler: handlerFunc,
-    ...middleware: middlewareFunc[]
+    handler: HandlerFunc,
+    ...middleware: MiddlewareFunc[]
   ): Group;
   static(path: string): Group;
-  group(prefix: string, ...m: middlewareFunc[]): Group;
+  group(prefix: string, ...m: MiddlewareFunc[]): Group;
 }
 
 class GroupImpl implements Group {
   prefix: string;
-  middleware: middlewareFunc[];
+  middleware: MiddlewareFunc[];
   abc: Abc;
 
   constructor(options: GroupOptions) {
@@ -42,53 +42,53 @@ class GroupImpl implements Group {
     this.abc = options.abc || ({} as Abc);
   }
 
-  use(...m: middlewareFunc[]) {
+  use(...m: MiddlewareFunc[]) {
     return this;
   }
 
-  connect(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+  connect(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
     return this;
   }
-  delete(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+  delete(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
     return this;
   }
-  get(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+  get(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
     return this;
   }
-  head(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+  head(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
     return this;
   }
-  options(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+  options(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
     return this;
   }
-  patch(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+  patch(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
     return this;
   }
-  post(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+  post(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
     return this;
   }
-  put(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+  put(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
     return this;
   }
-  trace(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+  trace(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
     return this;
   }
-  any(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+  any(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
     return this;
   }
   match(
     methods: string[],
     path: string,
-    h: handlerFunc,
-    ...m: middlewareFunc[]
+    h: HandlerFunc,
+    ...m: MiddlewareFunc[]
   ) {
     return this;
   }
   add(
     method: string,
     path: string,
-    handler: handlerFunc,
-    ...middleware: middlewareFunc[]
+    handler: HandlerFunc,
+    ...middleware: MiddlewareFunc[]
   ) {
     return this;
   }
@@ -98,7 +98,7 @@ class GroupImpl implements Group {
     return this;
   }
 
-  group(prefix: string, ...m: middlewareFunc[]) {
+  group(prefix: string, ...m: MiddlewareFunc[]) {
     const g = this.abc.group(this.prefix + prefix, ...this.middleware, ...m);
     return g;
   }
