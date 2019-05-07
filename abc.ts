@@ -2,6 +2,7 @@ import { serve, Status, STATUS_TEXT } from "./deps.ts";
 import { Context, context } from "./context.ts";
 import { Router } from "./router.ts";
 import { Binder, binder } from "./binder.ts";
+import { group, Group } from "./group.ts";
 const { cwd, stat, readFile } = Deno;
 
 /** `Renderer` is the interface that wraps the `render` function.  */
@@ -10,16 +11,16 @@ export interface Renderer {
   render<T>(name: string, data: T): Promise<Deno.Reader>;
 }
 
-/* `handlerFunc` defines a function to serve HTTP requests. */
-export type handlerFunc = (c?: Context) => Promise<any> | any;
+/* `HandlerFunc` defines a function to serve HTTP requests. */
+export type HandlerFunc = (c?: Context) => Promise<any> | any;
 
-/* `middlewareFunc` defines a function to process middleware. */
-export type middlewareFunc = (h: handlerFunc) => handlerFunc;
+/* `MiddlewareFunc` defines a function to process middleware. */
+export type MiddlewareFunc = (h: HandlerFunc) => HandlerFunc;
 
 export interface Abc {
   router: Router;
-  middleware: middlewareFunc[];
-  premiddleware: middlewareFunc[];
+  middleware: MiddlewareFunc[];
+  premiddleware: MiddlewareFunc[];
   binder: Binder;
   renderer: Renderer;
 
@@ -27,45 +28,45 @@ export interface Abc {
   start(addr: string): Promise<void>;
 
   /** `pre` adds middleware which is run before router. */
-  pre(...m: middlewareFunc[]): Abc;
+  pre(...m: MiddlewareFunc[]): Abc;
 
   /** `use` adds middleware which is run after router. */
-  use(...m: middlewareFunc[]): Abc;
+  use(...m: MiddlewareFunc[]): Abc;
 
-  connect(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc;
-  delete(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc;
-  get(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc;
-  head(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc;
-  options(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc;
-  patch(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc;
-  post(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc;
-  put(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc;
-  trace(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc;
-  any(path: string, h: handlerFunc, ...m: middlewareFunc[]): Abc;
+  connect(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Abc;
+  delete(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Abc;
+  get(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Abc;
+  head(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Abc;
+  options(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Abc;
+  patch(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Abc;
+  post(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Abc;
+  put(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Abc;
+  trace(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Abc;
+  any(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Abc;
   match(
     methods: string[],
     path: string,
-    h: handlerFunc,
-    ...m: middlewareFunc[]
+    h: HandlerFunc,
+    ...m: MiddlewareFunc[]
   ): Abc;
   add(
     method: string,
     path: string,
-    handler: handlerFunc,
-    ...middleware: middlewareFunc[]
+    handler: HandlerFunc,
+    ...middleware: MiddlewareFunc[]
   ): Abc;
 
   /** `static` registers a new route to serve static files from the provided root path. */
   static(path: string): Abc;
 
   /** `group` creates a new router group with prefix and optional group level middleware. */
-  group(prefix: string, ...m: middlewareFunc[]): Abc;
+  group(prefix: string, ...m: MiddlewareFunc[]): Group;
 }
 
 class AbcImpl implements Abc {
   router: Router;
-  middleware: middlewareFunc[];
-  premiddleware: middlewareFunc[];
+  middleware: MiddlewareFunc[];
+  premiddleware: MiddlewareFunc[];
   binder: Binder;
   renderer: Renderer;
 
@@ -104,42 +105,42 @@ class AbcImpl implements Abc {
     }
   }
 
-  pre(...m: middlewareFunc[]) {
+  pre(...m: MiddlewareFunc[]) {
     this.premiddleware.push(...m);
     return this;
   }
-  use(...m: middlewareFunc[]) {
+  use(...m: MiddlewareFunc[]) {
     this.middleware.push(...m);
     return this;
   }
-  connect(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+  connect(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
     return this.add("CONNECT", path, h, ...m);
   }
-  delete(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+  delete(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
     return this.add("DELETE", path, h, ...m);
   }
-  get(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+  get(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
     return this.add("GET", path, h, ...m);
   }
-  head(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+  head(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
     return this.add("HEAD", path, h, ...m);
   }
-  options(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+  options(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
     return this.add("OPTIONS", path, h, ...m);
   }
-  patch(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+  patch(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
     return this.add("PATCH", path, h, ...m);
   }
-  post(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+  post(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
     return this.add("POST", path, h, ...m);
   }
-  put(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+  put(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
     return this.add("PUT", path, h, ...m);
   }
-  trace(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+  trace(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
     return this.add("TRACE", path, h, ...m);
   }
-  any(path: string, h: handlerFunc, ...m: middlewareFunc[]) {
+  any(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
     const methods = [
       "CONNECT",
       "DELETE",
@@ -159,8 +160,8 @@ class AbcImpl implements Abc {
   match(
     methods: string[],
     path: string,
-    h: handlerFunc,
-    ...m: middlewareFunc[]
+    h: HandlerFunc,
+    ...m: MiddlewareFunc[]
   ) {
     for (const method of methods) {
       this.add(method, path, h, ...m);
@@ -170,8 +171,8 @@ class AbcImpl implements Abc {
   add(
     method: string,
     path: string,
-    handler: handlerFunc,
-    ...middleware: middlewareFunc[]
+    handler: HandlerFunc,
+    ...middleware: MiddlewareFunc[]
   ) {
     this.router.add(method, path, c => {
       let h = handler;
@@ -182,12 +183,12 @@ class AbcImpl implements Abc {
     });
     return this;
   }
-  group(prefix: string, ...m: middlewareFunc[]) {
-    console.error(`abc.group: ${notImplemented().message}`);
-    return this;
+  group(prefix: string, ...m: MiddlewareFunc[]) {
+    const g = group({ abc: this, prefix });
+    return g;
   }
   static(path: string) {
-    const h: handlerFunc = async c => {
+    const h: HandlerFunc = async c => {
       let filepath = cwd() + c.path;
       const fileinfo = await stat(filepath);
       let resp: string;
@@ -221,16 +222,19 @@ class AbcImpl implements Abc {
   }
 }
 
-export const NotFoundHandler: handlerFunc = c => {
+export const NotFoundHandler: HandlerFunc = c => {
   c.response.status = Status.NotFound;
   c.response.body = new TextEncoder().encode(STATUS_TEXT.get(Status.NotFound));
 };
-export const InternalServerErrorHandler: handlerFunc = c => {
+export const InternalServerErrorHandler: HandlerFunc = c => {
   c.response.status = Status.InternalServerError;
   c.response.body = new TextEncoder().encode(
     STATUS_TEXT.get(Status.InternalServerError)
   );
 };
+export function NotImplemented() {
+  return new Error("Not Implemented");
+}
 
 /**
  * `abc` creates an instance of `Abc`.
@@ -259,8 +263,4 @@ export class HttpError extends Error {
     super(message);
     this.code = code;
   }
-}
-
-export function notImplemented() {
-  return new Error("Not Implemented");
 }

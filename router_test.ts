@@ -1,13 +1,13 @@
 import { test, assertEquals } from "./dev_deps.ts";
 import { context, Context } from "./context.ts";
 import { Router } from "./router.ts";
-import { handlerFunc } from "./abc.ts";
+import { HandlerFunc } from "./abc.ts";
 
 function injectContext(path: string) {
   return context({ url: new URL(path, "0.0.0.0:8080") });
 }
 
-type RouterAddParams = [string, string, handlerFunc];
+type RouterAddParams = [string, string, HandlerFunc];
 type RouterFindParams = [string, Context];
 type RouterFindParamsAndResult = [string, Context, any];
 
