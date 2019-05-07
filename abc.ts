@@ -17,6 +17,22 @@ export type HandlerFunc = (c?: Context) => Promise<any> | any;
 /* `MiddlewareFunc` defines a function to process middleware. */
 export type MiddlewareFunc = (h: HandlerFunc) => HandlerFunc;
 
+export const NotFoundHandler: HandlerFunc = c => {
+  c.response.status = Status.NotFound;
+  c.response.body = new TextEncoder().encode(STATUS_TEXT.get(Status.NotFound));
+};
+
+export const InternalServerErrorHandler: HandlerFunc = c => {
+  c.response.status = Status.InternalServerError;
+  c.response.body = new TextEncoder().encode(
+    STATUS_TEXT.get(Status.InternalServerError)
+  );
+};
+
+export function NotImplemented() {
+  return new Error("Not Implemented");
+}
+
 export interface Abc {
   router: Router;
   middleware: MiddlewareFunc[];
@@ -185,6 +201,7 @@ class AbcImpl implements Abc {
   }
   group(prefix: string, ...m: MiddlewareFunc[]) {
     const g = group({ abc: this, prefix });
+    g.use(...m);
     return g;
   }
   static(path: string) {
@@ -220,20 +237,6 @@ class AbcImpl implements Abc {
       }
     }
   }
-}
-
-export const NotFoundHandler: HandlerFunc = c => {
-  c.response.status = Status.NotFound;
-  c.response.body = new TextEncoder().encode(STATUS_TEXT.get(Status.NotFound));
-};
-export const InternalServerErrorHandler: HandlerFunc = c => {
-  c.response.status = Status.InternalServerError;
-  c.response.body = new TextEncoder().encode(
-    STATUS_TEXT.get(Status.InternalServerError)
-  );
-};
-export function NotImplemented() {
-  return new Error("Not Implemented");
 }
 
 /**

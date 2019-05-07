@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "koa-router": "^7.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^3.4.5",
+    "ts-node": "^8.1.0"
+  },
+  "scripts": {
+    "bench": "deno run ./abc_router.ts && ts-node ./koa_router.ts",
+    "db": "deno run ./gdb.ts"
+  }
+}

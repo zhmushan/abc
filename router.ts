@@ -3,37 +3,20 @@
 import { HandlerFunc } from "./abc.ts";
 import { Context } from "./context.ts";
 
-export class Router {
-  trees: { [method: string]: Node } = {};
-
-  add(method: string, path: string, h: HandlerFunc) {
-    if (path[0] !== "/") {
-      path = `/${path}`;
-    }
-
-    let root = this.trees[method];
-    if (!root) {
-      root = new Node();
-      this.trees[method] = root;
-    }
-
-    root.addRoute(path, h);
-  }
-
-  find(method: string, c: Context): HandlerFunc {
-    const node = this.trees[method];
-    if (node) {
-      const [handle, params, tsr] = node.getValue(c.path);
-      if (params) {
-        for (const p of params) {
-          c.params[p.key] = p.value;
-        }
-      }
-
-      return handle;
-    }
-  }
+enum NodeType {
+  Static,
+  Root,
+  Param,
+  CatchAll
 }
+
+interface Param {
+  key: string;
+  value: string;
+}
+
+type Children = Node[];
+type Params = Param[];
 
 export class Node {
   priority = 0;
@@ -493,17 +476,34 @@ export class Node {
   }
 }
 
-enum NodeType {
-  Static,
-  Root,
-  Param,
-  CatchAll
-}
+export class Router {
+  trees: { [method: string]: Node } = {};
 
-interface Param {
-  key: string;
-  value: string;
-}
+  add(method: string, path: string, h: HandlerFunc) {
+    if (path[0] !== "/") {
+      path = `/${path}`;
+    }
 
-type Children = Node[];
-type Params = Param[];
+    let root = this.trees[method];
+    if (!root) {
+      root = new Node();
+      this.trees[method] = root;
+    }
+
+    root.addRoute(path, h);
+  }
+
+  find(method: string, c: Context): HandlerFunc {
+    const node = this.trees[method];
+    if (node) {
+      const [handle, params, _] = node.getValue(c.path);
+      if (params) {
+        for (const p of params) {
+          c.params[p.key] = p.value;
+        }
+      }
+
+      return handle;
+    }
+  }
+}
