@@ -1,6 +1,20 @@
 import { parse } from "./deps.ts";
 import { NotImplemented } from "./abc.ts";
 
+/**
+ * RegExp to match the first non-space in a string.
+ *
+ * https://tools.ietf.org/html/rfc7159
+ *    ws = *(
+ *            %x20 /              ; Space
+ *            %x09 /              ; Horizontal tab
+ *            %x0A /              ; Line feed or New line
+ *            %x0D )              ; Carriage return
+ */
+function firstchar(str: string) {
+  return /^[\x20\x09\x0a\x0d]*(.)/.exec(str)[1];
+}
+
 export class Parser {
   static json(data: string): [{}, Error] {
     let result: {}, err: Error;
@@ -28,20 +42,7 @@ export class Parser {
     return [result, err];
   }
   static multipart(data: string): [{}, Error] {
+    data;
     return [undefined, NotImplemented()];
   }
-}
-
-/**
- * RegExp to match the first non-space in a string.
- *
- * https://tools.ietf.org/html/rfc7159
- *    ws = *(
- *            %x20 /              ; Space
- *            %x09 /              ; Horizontal tab
- *            %x0A /              ; Line feed or New line
- *            %x0D )              ; Carriage return
- */
-function firstchar(str: string) {
-  return /^[\x20\x09\x0a\x0d]*(.)/.exec(str)[1];
 }

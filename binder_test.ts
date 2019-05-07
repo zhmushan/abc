@@ -2,7 +2,7 @@ import { test, assertEquals } from "./dev_deps.ts";
 import { binder } from "./binder.ts";
 import { context } from "./context.ts";
 
-type FakeServerRequest = {
+interface FakeServerRequest {
   body: () => Uint8Array;
   headers: Headers;
 };
