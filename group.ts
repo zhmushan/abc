@@ -113,7 +113,13 @@ class GroupImpl implements Group {
     handler: HandlerFunc,
     ...middleware: MiddlewareFunc[]
   ) {
-    this.abc.add(method, this.prefix + path, handler, ...this.middleware, ...middleware);
+    this.abc.add(
+      method,
+      this.prefix + path,
+      handler,
+      ...this.middleware,
+      ...middleware
+    );
     return this;
   }
 
