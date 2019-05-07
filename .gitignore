@@ -1,8 +1,7 @@
 /types
 /examples
 .DS_Store
-/benchmarks
 /.vscode
-/node_modules
+node_modules
 /package*.json
 /deno.d.ts
