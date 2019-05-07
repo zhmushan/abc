@@ -73,13 +73,5 @@ test({
         await Deno.readFile("./sample/01_cat_app/cat.ts")
       )
     );
-
-    maybeCompleteTests();
   }
 });
-
-function maybeCompleteTests() {
-  setTimeout(() => {
-    exit();
-  }, 0);
-}
