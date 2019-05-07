@@ -1,6 +1,5 @@
 import { test, assertEquals } from "./dev_deps.ts";
 import { abc } from "./abc.ts";
-const { exit } = Deno;
 
 const data = {
   string: "hello, world",
@@ -9,27 +8,15 @@ const data = {
   undefined: "undefined"
 };
 
-const methods = [
-  "CONNECT",
-  "DELETE",
-  "GET",
-  "HEAD",
-  "OPTIONS",
-  "PATCH",
-  "POST",
-  "PUT",
-  "TRACE"
-];
-
 test({
   name: "abc handler",
   async fn() {
     const app = abc();
     app
-      .any("/string", c => data.string)
-      .any("/html", c => data.html)
-      .any("/json", c => data.json)
-      .any("/undefined_0", c => undefined)
+      .any("/string", () => data.string)
+      .any("/html", () => data.html)
+      .any("/json", () => data.json)
+      .any("/undefined_0", () => undefined)
       .any("/undefined_1", c => {
         c.string(data.undefined);
       })

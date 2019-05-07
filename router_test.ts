@@ -11,7 +11,7 @@ type RouterAddParams = [string, string, HandlerFunc];
 type RouterFindParams = [string, Context];
 type RouterFindParamsAndResult = [string, Context, any];
 
-const caseGroups: [RouterAddParams, ...RouterFindParamsAndResult[]][] = [
+const caseGroups: Array<[RouterAddParams, ...RouterFindParamsAndResult[]]> = [
   [["GET", "/hello", () => true], ["GET", injectContext("/hello"), true]],
   [
     ["GET", "/hello/:p", () => true],
