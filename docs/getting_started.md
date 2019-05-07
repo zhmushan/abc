@@ -72,10 +72,9 @@ app.static("/static/*files");
 ## Middleware
 
 ```ts
-function track(next: handlerFunc) {
+function track(next: HandlerFunc) {
   return function(c: Context) {
-    console.log("request to /users");
-    return next(c);
+    console.log(`request to ${c.path}`);
   };
 }
 
