@@ -10,7 +10,7 @@ const data = {
 
 test({
   name: "abc handler",
-  async fn(): void {
+  async fn() {
     const app = abc();
     app
       .any("/string", () => data.string)
