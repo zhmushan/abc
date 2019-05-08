@@ -5,7 +5,7 @@ import { context } from "./context.ts";
 interface FakeServerRequest {
   body: () => Uint8Array;
   headers: Headers;
-};
+}
 
 function injectContext(r: FakeServerRequest) {
   return context({ r: r as any });
