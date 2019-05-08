@@ -4,8 +4,8 @@ English | [简体中文](./zh_CN/table_of_contents.md)
 
 - [Getting Started](./getting_started.md)
 - [Router](./router.md)
-  <!-- - [Data binding](./data_binding.md) -->
 - [Middleware](./middleware.md)
+  <!-- - [Data binding](./data_binding.md)
 - [Testing](./testing.md)
 
 ## Techniques
@@ -13,4 +13,4 @@ English | [简体中文](./zh_CN/table_of_contents.md)
 - [Authentication](./authentication.md)
 - [Database](./database.md)
 - [Validation](./router/validation.md)
-- [Logger](./logger.md)
+- [Logger](./logger.md) -->
