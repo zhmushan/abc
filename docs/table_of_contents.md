@@ -4,7 +4,7 @@ English | [简体中文](./zh_CN/table_of_contents.md)
 
 - [Getting Started](./getting_started.md)
 - [Router](./router.md)
-- [Data binding](./data_binding.md)
+  <!-- - [Data binding](./data_binding.md) -->
 - [Middleware](./middleware.md)
 - [Testing](./testing.md)
 
