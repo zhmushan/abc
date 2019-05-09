@@ -3,7 +3,7 @@
 import { HandlerFunc } from "./abc.ts";
 import { Context } from "./context.ts";
 
-enum NodeType {
+export enum NodeType {
   Static,
   Root,
   Param,
@@ -17,6 +17,20 @@ interface Param {
 
 type Children = Node[];
 type Params = Param[];
+
+export function countParams(path: string) {
+  let n = 0;
+  for (let i = 0; i < path.length; ++i) {
+    if (path[i] !== ":" && path[i] !== "*") {
+      continue;
+    }
+    ++n;
+  }
+  if (n >= 255) {
+    return 255;
+  }
+  return n;
+}
 
 export class Node {
   priority = 0;
@@ -32,10 +46,10 @@ export class Node {
     let node = this as Node;
     const fullPath = path;
     ++node.priority;
-    let numParams = this.countParams(path);
+    let numParams = countParams(path);
 
     // non-empty tree
-    if (path.length > 0 || node.children.length > 0) {
+    if (node.path.length > 0 || node.children.length > 0) {
       walk: while (true) {
         // Update maxParams of the current node
         if (numParams > node.maxParams) {
@@ -90,7 +104,7 @@ export class Node {
 
             // Check if the wildcard matches
             if (
-              path.length >= this.path.length &&
+              path.length >= node.path.length &&
               node.path === path.slice(0, node.path.length) &&
               // Check for longer wildcard, e.g. :name and :names
               (node.path.length >= path.length ||
@@ -107,7 +121,7 @@ export class Node {
               }
               let prefix =
                 fullPath.slice(0, fullPath.indexOf(pathSeg)) + node.path;
-              console.error(
+              throw new Error(
                 `'${pathSeg}' in new path '${fullPath}' conflicts with existing wildcard '${
                   node.path
                 }' in existing prefix '${prefix}'`
@@ -152,7 +166,7 @@ export class Node {
         } else if (i === path.length) {
           // Make node a (in-path) leaf
           if (node.handle) {
-            console.error(
+            throw new Error(
               `a handle is already registered for path '${fullPath}'`
             );
           }
@@ -165,20 +179,6 @@ export class Node {
       node.insertChild(numParams, path, fullPath, handle);
       node.nType = NodeType.Root;
     }
-  }
-
-  countParams(path: string) {
-    let n = 0;
-    for (let i = 0; i < path.length; ++i) {
-      if (path[i] !== ":" && path[i] !== "*") {
-        continue;
-      }
-      ++n;
-    }
-    if (n >= 255) {
-      return 255;
-    }
-    return n;
   }
 
   // increments priority of the given child and reorders if necessary
@@ -234,7 +234,7 @@ export class Node {
           // the wildcard name must not contain ':' and '*'
           case ":":
           case "*":
-            console.error(
+            throw new Error(
               `only one wildcard per path segment is allowed, has: '${path.slice(
                 i
               )}' in path '${fullPath}'`
@@ -247,7 +247,7 @@ export class Node {
       // check if this Node existing children which would be
       // unreachable if we insert the wildcard here
       if (node.children.length > 0) {
-        console.error(
+        throw new Error(
           `wildcard route '${path.slice(
             i,
             end
@@ -257,7 +257,7 @@ export class Node {
 
       // check if the wildcard has a name
       if (end - i < 2) {
-        console.error(
+        throw new Error(
           `wildcards must be named with a non-empty name in path '${fullPath}'`
         );
       }
@@ -296,13 +296,13 @@ export class Node {
       } else {
         // catchAll
         if (end !== max || numParams > 1) {
-          console.error(
+          throw new Error(
             `catch-all routes are only allowed at the end of the path in path '${fullPath}'`
           );
         }
 
         if (node.path.length > 0 && node.path[node.path.length - 1] === "/") {
-          console.error(
+          throw new Error(
             `catch-all conflicts with existing handle for the path segment root in path '${fullPath}'`
           );
         }
@@ -310,7 +310,7 @@ export class Node {
         // currently fixed width 1 for '/'
         --i;
         if (path[i] !== "/") {
-          console.error(`no / before catch-all in path '${fullPath}'`);
+          throw new Error(`no / before catch-all in path '${fullPath}'`);
         }
 
         node.path = path.slice(offset, i);
@@ -430,7 +430,7 @@ export class Node {
               break walk;
             }
             default: {
-              console.error("invalid node type");
+              throw new Error("invalid node type");
             }
           }
         }
