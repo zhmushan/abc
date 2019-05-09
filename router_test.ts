@@ -13,6 +13,15 @@ interface TestRoute {
   conflict: boolean;
 }
 
+function getErr(func: () => void): Error | null {
+  try {
+    func();
+  } catch (e) {
+    return e;
+  }
+  return null;
+}
+
 function checkPriorities(n: Node) {
   let prio = 0;
   for (const c of n.children) {
@@ -68,15 +77,6 @@ function checkRoutes(routes: TestRoute[]) {
       assertEquals(r.conflict, false);
     }
   }
-}
-
-function getErr(func: () => void): Error | null {
-  try {
-    func();
-  } catch (e) {
-    return e;
-  }
-  return null;
 }
 
 test(function CountParams() {
