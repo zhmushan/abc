@@ -11,7 +11,7 @@
 #### Quick links
 
 - [Documentation, demos, and guides](docs/table_of_contents.md)
-- [Benchmarks](benchmarks/README.md)
+- [Benchmarks](benchmarks/RESULT)
 
 ## Hello World
 
