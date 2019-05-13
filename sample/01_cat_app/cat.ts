@@ -1,5 +1,7 @@
+import { Binder } from "../../binder.ts";
+
+@Binder()
 export class Cat {
   id: number;
-  name: string = null;
-  age: number = null;
+  constructor(public name: string, public age: number) {}
 }
