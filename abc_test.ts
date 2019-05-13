@@ -16,7 +16,7 @@ test({
       .any("/string", () => data.string)
       .any("/html", () => data.html)
       .any("/json", () => data.json)
-      .any("/undefined_0", () => undefined)
+      .any("/undefined_0", () => "")
       .any("/undefined_1", c => {
         c.string(data.undefined);
       })

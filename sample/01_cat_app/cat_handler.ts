@@ -1,5 +1,5 @@
 import { Cat } from "./cat.ts";
-import { Context } from "https://deno.land/x/abc/mod.ts";
+import { Context } from "../../mod.ts";
 
 let catId = 1;
 const cats = [] as Cat[];
@@ -14,8 +14,7 @@ export function findOne(c: Context) {
 }
 
 export async function create(c: Context) {
-  const cat = new Cat();
-  const _ = await c.bind(cat);
+  const cat = await c.bind(Cat);
   cat.id = catId++;
   cats.push(cat);
   return cat;

@@ -1,7 +1,6 @@
 import { serve, Status, STATUS_TEXT } from "./deps.ts";
 import { Context, context } from "./context.ts";
 import { Router } from "./router.ts";
-import { Binder, binder } from "./binder.ts";
 import { group, Group } from "./group.ts";
 const { cwd, stat, readFile } = Deno;
 
@@ -37,7 +36,6 @@ export interface Abc {
   router: Router;
   middleware: MiddlewareFunc[];
   premiddleware: MiddlewareFunc[];
-  binder: Binder;
   renderer: Renderer;
 
   /** `start` starts an HTTP server. */
@@ -83,14 +81,12 @@ class AbcImpl implements Abc {
   router: Router;
   middleware: MiddlewareFunc[];
   premiddleware: MiddlewareFunc[];
-  binder: Binder;
   renderer: Renderer;
 
   constructor() {
     this.router = new Router();
     this.middleware = [];
     this.premiddleware = [];
-    this.binder = binder();
   }
 
   async start(addr: string) {
@@ -233,7 +229,7 @@ class AbcImpl implements Abc {
           /^\s*</.test(result) ? c.html(result) : c.string(result);
           break;
         default:
-          c.string(result);
+          c.string(String(result));
       }
     }
   }
@@ -254,16 +250,4 @@ class AbcImpl implements Abc {
 export function abc() {
   const abc = new AbcImpl() as Abc;
   return abc;
-}
-
-export class HttpError extends Error {
-  code: number;
-  constructor(code: number, message?: any) {
-    if (!message) {
-      message = Status[code];
-    }
-    console.log(message);
-    super(message);
-    this.code = code;
-  }
 }
