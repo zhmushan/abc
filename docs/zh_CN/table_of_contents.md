@@ -5,8 +5,8 @@
 - [Getting Started 入门](./getting_started.md)
 - [Router 路由](./router.md)
 - [Middleware 中间件](./middleware.md)
-  <!-- - [Data binding 数据绑定](./data_binding.md)
-- [Testing 测试](./testing.md)
+- [Data binding 数据绑定](./data_binding.md)
+  <!-- - [Testing 测试](./testing.md)
 
 ## 技术
 

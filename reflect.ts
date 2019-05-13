@@ -695,11 +695,11 @@ namespace Reflect {
       ) => void
     ) => void
   ) {
+    var self;
     const root =
       typeof global === "object"
         ? global
-        : // @ts-ignore
-        typeof self === "object"
+        : typeof self === "object"
         ? self
         : typeof this === "object"
         ? this
