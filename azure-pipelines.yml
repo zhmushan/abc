@@ -10,8 +10,8 @@ jobs:
       - script: npm install eslint typescript@$(TS_VERSION) @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-prettier
       - script: curl -L https://deno.land/x/install/install.sh | sh -s $(DENO_VERSION)
       - script: echo '##vso[task.prependpath]$(HOME)/.deno/bin/'
-      - script: npx eslint *.ts middleware/*.ts --max-warnings=0
-      - script: deno run --allow-net --allow-read test.ts
+      - script: npx eslint *.ts middleware/*.ts
+      - script: deno run -c tsconfig.json --allow-net --allow-read test.ts
 
   - job: "Mac"
     pool:
@@ -20,8 +20,8 @@ jobs:
       - script: npm -g install eslint typescript@$(TS_VERSION) @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-prettier
       - script: curl -L https://deno.land/x/install/install.sh | sh -s $(DENO_VERSION)
       - script: echo '##vso[task.prependpath]$(HOME)/.deno/bin/'
-      - script: eslint *.ts middleware/*.ts --max-warnings=0
-      - script: deno run --allow-net --allow-read test.ts
+      - script: eslint *.ts middleware/*.ts
+      - script: deno run -c tsconfig.json --allow-net --allow-read test.ts
 
   # - job: "Windows"
   #   pool:
@@ -30,5 +30,5 @@ jobs:
   #     - bash: npm install eslint typescript@$(TS_VERSION) @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-prettier
   #     - powershell: iwr https://deno.land/x/install/install.ps1 -out install.ps1; .\install.ps1 $(DENO_VERSION)
   #     - bash: echo "##vso[task.prependpath]C:\Users\VssAdministrator\.deno\\bin"
-  #     - bash: npx eslint *.ts middleware/*.ts --max-warnings=0
-  #     - bash: deno.exe run --allow-net --allow-read test.ts
+  #     - bash: npx eslint *.ts middleware/*.ts
+  #     - bash: deno.exe run -c tsconfig.json --allow-net --allow-read test.ts

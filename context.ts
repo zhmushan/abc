@@ -1,5 +1,7 @@
 import { ServerRequest, Response, Status } from "./deps.ts";
 import { Abc } from "./abc.ts";
+import { bind } from "./binder.ts";
+import { Type } from "./type.ts";
 
 export interface Context {
   request: ServerRequest;
@@ -27,7 +29,7 @@ export interface Context {
 
   /** Sends a blob response with content type and status code. */
   blob(b: Uint8Array | Deno.Reader, contentType: string, code?: number): void;
-  bind<T extends object>(cls: T): Promise<Error>;
+  bind<T>(cls: Type<T>): Promise<T>;
 }
 
 class ContextImpl implements Context {
@@ -141,8 +143,8 @@ class ContextImpl implements Context {
     this.response.body = b;
   }
 
-  bind<T extends object>(cls: T): Promise<Error> {
-    return this.abc.binder.bind(cls, this);
+  bind<T>(cls: Type<T>): Promise<T> {
+    return bind(cls, this);
   }
 }
 

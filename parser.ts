@@ -16,33 +16,27 @@ function firstchar(str: string) {
 }
 
 export class Parser {
-  static json(data: string): [{}, Error] {
-    let result: {}, err: Error;
+  static json(data: string): Record<string, any> {
+    let result: Record<string, any>;
     if (data.length === 0) {
       result = {};
     }
     const first = firstchar(data);
     if (first !== "{" && first !== "[") {
-      err = new SyntaxError(data);
+      throw new SyntaxError(data);
     }
-    try {
-      result = JSON.parse(data);
-    } catch (e) {
-      err = e;
-    }
-    return [result, err];
+    result = JSON.parse(data);
+    return result;
   }
-  static urlencoded(data: string): [{}, Error] {
-    let result: {}, err: Error;
-    try {
-      result = parse(data);
-    } catch (e) {
-      err = e;
-    }
-    return [result, err];
+  static urlencoded(data: string): Record<string, any> {
+    let result: Record<string, any>;
+    result = parse(data);
+    return result;
   }
-  static multipart(data: string): [{}, Error] {
+  static multipart(data: string): Record<string, any> {
     data;
-    return [undefined, NotImplemented()];
+    throw NotImplemented();
   }
 }
+
+export type ParserFunction = "json" | "urlencoded" | "multipart";
