@@ -8,12 +8,12 @@ export interface Context {
   response: Response;
   path: string;
   method: string;
-  params: { [key: string]: any };
+  params: Record<string, string>;
   url: URL;
-  queryParams: { [key: string]: string };
+  queryParams: Record<string, string>;
   abc: Abc;
   string(v: string, code?: number): void;
-  json(v: {}, code?: number): void;
+  json(v: Record<string, any> | string, code?: number): void;
 
   /** Sends an HTTP response with status code. */
   html(v: string, code?: number): void;
@@ -57,7 +57,7 @@ class ContextImpl implements Context {
     return this.request.method;
   }
 
-  get queryParams(): { [key: string]: string } {
+  get queryParams(): Record<string, string> {
     const params = {};
     for (const key of this.url.searchParams.keys()) {
       params[key] = this.url.searchParams.get(key);
@@ -73,7 +73,7 @@ class ContextImpl implements Context {
     return this._url;
   }
 
-  private _params: { [key: string]: any };
+  private _params: Record<string, string>;
   set params(p) {
     this._params = p;
   }
@@ -113,10 +113,12 @@ class ContextImpl implements Context {
     this.response.body = new TextEncoder().encode(v);
   }
 
-  json(v: {}, code = Status.OK) {
+  json(v: Record<string, any> | string, code = Status.OK) {
     this.writeContentType("application/json");
     this.response.status = code;
-    this.response.body = new TextEncoder().encode(JSON.stringify(v));
+    this.response.body = new TextEncoder().encode(
+      typeof v === "object" ? JSON.stringify(v) : v
+    );
   }
 
   html(v: string, code = Status.OK) {

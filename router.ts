@@ -477,7 +477,7 @@ export class Node {
 }
 
 export class Router {
-  trees: { [method: string]: Node } = {};
+  trees: Record<string, Node> = {};
 
   add(method: string, path: string, h: HandlerFunc) {
     if (path[0] !== "/") {
