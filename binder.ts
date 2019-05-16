@@ -1,6 +1,6 @@
 import "./reflect.ts";
 import { Context } from "./context.ts";
-import { Status } from "./deps.ts";
+import { Status, STATUS_TEXT } from "./deps.ts";
 import { Parser, ParserFunction } from "./parser.ts";
 import { Type } from "./type.ts";
 
@@ -26,7 +26,7 @@ export async function bind<T>(cls: Type<T>, c: Context): Promise<T> {
     useFunc = "multipart";
   }
   if (!useFunc) {
-    throw new Error(Status[Status.UnsupportedMediaType]);
+    throw new Error(STATUS_TEXT.get(Status.UnsupportedMediaType));
   }
   data = Parser[useFunc](body);
   for (const key in pairs) {

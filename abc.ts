@@ -1,8 +1,7 @@
-import { serve, Status, STATUS_TEXT } from "./deps.ts";
+import { serve, Status, STATUS_TEXT, path } from "./deps.ts";
 import { Context, context } from "./context.ts";
 import { Router } from "./router.ts";
 import { group, Group } from "./group.ts";
-const { cwd, stat, readFile } = Deno;
 
 /** `Renderer` is the interface that wraps the `render` function.  */
 export interface Renderer {
@@ -67,11 +66,14 @@ export interface Abc {
     method: string,
     path: string,
     handler: HandlerFunc,
-    ...middleware: MiddlewareFunc[]
+    ...m: MiddlewareFunc[]
   ): Abc;
 
-  /** `static` registers a new route to serve static files from the provided root path. */
-  static(path: string): Abc;
+  /** `static` registers a new route with path prefix to serve static files from the provided root directory. */
+  static(prefix: string, root: string): Abc;
+
+  /** `file` registers a new route with path to serve a static file with optional route-level middleware. */
+  file(path: string, filepath: string, ...m: MiddlewareFunc[]): Abc;
 
   /** `group` creates a new router group with prefix and optional group level middleware. */
   group(prefix: string, ...m: MiddlewareFunc[]): Group;
@@ -96,23 +98,19 @@ class AbcImpl implements Abc {
       const c = context({ r: req, url: new URL(req.url, addr), abc: this });
       let h = this.router.find(req.method, c) || NotFoundHandler;
 
-      if (this.premiddleware.length) {
-        h = c => {
-          for (let i = this.middleware.length - 1; i >= 0; i--) {
-            h = this.middleware[i](h);
-          }
-          return h(c);
-        };
-        for (let i = this.premiddleware.length - 1; i >= 0; i--) {
-          h = this.premiddleware[i](h);
-        }
-      } else {
-        for (let i = this.middleware.length - 1; i >= 0; i--) {
-          h = this.middleware[i](h);
-        }
+      for (let i = this.middleware.length - 1; i >= 0; --i) {
+        h = this.middleware[i](h);
       }
-      this.transformResult(c, await h(c));
-
+      for (let i = this.premiddleware.length - 1; i >= 0; --i) {
+        h = this.premiddleware[i](h);
+      }
+      let result;
+      try {
+        result = await h(c);
+      } catch {
+        result = InternalServerErrorHandler(c);
+      }
+      this.transformResult(c, result);
       await req.respond(c.response);
     }
   }
@@ -200,25 +198,22 @@ class AbcImpl implements Abc {
     g.use(...m);
     return g;
   }
-  static(path: string) {
-    const h: HandlerFunc = async c => {
-      let filepath = cwd() + c.path;
-      const fileinfo = await stat(filepath);
-      let resp: string;
-      try {
-        if (
-          fileinfo.isDirectory() &&
-          (await stat(filepath + "index.html")).isFile()
-        ) {
-          filepath += "index.html";
-        }
-        resp = new TextDecoder().decode(await readFile(filepath));
-      } catch {}
 
-      return resp;
+  static(prefix: string, root: string) {
+    const h = function(c: Context) {
+      const filepath: string = c.params.filepath;
+      return c.file(path.join(root, filepath));
     };
-    return this.get(path, h);
+    if (prefix === "/") {
+      return this.get(`${prefix}*filepath`, h);
+    }
+    return this.get(`${prefix}/*filepath`, h);
   }
+
+  file(path: string, filepath: string, ...m: MiddlewareFunc[]) {
+    return this.get(path, c => c.file(filepath), ...m);
+  }
+
   private transformResult(c: Context, result: any) {
     if (c.response.status == undefined) {
       switch (typeof result) {

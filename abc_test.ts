@@ -1,64 +1,153 @@
 import { test, assertEquals } from "./dev_deps.ts";
-import { abc } from "./abc.ts";
+import { Status, STATUS_TEXT } from "./deps.ts";
+import { abc, NotFoundHandler } from "./abc.ts";
+const { readFile } = Deno;
 
-const data = {
-  string: "hello, world",
-  html: "<h1>hello, world</h1>",
-  json: { hello: "world" },
-  undefined: "undefined"
-};
+enum HttpMethods {
+  Delete = "DELETE",
+  Get = "GET",
+  Post = "POST",
+  Put = "PUT"
+}
 
-test({
-  name: "abc handler",
-  async fn() {
-    const app = abc();
-    app
-      .any("/string", () => data.string)
-      .any("/html", () => data.html)
-      .any("/json", () => data.json)
-      .any("/undefined_0", () => "")
-      .any("/undefined_1", c => {
-        c.string(data.undefined);
-      })
-      .static("/sample/*files")
-      .start("0.0.0.0:4500");
+const addr = "127.0.0.1:8081";
+const host = `http://${addr}`;
+const app = abc();
 
-    let res = await fetch("http://localhost:4500/string");
-    assertEquals(res.status, 200);
-    assertEquals(
-      new TextDecoder().decode(await res.arrayBuffer()),
-      data.string
-    );
+test(async function AbcStatic() {
+  app.static("/sample", "./sample/02_template");
 
-    res = await fetch("http://localhost:4500/html");
-    assertEquals(res.status, 200);
-    assertEquals(new TextDecoder().decode(await res.arrayBuffer()), data.html);
+  let res = await fetch(`${host}/sample/main.ts`);
+  assertEquals(res.status, Status.OK);
+  assertEquals(
+    await res.text(),
+    new TextDecoder().decode(await readFile("./sample/02_template/main.ts"))
+  );
 
-    res = await fetch("http://localhost:4500/json");
-    assertEquals(res.status, 200);
-    assertEquals(
-      new TextDecoder().decode(await res.arrayBuffer()),
-      JSON.stringify(data.json)
-    );
+  res = await fetch(`${host}/sample/`);
+  assertEquals(res.status, Status.OK);
+  assertEquals(
+    await res.text(),
+    new TextDecoder().decode(await readFile("./sample/02_template/index.html"))
+  );
 
-    res = await fetch("http://localhost:4500/undefined_0");
-    assertEquals(res.status, 200);
-    assertEquals(new TextDecoder().decode(await res.arrayBuffer()), "");
+  res = await fetch(`${host}/sample/empty`);
+  assertEquals(res.status, Status.NotFound);
+  assertEquals(await res.text(), STATUS_TEXT.get(Status.NotFound));
+});
 
-    res = await fetch("http://localhost:4500/undefined_1");
-    assertEquals(res.status, 200);
-    assertEquals(
-      new TextDecoder().decode(await res.arrayBuffer()),
-      data.undefined
-    );
+test(async function AbcFile() {
+  app.file("pipelines", "./azure-pipelines.yml");
+  app.file("fileempty", "./fileempty");
 
-    res = await fetch("http://localhost:4500/sample/01_cat_app/cat.ts");
-    assertEquals(res.status, 200);
-    assertEquals(
-      new TextDecoder().decode(await res.arrayBuffer()),
-      new TextDecoder().decode(
-        await Deno.readFile("./sample/01_cat_app/cat.ts")
-      )
-    );
+  let res = await fetch(`${host}/pipelines`);
+  assertEquals(res.status, Status.OK);
+  assertEquals(
+    await res.text(),
+    new TextDecoder().decode(await readFile("./azure-pipelines.yml"))
+  );
+
+  res = await fetch(`${host}/fileempty`);
+  assertEquals(res.status, Status.NotFound);
+  assertEquals(await res.text(), STATUS_TEXT.get(Status.NotFound));
+});
+
+test(async function AbcMiddleware() {
+  let str = "";
+  app
+    .pre(function(next) {
+      return function(c) {
+        str += "0";
+        return next(c);
+      };
+    })
+    .use(
+      function(next) {
+        return function(c) {
+          str += "1";
+          return next(c);
+        };
+      },
+      function(next) {
+        return function(c) {
+          str += "2";
+          return next(c);
+        };
+      },
+      function(next) {
+        return function(c) {
+          str += "3";
+          return next(c);
+        };
+      }
+    )
+    .get("/middleware", () => str);
+
+  let res = await fetch(`${host}/middleware`);
+  assertEquals(res.status, Status.OK);
+  assertEquals(await res.text(), str);
+  assertEquals(str, "0123");
+});
+
+test(async function AbcMiddlewareError() {
+  app.get("/middlewareerror", NotFoundHandler, function(next) {
+    return function(c) {
+      throw new Error();
+    };
+  });
+  let res = await fetch(`${host}/middlewareerror`);
+  assertEquals(res.status, Status.InternalServerError);
+  assertEquals(await res.text(), STATUS_TEXT.get(Status.InternalServerError));
+});
+
+test(async function AbcHandler() {
+  app.get("/ok", () => "ok");
+  let res = await fetch(`${host}/ok`);
+  assertEquals(res.status, Status.OK);
+  assertEquals(await res.text(), "ok");
+});
+
+test(async function AbcHttpMethods() {
+  app
+    .delete("/delete", () => "delete")
+    .get("/get", () => "get")
+    .post("/post", () => "post")
+    .put("/put", () => "put")
+    .any("/any", () => "any")
+    .match(Object.values(HttpMethods), "/match", () => "match");
+
+  let res = await fetch(`${host}/delete`, { method: HttpMethods.Delete });
+  assertEquals(res.status, Status.OK);
+  assertEquals(await res.text(), "delete");
+
+  res = await fetch(`${host}/get`, { method: HttpMethods.Get });
+  assertEquals(res.status, Status.OK);
+  assertEquals(await res.text(), "get");
+
+  res = await fetch(`${host}/post`, { method: HttpMethods.Post });
+  assertEquals(res.status, Status.OK);
+  assertEquals(await res.text(), "post");
+
+  res = await fetch(`${host}/put`, { method: HttpMethods.Put });
+  assertEquals(res.status, Status.OK);
+  assertEquals(await res.text(), "put");
+
+  for (const key in HttpMethods) {
+    res = await fetch(`${host}/any`, { method: HttpMethods[key] });
+    assertEquals(res.status, Status.OK);
+    assertEquals(await res.text(), "any");
+
+    res = await fetch(`${host}/match`, { method: HttpMethods[key] });
+    assertEquals(res.status, Status.OK);
+    assertEquals(await res.text(), "match");
   }
 });
+
+test(async function NotFound() {
+  app.get("/not_found_handler", NotFoundHandler);
+  let res = await fetch(`${host}/not_found_handler`);
+  assertEquals(res.status, Status.NotFound);
+  assertEquals(await res.text(), STATUS_TEXT.get(Status.NotFound));
+});
+
+app.start(addr);
