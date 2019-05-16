@@ -90,8 +90,8 @@ test(async function AbcMiddleware() {
 });
 
 test(async function AbcMiddlewareError() {
-  app.get("/middlewareerror", NotFoundHandler, function(next) {
-    return function(c) {
+  app.get("/middlewareerror", NotFoundHandler, function() {
+    return function() {
       throw new Error();
     };
   });
