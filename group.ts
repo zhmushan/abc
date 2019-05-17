@@ -1,4 +1,5 @@
 import { Abc, MiddlewareFunc, HandlerFunc, NotFoundHandler } from "./abc.ts";
+import { path } from "./deps.ts";
 
 export interface Group {
   prefix: string;
@@ -28,7 +29,8 @@ export interface Group {
     handler: HandlerFunc,
     ...middleware: MiddlewareFunc[]
   ): Group;
-  static(path: string): Group;
+  static(prefix: string, root: string): Group;
+  file(path: string, filepath: string, ...m: MiddlewareFunc[]): Group;
   group(prefix: string, ...m: MiddlewareFunc[]): Group;
 }
 
@@ -123,8 +125,13 @@ class GroupImpl implements Group {
     return this;
   }
 
-  static(path: string) {
-    this.abc.static(this.prefix + path);
+  static(prefix: string, root: string) {
+    this.abc.static(path.join(this.prefix, prefix), root);
+    return this;
+  }
+
+  file(p: string, filepath: string, ...m: MiddlewareFunc[]) {
+    this.abc.file(path.join(this.prefix, p), filepath, ...m);
     return this;
   }
 

@@ -1,7 +1,8 @@
-import { ServerRequest, Response, Status } from "./deps.ts";
-import { Abc } from "./abc.ts";
+import { ServerRequest, Response, Status, path } from "./deps.ts";
+import { Abc, NotFoundHandler } from "./abc.ts";
 import { bind } from "./binder.ts";
 import { Type } from "./type.ts";
+const { cwd, lstat, readFile } = Deno;
 
 export interface Context {
   request: ServerRequest;
@@ -29,6 +30,9 @@ export interface Context {
 
   /** Sends a blob response with content type and status code. */
   blob(b: Uint8Array | Deno.Reader, contentType: string, code?: number): void;
+
+  file(filepath: string): Promise<string>;
+
   bind<T>(cls: Type<T>): Promise<T>;
 }
 
@@ -143,6 +147,22 @@ class ContextImpl implements Context {
     this.writeContentType(contentType);
     this.response.status = code;
     this.response.body = b;
+  }
+
+  async file(filepath: string) {
+    filepath = path.join(cwd(), filepath);
+    try {
+      const fileinfo = await lstat(filepath);
+      if (
+        fileinfo.isDirectory() &&
+        (await lstat(filepath + "index.html")).isFile()
+      ) {
+        filepath = path.join(filepath, "index.html");
+      }
+      return new TextDecoder().decode(await readFile(filepath));
+    } catch {
+      return NotFoundHandler(this);
+    }
   }
 
   bind<T>(cls: Type<T>): Promise<T> {
