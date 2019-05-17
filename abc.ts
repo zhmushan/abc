@@ -1,7 +1,7 @@
 import { serve, Status, STATUS_TEXT, path } from "./deps.ts";
 import { Context, context } from "./context.ts";
 import { Router } from "./router.ts";
-import { group, Group } from "./group.ts";
+import { group } from "./group.ts";
 
 /** `Renderer` is the interface that wraps the `render` function.  */
 export interface Renderer {
@@ -31,55 +31,7 @@ export function NotImplemented() {
   return new Error("Not Implemented");
 }
 
-export interface Abc {
-  router: Router;
-  middleware: MiddlewareFunc[];
-  premiddleware: MiddlewareFunc[];
-  renderer: Renderer;
-
-  /** `start` starts an HTTP server. */
-  start(addr: string): Promise<void>;
-
-  /** `pre` adds middleware which is run before router. */
-  pre(...m: MiddlewareFunc[]): Abc;
-
-  /** `use` adds middleware which is run after router. */
-  use(...m: MiddlewareFunc[]): Abc;
-
-  connect(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Abc;
-  delete(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Abc;
-  get(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Abc;
-  head(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Abc;
-  options(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Abc;
-  patch(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Abc;
-  post(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Abc;
-  put(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Abc;
-  trace(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Abc;
-  any(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Abc;
-  match(
-    methods: string[],
-    path: string,
-    h: HandlerFunc,
-    ...m: MiddlewareFunc[]
-  ): Abc;
-  add(
-    method: string,
-    path: string,
-    handler: HandlerFunc,
-    ...m: MiddlewareFunc[]
-  ): Abc;
-
-  /** `static` registers a new route with path prefix to serve static files from the provided root directory. */
-  static(prefix: string, root: string): Abc;
-
-  /** `file` registers a new route with path to serve a static file with optional route-level middleware. */
-  file(path: string, filepath: string, ...m: MiddlewareFunc[]): Abc;
-
-  /** `group` creates a new router group with prefix and optional group level middleware. */
-  group(prefix: string, ...m: MiddlewareFunc[]): Group;
-}
-
-class AbcImpl implements Abc {
+export class Abc {
   router: Router;
   middleware: MiddlewareFunc[];
   premiddleware: MiddlewareFunc[];
@@ -91,6 +43,7 @@ class AbcImpl implements Abc {
     this.premiddleware = [];
   }
 
+  /** `start` starts an HTTP server. */
   async start(addr: string) {
     const s = serve(addr);
 
@@ -115,10 +68,13 @@ class AbcImpl implements Abc {
     }
   }
 
+  /** `pre` adds middleware which is run before router. */
   pre(...m: MiddlewareFunc[]) {
     this.premiddleware.push(...m);
     return this;
   }
+
+  /** `use` adds middleware which is run after router. */
   use(...m: MiddlewareFunc[]) {
     this.middleware.push(...m);
     return this;
@@ -193,12 +149,15 @@ class AbcImpl implements Abc {
     });
     return this;
   }
+
+  /** `group` creates a new router group with prefix and optional group level middleware. */
   group(prefix: string, ...m: MiddlewareFunc[]) {
     const g = group({ abc: this, prefix });
     g.use(...m);
     return g;
   }
 
+  /** `static` registers a new route with path prefix to serve static files from the provided root directory. */
   static(prefix: string, root: string) {
     const h = function(c: Context) {
       const filepath: string = c.params.filepath;
@@ -210,6 +169,7 @@ class AbcImpl implements Abc {
     return this.get(`${prefix}/*filepath`, h);
   }
 
+  /** `file` registers a new route with path to serve a static file with optional route-level middleware. */
   file(path: string, filepath: string, ...m: MiddlewareFunc[]) {
     return this.get(path, c => c.file(filepath), ...m);
   }
@@ -243,6 +203,6 @@ class AbcImpl implements Abc {
  *      .start("0.0.0.0:8080");
  */
 export function abc() {
-  const abc = new AbcImpl() as Abc;
+  const abc = new Abc();
   return abc;
 }

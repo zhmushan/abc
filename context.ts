@@ -4,39 +4,7 @@ import { bind } from "./binder.ts";
 import { Type } from "./type.ts";
 const { cwd, lstat, readFile } = Deno;
 
-export interface Context {
-  request: ServerRequest;
-  response: Response;
-  path: string;
-  method: string;
-  params: Record<string, string>;
-  url: URL;
-  queryParams: Record<string, string>;
-  abc: Abc;
-  string(v: string, code?: number): void;
-  json(v: Record<string, any> | string, code?: number): void;
-
-  /** Sends an HTTP response with status code. */
-  html(v: string, code?: number): void;
-
-  /** Sends an HTTP blob response with status code. */
-  htmlBlob(b: Uint8Array | Deno.Reader, code?: number): void;
-
-  /**
-   * Renders a template with data and sends a text/html response with status code.
-   * Abc.renderer must be registered first.
-   */
-  render<T>(name: string, data?: T, code?: number): void;
-
-  /** Sends a blob response with content type and status code. */
-  blob(b: Uint8Array | Deno.Reader, contentType: string, code?: number): void;
-
-  file(filepath: string): Promise<string>;
-
-  bind<T>(cls: Type<T>): Promise<T>;
-}
-
-class ContextImpl implements Context {
+export class Context {
   private _request: ServerRequest;
   set request(r: ServerRequest) {
     this._request = r;
@@ -125,16 +93,22 @@ class ContextImpl implements Context {
     );
   }
 
+  /** Sends an HTTP response with status code. */
   html(v: string, code = Status.OK) {
     this.writeContentType("text/html");
     this.response.status = code;
     this.response.body = new TextEncoder().encode(v);
   }
 
+  /** Sends an HTTP blob response with status code. */
   htmlBlob(b: Uint8Array | Deno.Reader, code = Status.OK) {
     this.blob(b, "text/html", code);
   }
 
+  /**
+   * Renders a template with data and sends a text/html response with status code.
+   * Abc.renderer must be registered first.
+   */
   async render<T>(name: string, data = {} as T, code = Status.OK) {
     if (!this.abc.renderer) {
       throw new Error();
@@ -143,6 +117,7 @@ class ContextImpl implements Context {
     this.htmlBlob(r, code);
   }
 
+  /** Sends a blob response with content type and status code. */
   blob(b: Uint8Array | Deno.Reader, contentType: string, code = Status.OK) {
     this.writeContentType(contentType);
     this.response.status = code;
@@ -177,6 +152,6 @@ export interface ContextOptions {
 }
 
 export function context(options = {} as ContextOptions) {
-  const c = new ContextImpl(options) as Context;
+  const c = new Context(options);
   return c;
 }
