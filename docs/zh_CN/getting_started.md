@@ -63,7 +63,7 @@ function paging(c: Context) {
 
 ## 静态资源
 
-通过路径 `/sample` 访问 `./folder/sample` 目录下的任意文件.
+通过路径 `/sample/*` 提供 `./folder/sample` 目录下的任意文件.
 
 ```ts
 app.static("/sample", "./folder/sample");

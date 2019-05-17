@@ -63,7 +63,7 @@ Browse to http://localhost:8080/list?page=0&size=5 and you should see "page: 0, 
 
 ## Static Content
 
-Serve any file from `./folder/sample` directory for path `/sample`.
+Serve any file from `./folder/sample` directory for path `/sample/*`.
 
 ```ts
 app.static("/sample", "./folder/sample");
