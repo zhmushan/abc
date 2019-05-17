@@ -63,10 +63,10 @@ Browse to http://localhost:8080/list?page=0&size=5 and you should see "page: 0, 
 
 ## Static Content
 
-Serve any file from static directory.
+Serve any file from `./folder/sample` directory for path `/sample`.
 
 ```ts
-app.static("/static/*files");
+app.static("/sample", "./folder/sample");
 ```
 
 ## Middleware

@@ -63,10 +63,10 @@ function paging(c: Context) {
 
 ## 静态资源
 
-将 static 作为静态资源目录.
+通过路径 `/sample` 访问 `./folder/sample` 目录下的任意文件.
 
 ```ts
-app.static("/static/*files");
+app.static("/sample", "./folder/sample");
 ```
 
 ## 中间件
