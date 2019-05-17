@@ -1,40 +1,7 @@
 import { Abc, MiddlewareFunc, HandlerFunc, NotFoundHandler } from "./abc.ts";
 import { path } from "./deps.ts";
 
-export interface Group {
-  prefix: string;
-  middleware: MiddlewareFunc[];
-  abc: Abc;
-
-  use(...m: MiddlewareFunc[]): Group;
-  connect(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group;
-  delete(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group;
-  get(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group;
-  head(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group;
-  options(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group;
-  patch(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group;
-  post(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group;
-  put(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group;
-  trace(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group;
-  any(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group;
-  match(
-    methods: string[],
-    path: string,
-    h: HandlerFunc,
-    ...m: MiddlewareFunc[]
-  ): Group;
-  add(
-    method: string,
-    path: string,
-    handler: HandlerFunc,
-    ...middleware: MiddlewareFunc[]
-  ): Group;
-  static(prefix: string, root: string): Group;
-  file(path: string, filepath: string, ...m: MiddlewareFunc[]): Group;
-  group(prefix: string, ...m: MiddlewareFunc[]): Group;
-}
-
-class GroupImpl implements Group {
+export class Group {
   prefix: string;
   middleware: MiddlewareFunc[];
   abc: Abc;
@@ -147,6 +114,6 @@ export interface GroupOptions {
 }
 
 export function group(options = {} as GroupOptions) {
-  const g = new GroupImpl(options) as Group;
+  const g = new Group(options);
   return g;
 }
