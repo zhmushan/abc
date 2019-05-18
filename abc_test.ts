@@ -1,6 +1,10 @@
 import { test, assertEquals } from "./dev_deps.ts";
-import { Status, STATUS_TEXT } from "./deps.ts";
+import { Status } from "./deps.ts";
 import { abc, NotFoundHandler } from "./abc.ts";
+import {
+  InternalServerErrorException,
+  NotFoundException
+} from "./http_exception.ts";
 const { readFile } = Deno;
 
 enum HttpMethods {
@@ -33,7 +37,10 @@ test(async function AbcStatic() {
 
   res = await fetch(`${host}/sample/empty`);
   assertEquals(res.status, Status.NotFound);
-  assertEquals(await res.text(), STATUS_TEXT.get(Status.NotFound));
+  assertEquals(
+    await res.text(),
+    JSON.stringify(new NotFoundException().response)
+  );
 });
 
 test(async function AbcFile() {
@@ -49,7 +56,10 @@ test(async function AbcFile() {
 
   res = await fetch(`${host}/fileempty`);
   assertEquals(res.status, Status.NotFound);
-  assertEquals(await res.text(), STATUS_TEXT.get(Status.NotFound));
+  assertEquals(
+    await res.text(),
+    JSON.stringify(new NotFoundException().response)
+  );
 });
 
 test(async function AbcMiddleware() {
@@ -90,14 +100,18 @@ test(async function AbcMiddleware() {
 });
 
 test(async function AbcMiddlewareError() {
+  const errMsg = "err";
   app.get("/middlewareerror", NotFoundHandler, function() {
     return function() {
-      throw new Error();
+      throw new Error(errMsg);
     };
   });
   let res = await fetch(`${host}/middlewareerror`);
   assertEquals(res.status, Status.InternalServerError);
-  assertEquals(await res.text(), STATUS_TEXT.get(Status.InternalServerError));
+  assertEquals(
+    await res.text(),
+    JSON.stringify(new InternalServerErrorException(errMsg).response)
+  );
 });
 
 test(async function AbcHandler() {
@@ -147,7 +161,10 @@ test(async function NotFound() {
   app.get("/not_found_handler", NotFoundHandler);
   let res = await fetch(`${host}/not_found_handler`);
   assertEquals(res.status, Status.NotFound);
-  assertEquals(await res.text(), STATUS_TEXT.get(Status.NotFound));
+  assertEquals(
+    await res.text(),
+    JSON.stringify(new NotFoundException().response)
+  );
 });
 
 app.start(addr);

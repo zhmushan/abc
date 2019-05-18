@@ -136,7 +136,7 @@ export class Context {
       }
       return new TextDecoder().decode(await readFile(filepath));
     } catch {
-      return NotFoundHandler(this);
+      NotFoundHandler();
     }
   }
 

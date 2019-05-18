@@ -1,7 +1,13 @@
-import { serve, Status, STATUS_TEXT, path } from "./deps.ts";
+import { serve, path } from "./deps.ts";
 import { Context, context } from "./context.ts";
 import { Router } from "./router.ts";
 import { group } from "./group.ts";
+import {
+  InternalServerErrorException,
+  HttpException,
+  NotFoundException,
+  createHttpExceptionBody
+} from "./http_exception.ts";
 
 /** `Renderer` is the interface that wraps the `render` function.  */
 export interface Renderer {
@@ -15,17 +21,9 @@ export type HandlerFunc = (c?: Context) => Promise<any> | any;
 /* `MiddlewareFunc` defines a function to process middleware. */
 export type MiddlewareFunc = (h: HandlerFunc) => HandlerFunc;
 
-export const NotFoundHandler: HandlerFunc = c => {
-  c.response.status = Status.NotFound;
-  c.response.body = new TextEncoder().encode(STATUS_TEXT.get(Status.NotFound));
-};
-
-export const InternalServerErrorHandler: HandlerFunc = c => {
-  c.response.status = Status.InternalServerError;
-  c.response.body = new TextEncoder().encode(
-    STATUS_TEXT.get(Status.InternalServerError)
-  );
-};
+export function NotFoundHandler() {
+  throw new NotFoundException();
+}
 
 export function NotImplemented() {
   return new Error("Not Implemented");
@@ -60,8 +58,21 @@ export class Abc {
       let result;
       try {
         result = await h(c);
-      } catch {
-        result = InternalServerErrorHandler(c);
+      } catch (e) {
+        if (e instanceof HttpException) {
+          result = c.json(
+            typeof e.response === "object"
+              ? e.response
+              : createHttpExceptionBody(e.response, undefined, e.status),
+            e.status
+          );
+        } else {
+          e = new InternalServerErrorException(e.message);
+          result = c.json(
+            (e as InternalServerErrorException).response,
+            (e as InternalServerErrorException).status
+          );
+        }
       }
       this.transformResult(c, result);
       await req.respond(c.response);
