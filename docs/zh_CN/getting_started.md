@@ -18,7 +18,7 @@ app
 启动服务
 
 ```sh
-$ deno --allow-net ./server.ts
+$ deno run --allow-net ./server.ts
 ```
 
 从浏览器访问 http://localhost:8080/hello 可以看到页面上显示 "Hello, Abc!".
