@@ -21,7 +21,7 @@ export type HandlerFunc = (c?: Context) => Promise<any> | any;
 /* `MiddlewareFunc` defines a function to process middleware. */
 export type MiddlewareFunc = (h: HandlerFunc) => HandlerFunc;
 
-export function NotFoundHandler() {
+export function NotFoundHandler(_?: Context) {
   throw new NotFoundException();
 }
 
