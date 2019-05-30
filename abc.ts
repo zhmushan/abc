@@ -1,4 +1,4 @@
-import { serve, path } from "./deps.ts";
+import { serve, path, Server } from "./deps.ts";
 import { Context, context } from "./context.ts";
 import { Router } from "./router.ts";
 import { group } from "./group.ts";
@@ -34,6 +34,7 @@ export class Abc {
   middleware: MiddlewareFunc[];
   premiddleware: MiddlewareFunc[];
   renderer: Renderer;
+  server: Server;
 
   constructor() {
     this.router = new Router();
@@ -44,6 +45,7 @@ export class Abc {
   /** `start` starts an HTTP server. */
   async start(addr: string) {
     const s = serve(addr);
+    this.server = s;
 
     for await (const req of s) {
       const c = context({ r: req, url: new URL(req.url, addr), abc: this });
@@ -77,6 +79,10 @@ export class Abc {
       this.transformResult(c, result);
       await req.respond(c.response);
     }
+  }
+
+  close() {
+    this.server.listener.close()
   }
 
   /** `pre` adds middleware which is run before router. */

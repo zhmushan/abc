@@ -3,7 +3,8 @@ import * as _path from "https://deno.land/std@v0.7.0/fs/path.ts";
 export {
   serve,
   ServerRequest,
-  Response
+  Response,
+  Server
 } from "https://deno.land/std@v0.7.0/http/server.ts";
 export {
   Status,
