@@ -6,6 +6,27 @@ import { Type } from "./type.ts";
 
 export const BINDER_PROP_TYPE_PAIRS = "abc:binder_prop_type_pairs";
 
+function _bind<T>(
+  data: Record<string, any>,
+  types: Record<string, any>,
+  instance: T
+) {
+  for (const key in types) {
+    if (data.hasOwnProperty(key)) {
+      if (typeof types[key] === "object") {
+        instance[key] = {};
+        _bind(data[key], types[key], instance[key]);
+      } else if (typeof data[key] === types[key]) {
+        instance[key] = data[key];
+      } else {
+        throw new Error(`${key} should be ${types[key]}`);
+      }
+    } else {
+      throw new Error(`${key} is required`);
+    }
+  }
+}
+
 export async function bind<T>(cls: Type<T>, c: Context): Promise<T> {
   const req = c.request;
   const cType = req.headers.get("Content-Type");
@@ -15,7 +36,7 @@ export async function bind<T>(cls: Type<T>, c: Context): Promise<T> {
   let data: Record<string, any>;
   const instance = new cls();
   const body = new TextDecoder().decode(await req.body());
-  const pairs = Reflect.getMetadata(BINDER_PROP_TYPE_PAIRS, cls);
+  const types = Reflect.getMetadata(BINDER_PROP_TYPE_PAIRS, cls);
 
   let useFunc: ParserFunction;
   if (cType.includes("application/json")) {
@@ -29,14 +50,8 @@ export async function bind<T>(cls: Type<T>, c: Context): Promise<T> {
     throw new Error(STATUS_TEXT.get(Status.UnsupportedMediaType));
   }
   data = Parser[useFunc](body);
-  for (const key in pairs) {
-    if (!data.hasOwnProperty(key)) {
-      throw new Error(`${key} is required`);
-    } else if (typeof data[key] !== pairs[key]) {
-      throw new Error(`${key} should be ${pairs[key]}`);
-    }
-    instance[key] = data[key];
-  }
+  _bind(data, types, instance);
+
   return instance;
 }
 
@@ -46,7 +61,11 @@ export function Binder() {
     const instance = new target(...types);
     const pairs = {};
     for (const key of Object.keys(instance)) {
-      pairs[key] = typeof instance[key]();
+      if (Reflect.hasMetadata(BINDER_PROP_TYPE_PAIRS, instance[key])) {
+        pairs[key] = Reflect.getMetadata(BINDER_PROP_TYPE_PAIRS, instance[key]);
+      } else {
+        pairs[key] = typeof instance[key]();
+      }
     }
     Reflect.defineMetadata(BINDER_PROP_TYPE_PAIRS, pairs, target);
   };

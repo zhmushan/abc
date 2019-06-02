@@ -18,6 +18,11 @@ class A {
   constructor(public foo: string, public bar: number) {}
 }
 
+@Binder()
+class B {
+  constructor(public num: number, public a: A) {}
+}
+
 test(function BinderDecorator() {
   assertEquals(Reflect.getMetadata(BINDER_PROP_TYPE_PAIRS, A), {
     foo: "string",
@@ -88,5 +93,32 @@ test(async function BindJSON() {
     },
     Error,
     "bar is required"
+  );
+});
+
+test(async function BindNestingJSON() {
+  const data = [
+    { num: 1, a: { _foo: "foo", foo: "foo", bar: 123 } },
+    { num: 1, a: { _foo: "foo", foo: "foo", bar: "bar" } }
+  ];
+
+  const sample = new B(1, new A("foo", 123));
+  let ctx = injectContext({
+    body: () => new TextEncoder().encode(JSON.stringify(data[0])),
+    headers: new Headers({ "Content-Type": "application/json" })
+  });
+  const instance = await bind(B, ctx);
+  assertEquals(instance, sample);
+
+  ctx = injectContext({
+    body: () => new TextEncoder().encode(JSON.stringify(data[1])),
+    headers: new Headers({ "Content-Type": "application/json" })
+  });
+  assertThrowsAsync(
+    async () => {
+      await bind(B, ctx);
+    },
+    Error,
+    "bar should be number"
   );
 });
