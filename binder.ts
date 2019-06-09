@@ -5,6 +5,7 @@ import { Parser, ParserFunction } from "./parser.ts";
 import { Type } from "./type.ts";
 
 export const BINDER_PROP_TYPE_PAIRS = "abc:binder_prop_type_pairs";
+const Any = "any";
 
 function _bind<T>(
   data: Record<string, any>,
@@ -16,7 +17,7 @@ function _bind<T>(
       if (typeof types[key] === "object") {
         instance[key] = {};
         _bind(data[key], types[key], instance[key]);
-      } else if (typeof data[key] === types[key]) {
+      } else if (typeof data[key] === types[key] || types[key] === Any) {
         instance[key] = data[key];
       } else {
         throw new Error(`${key} should be ${types[key]}`);
@@ -64,7 +65,12 @@ export function Binder() {
       if (Reflect.hasMetadata(BINDER_PROP_TYPE_PAIRS, instance[key])) {
         pairs[key] = Reflect.getMetadata(BINDER_PROP_TYPE_PAIRS, instance[key]);
       } else {
-        pairs[key] = typeof instance[key]();
+        const fieldType = typeof instance[key]();
+        if (fieldType === "object") {
+          pairs[key] = Any;
+        } else {
+          pairs[key] = typeof instance[key]();
+        }
       }
     }
     Reflect.defineMetadata(BINDER_PROP_TYPE_PAIRS, pairs, target);
