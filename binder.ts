@@ -69,7 +69,7 @@ export function Binder() {
         if (fieldType === "object") {
           pairs[key] = Any;
         } else {
-          pairs[key] = typeof instance[key]();
+          pairs[key] = fieldType;
         }
       }
     }
