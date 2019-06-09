@@ -23,10 +23,19 @@ class B {
   constructor(public num: number, public a: A) {}
 }
 
+@Binder()
+class Any {
+  constructor(public field1: any) {}
+}
+
 test(function BinderDecorator() {
   assertEquals(Reflect.getMetadata(BINDER_PROP_TYPE_PAIRS, A), {
     foo: "string",
     bar: "number"
+  });
+
+  assertEquals(Reflect.getMetadata(BINDER_PROP_TYPE_PAIRS, Any), {
+    field1: "any"
   });
 });
 
@@ -120,5 +129,41 @@ test(async function BindNestingJSON() {
     },
     Error,
     "bar should be number"
+  );
+});
+
+test(async function BindFieldWithAny() {
+  const data = [
+    {
+      field1: "1"
+    },
+    {
+      field1: 1
+    },
+    {}
+  ];
+
+  let ctx = injectContext({
+    body: () => new TextEncoder().encode(JSON.stringify(data[0])),
+    headers: new Headers({ "Content-Type": "application/json" })
+  });
+  assertEquals(await bind(Any, ctx), new Any("1"));
+
+  ctx = injectContext({
+    body: () => new TextEncoder().encode(JSON.stringify(data[1])),
+    headers: new Headers({ "Content-Type": "application/json" })
+  });
+  assertEquals(await bind(Any, ctx), new Any(1));
+
+  ctx = injectContext({
+    body: () => new TextEncoder().encode(JSON.stringify(data[2])),
+    headers: new Headers({ "Content-Type": "application/json" })
+  });
+  assertThrowsAsync(
+    async () => {
+      await bind(Any, ctx);
+    },
+    Error,
+    "field1 is required"
   );
 });
