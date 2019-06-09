@@ -79,6 +79,12 @@ export class Context {
     }
   }
 
+  async body() {
+    return JSON.parse(
+      new TextDecoder().decode(await this.request.body())
+    ) as Record<string, any>;
+  }
+
   string(v: string, code = Status.OK) {
     this.writeContentType("text/plain");
     this.response.status = code;
