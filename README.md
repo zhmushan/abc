@@ -5,8 +5,8 @@
 [![tag](https://img.shields.io/github/tag/zhmushan/abc.svg)](https://github.com/zhmushan/abc)
 [![Build Status](https://dev.azure.com/zhmushan/abc/_apis/build/status/zhmushan.abc?branchName=master)](https://dev.azure.com/zhmushan/abc/_build/latest?definitionId=2?branchName=master)
 [![license](https://img.shields.io/github/license/zhmushan/abc.svg)](https://github.com/zhmushan/abc)
-[![tag](https://img.shields.io/badge/deno__std-v0.8.0-green.svg)](https://github.com/denoland/deno_std)
-[![tag](https://img.shields.io/badge/deno-v0.8.0-green.svg)](https://github.com/denoland/deno)
+[![tag](https://img.shields.io/badge/deno__std-v0.9.0-green.svg)](https://github.com/denoland/deno_std)
+[![tag](https://img.shields.io/badge/deno-v0.9.0-green.svg)](https://github.com/denoland/deno)
 
 #### Quick links
 
