@@ -1,5 +1,5 @@
 variables:
-  DENO_VERSION: "v0.15.0"
+  DENO_VERSION: "v0.17.0"
   TS_VERSION: "3.4.5"
 
 jobs:
@@ -7,7 +7,7 @@ jobs:
     pool:
       vmImage: "Ubuntu-16.04"
     steps:
-      - script: npm install eslint typescript@$(TS_VERSION) @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-prettier
+      - script: npm install eslint@5.16.0 typescript@$(TS_VERSION) @typescript-eslint/eslint-plugin@1.13.0 @typescript-eslint/parser@1.13.0 eslint-config-prettier
       - script: curl -L https://deno.land/x/install/install.sh | sh -s $(DENO_VERSION)
       - script: echo '##vso[task.prependpath]$(HOME)/.deno/bin/'
       - script: npx eslint *.ts middleware/*.ts
@@ -17,18 +17,18 @@ jobs:
     pool:
       vmImage: "macOS-10.13"
     steps:
-      - script: npm -g install eslint typescript@$(TS_VERSION) @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-prettier
+      - script: npm -g install eslint@5.16.0 typescript@$(TS_VERSION) @typescript-eslint/eslint-plugin@1.13.0 @typescript-eslint/parser@1.13.0 eslint-config-prettier
       - script: curl -L https://deno.land/x/install/install.sh | sh -s $(DENO_VERSION)
       - script: echo '##vso[task.prependpath]$(HOME)/.deno/bin/'
       - script: eslint *.ts middleware/*.ts
       - script: deno run -c tsconfig.json --allow-net --allow-read test.ts
 
-  # - job: "Windows"
-  #   pool:
-  #     vmImage: "vs2017-win2016"
-  #   steps:
-  #     - bash: npm install eslint typescript@$(TS_VERSION) @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-prettier
-  #     - powershell: iwr https://deno.land/x/install/install.ps1 -out install.ps1; .\install.ps1 $(DENO_VERSION)
-  #     - bash: echo "##vso[task.prependpath]C:\Users\VssAdministrator\.deno\\bin"
-  #     - bash: npx eslint *.ts middleware/*.ts
-  #     - bash: deno.exe run -c tsconfig.json --allow-net --allow-read test.ts
+  - job: "Windows"
+    pool:
+      vmImage: "vs2017-win2016"
+    steps:
+      - bash: npm install eslint@5.16.0 typescript@$(TS_VERSION) @typescript-eslint/eslint-plugin@1.13.0 @typescript-eslint/parser@1.13.0 eslint-config-prettier
+      - powershell: iwr https://deno.land/x/install/install.ps1 -out install.ps1; .\install.ps1 $(DENO_VERSION)
+      - bash: echo "##vso[task.prependpath]C:\Users\VssAdministrator\.deno\\bin"
+      - bash: npx eslint *.ts middleware/*.ts
+      - bash: deno.exe run -c tsconfig.json --allow-net --allow-read test.ts
