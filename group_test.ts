@@ -7,7 +7,9 @@ let isFinished = false;
 test(async function GroupMiddleware() {
   const app = abc();
   const g = app.group("group");
-  const h: HandlerFunc = function() {};
+  const h: HandlerFunc = function() {
+    return;
+  };
   const m1: MiddlewareFunc = function(next) {
     return function(c) {
       return next(c);

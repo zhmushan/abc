@@ -60,12 +60,12 @@ export class Node {
         // This also implies that the common prefix contains no ':' or '*'
         // since the existing key can't contain those chars.
         let i = 0;
-        let max = Math.min(path.length, node.path.length);
+        const max = Math.min(path.length, node.path.length);
         for (; i < max && path[i] === node.path[i]; ++i);
 
         // Split edge
         if (i < node.path.length) {
-          let child = new Node();
+          const child = new Node();
           child.path = node.path.slice(i);
           child.wildChild = node.wildChild;
           child.nType = NodeType.Static;
@@ -119,7 +119,7 @@ export class Node {
               } else {
                 pathSeg = path.split("/", 1)[0];
               }
-              let prefix =
+              const prefix =
                 fullPath.slice(0, fullPath.indexOf(pathSeg)) + node.path;
               throw new Error(
                 `'${pathSeg}' in new path '${fullPath}' conflicts with existing wildcard '${
@@ -129,7 +129,7 @@ export class Node {
             }
           }
 
-          let c = path[0];
+          const c = path[0];
 
           // slash after param
           if (
@@ -183,9 +183,9 @@ export class Node {
 
   // increments priority of the given child and reorders if necessary
   incrementChildPrio(pos: number) {
-    let node = this as Node;
+    const node = this as Node;
     ++node.children[pos].priority;
-    let prio = node.children[pos].priority;
+    const prio = node.children[pos].priority;
 
     // adjust position (move to front)
     let newPos = pos;
@@ -222,7 +222,7 @@ export class Node {
 
     // find prefix until first wildcard (beginning with ':'' or '*'')
     for (let i = 0, max = path.length; numParams > 0; ++i) {
-      let c = path[i];
+      const c = path[i];
       if (c !== ":" && c !== "*") {
         continue;
       }
@@ -356,7 +356,7 @@ export class Node {
           // child,  we can just look up the next child node and continue
           // to walk down the tree
           if (!node.wildChild) {
-            let c = path[0];
+            const c = path[0];
             for (let i = 0; i < node.indices.length; ++i) {
               if (c === node.indices[i]) {
                 node = node.children[i];
@@ -384,7 +384,7 @@ export class Node {
                 // lazy allocation
                 p = [];
               }
-              let i = p.length;
+              const i = p.length;
               p[i] = {
                 key: node.path.slice(1),
                 value: path.slice(0, end)
@@ -420,7 +420,7 @@ export class Node {
                 // lazy allocation
                 p = [];
               }
-              let i = p.length;
+              const i = p.length;
               p[i] = {
                 key: node.path.slice(2),
                 value: path

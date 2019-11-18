@@ -93,7 +93,7 @@ test(async function AbcMiddleware() {
     )
     .get("/middleware", () => str);
 
-  let res = await fetch(`${host}/middleware`);
+  const res = await fetch(`${host}/middleware`);
   assertEquals(res.status, Status.OK);
   assertEquals(await res.text(), str);
   assertEquals(str, "0123");
@@ -106,7 +106,7 @@ test(async function AbcMiddlewareError() {
       throw new Error(errMsg);
     };
   });
-  let res = await fetch(`${host}/middlewareerror`);
+  const res = await fetch(`${host}/middlewareerror`);
   assertEquals(res.status, Status.InternalServerError);
   assertEquals(
     await res.text(),
@@ -116,7 +116,7 @@ test(async function AbcMiddlewareError() {
 
 test(async function AbcHandler() {
   app.get("/ok", () => "ok");
-  let res = await fetch(`${host}/ok`);
+  const res = await fetch(`${host}/ok`);
   assertEquals(res.status, Status.OK);
   assertEquals(await res.text(), "ok");
 });
@@ -159,7 +159,7 @@ test(async function AbcHttpMethods() {
 
 test(async function NotFound() {
   app.get("/not_found_handler", NotFoundHandler);
-  let res = await fetch(`${host}/not_found_handler`);
+  const res = await fetch(`${host}/not_found_handler`);
   assertEquals(res.status, Status.NotFound);
   assertEquals(
     await res.text(),

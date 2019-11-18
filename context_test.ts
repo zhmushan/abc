@@ -13,7 +13,7 @@ test(function StringResponse() {
     `true`,
     ``
   ];
-  let c = context();
+  const c = context();
   for (const r of results) {
     c.string(r);
     assertEquals(c.response.status, 200);
@@ -24,7 +24,7 @@ test(function StringResponse() {
 
 test(function JSONResponse() {
   const results = [{ foo: "bar" }, `{foo: "bar"}`, [1, 2], {}, [], `[]`];
-  let c = context();
+  const c = context();
   for (const r of results) {
     c.json(r);
     assertEquals(c.response.status, 200);
@@ -48,7 +48,7 @@ test(function HTMLResponse() {
     `true`,
     ``
   ];
-  let c = context();
+  const c = context();
   for (const r of results) {
     c.html(r);
     assertEquals(c.response.status, 200);

@@ -29,8 +29,7 @@ export class Parser {
     return result;
   }
   static urlencoded(data: string): Record<string, any> {
-    let result: Record<string, any>;
-    result = parse(data);
+    const result: Record<string, any> = parse(data);
     return result;
   }
   static multipart(data: string): Record<string, any> {

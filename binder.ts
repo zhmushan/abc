@@ -34,7 +34,7 @@ export async function bind<T>(cls: Type<T>, c: Context): Promise<T> {
   if (!cType) {
     return;
   }
-  let data: Record<string, any>;
+  let data: Record<string, any> = null;
   const instance = new cls();
   const body = new TextDecoder().decode(await req.body());
   const types = Reflect.getMetadata(BINDER_PROP_TYPE_PAIRS, cls);
