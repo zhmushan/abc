@@ -63,7 +63,7 @@ export class Context {
 
   constructor(options: ContextOptions) {
     this.request = options.r || ({} as ServerRequest);
-    this.url = options.url || new URL("0.0.0.0:8080");
+    this.url = options.url || new URL("http://0.0.0.0:8080");
     this.abc = options.abc || ({} as Abc);
 
     this.response = {};

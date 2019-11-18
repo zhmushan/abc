@@ -37,7 +37,7 @@ test(async function GroupMiddleware() {
   g.use(m1, m2, m3);
   g.get("/404", h, m4);
   g.get("/405", h, m5);
-  app.start("0.0.0.0:8080");
+  app.start({ port: 8080 });
   let res = await fetch("http://localhost:8080/group/404");
   assertEquals(res.status, Status.NotFound);
   res = await fetch("http://localhost:8080/group/405");

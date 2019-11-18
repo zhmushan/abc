@@ -11,4 +11,4 @@ app.renderer = {
 
 app
   .get("/", c => c.render("./index.html", { name: "zhmushan" }))
-  .start("0.0.0.0:8080");
+  .start({ port: 8080 });

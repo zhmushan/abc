@@ -21,6 +21,11 @@ export type HandlerFunc = (c?: Context) => Promise<any> | any;
 /* `MiddlewareFunc` defines a function to process middleware. */
 export type MiddlewareFunc = (h: HandlerFunc) => HandlerFunc;
 
+interface ServerConfig {
+  port: number;
+  hostname?: string;
+}
+
 export function NotFoundHandler(_?: Context) {
   throw new NotFoundException();
 }
@@ -43,12 +48,20 @@ export class Abc {
   }
 
   /** `start` starts an HTTP server. */
-  async start(addr: string) {
+  async start(addr: string | ServerConfig) {
+    if (typeof addr === "string") {
+      const [hostname, port] = addr.split(":");
+      addr = { hostname, port: Number(port) };
+    }
     const s = serve(addr);
     this.server = s;
 
     for await (const req of s) {
-      const c = context({ r: req, url: new URL(req.url, addr), abc: this });
+      const c = context({
+        r: req,
+        url: new URL(req.url, `http://${addr.hostname??"0.0.0.0"}:${addr.port}`),
+        abc: this
+      });
       let h = this.router.find(req.method, c) || NotFoundHandler;
 
       for (let i = this.middleware.length - 1; i >= 0; --i) {
@@ -82,7 +95,7 @@ export class Abc {
   }
 
   close() {
-    this.server.listener.close()
+    this.server.listener.close();
   }
 
   /** `pre` adds middleware which is run before router. */
@@ -217,7 +230,7 @@ export class Abc {
  *      .get("/hello", c => {
  *        return "Hello, Abc!";
  *      })
- *      .start("0.0.0.0:8080");
+ *      .start({ port: 8080 });
  */
 export function abc() {
   const abc = new Abc();

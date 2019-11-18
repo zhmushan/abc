@@ -19,5 +19,5 @@ abc()
     const user = await c.bind(UserDTO);
     return user;
   })
-  .start("0.0.0.0:8080");
+  .start({ port: 8080 });
 ```

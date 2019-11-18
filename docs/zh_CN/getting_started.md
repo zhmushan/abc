@@ -3,8 +3,7 @@
 创建 `server.ts`
 
 ```ts
-import { abc } from "https://deno.sh/abc/mod.ts";
-// OR import { abc } from "https://deno.land/x/abc/mod.ts";
+import { abc } from "https://deno.land/x/abc/mod.ts";
 
 const app = abc();
 
@@ -12,7 +11,7 @@ app
   .get("/hello", c => {
     return "Hello, Abc!";
   })
-  .start("0.0.0.0:8080");
+  .start({ port: 8080 });
 ```
 
 启动服务

@@ -5,4 +5,4 @@ abc()
   .get("/", findAll)
   .get("/:id", findOne)
   .post("/", create)
-  .start("0.0.0.0:8080");
+  .start({ port: 8080 });
