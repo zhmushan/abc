@@ -12,5 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - run: curl -fsSL https://deno.land/x/install/install.sh | bash -s ${DENO_VERSION}
-      - run: ${DENO_PATH}/deno run --allow-read --allow-write https://deno.land/std@${DENO_VERSION}/prettier/main.ts --check
-      - run: ${DENO_PATH}/deno run -c tsconfig.json --allow-net --allow-read test.ts
+      - run: |
+          export PATH=${DENO_PATH}:$PATH
+          deno run --allow-read --allow-write https://deno.land/std@${DENO_VERSION}/prettier/main.ts --check
+      - run: |
+          export PATH=${DENO_PATH}:$PATH
+          deno run -c tsconfig.json --allow-net --allow-read test.ts
