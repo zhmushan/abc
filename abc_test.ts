@@ -44,14 +44,14 @@ test(async function AbcStatic() {
 });
 
 test(async function AbcFile() {
-  app.file("pipelines", "./azure-pipelines.yml");
+  app.file("ci", "./.github/workflows/ci.yml");
   app.file("fileempty", "./fileempty");
 
-  let res = await fetch(`${host}/pipelines`);
+  let res = await fetch(`${host}/ci`);
   assertEquals(res.status, Status.OK);
   assertEquals(
     await res.text(),
-    new TextDecoder().decode(await readFile("./azure-pipelines.yml"))
+    new TextDecoder().decode(await readFile("./.github/workflows/ci.yml"))
   );
 
   res = await fetch(`${host}/fileempty`);

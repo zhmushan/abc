@@ -9,9 +9,7 @@ export enum LoggerFlag {
 
 export const DefaultLoggerConfig: LoggerConfig = {
   skipper: DefaultSkipper,
-  format: `time: '${LoggerFlag.Time}', method: '${LoggerFlag.Method}', path: '${
-    LoggerFlag.Path
-  }'`
+  format: `time: '${LoggerFlag.Time}', method: '${LoggerFlag.Method}', path: '${LoggerFlag.Path}'`
 };
 
 export function logger(config = DefaultLoggerConfig): MiddlewareFunc {

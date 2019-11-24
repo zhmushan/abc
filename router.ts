@@ -122,9 +122,7 @@ export class Node {
               const prefix =
                 fullPath.slice(0, fullPath.indexOf(pathSeg)) + node.path;
               throw new Error(
-                `'${pathSeg}' in new path '${fullPath}' conflicts with existing wildcard '${
-                  node.path
-                }' in existing prefix '${prefix}'`
+                `'${pathSeg}' in new path '${fullPath}' conflicts with existing wildcard '${node.path}' in existing prefix '${prefix}'`
               );
             }
           }

@@ -59,7 +59,10 @@ export class Abc {
     for await (const req of s) {
       const c = context({
         r: req,
-        url: new URL(req.url, `http://${addr.hostname??"0.0.0.0"}:${addr.port}`),
+        url: new URL(
+          req.url,
+          `http://${addr.hostname ?? "0.0.0.0"}:${addr.port}`
+        ),
         abc: this
       });
       let h = this.router.find(req.method, c) || NotFoundHandler;
