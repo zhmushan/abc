@@ -6,12 +6,11 @@ jobs:
   build:
     env:
       DENO_VERSION: "v0.24.0"
+      DENO_PATH: "$HOME/.deno/bin"
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v1
-      - uses: denolib/setup-deno@v1
-        with:
-          deno-version: ${DENO_VERSION}
-      - run: deno run --allow-read --allow-write https://deno.land/std@${DENO_VERSION}/prettier/main.ts --check
-      - run: deno run -c tsconfig.json --allow-net --allow-read test.ts
+      - run: curl -fsSL https://deno.land/x/install/install.sh | bash -s ${DENO_VERSION}
+      - run: ${DENO_PATH}/deno run --allow-read --allow-write https://deno.land/std@${DENO_VERSION}/prettier/main.ts --check
+      - run: ${DENO_PATH}/deno run -c tsconfig.json --allow-net --allow-read test.ts
