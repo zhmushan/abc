@@ -160,7 +160,10 @@ test(function Wildcard() {
       path: "/cmd/test/3",
       isMatch: true,
       route: "/cmd/:tool/:sub",
-      params: [{ key: "tool", value: "test" }, { key: "sub", value: "3" }]
+      params: [
+        { key: "tool", value: "test" },
+        { key: "sub", value: "3" }
+      ]
     },
     {
       path: "/src/",
@@ -462,11 +465,7 @@ test(function WildcardConflictEx() {
     const err = getErr(() => n.addRoute(c.route, () => c.route));
     assertEquals(
       err.message,
-      `'${c.segPath}' in new path '${
-        c.route
-      }' conflicts with existing wildcard '${
-        c.existSegPath
-      }' in existing prefix '${c.existPath}'`
+      `'${c.segPath}' in new path '${c.route}' conflicts with existing wildcard '${c.existSegPath}' in existing prefix '${c.existPath}'`
     );
   }
 });
