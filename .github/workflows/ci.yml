@@ -12,6 +12,6 @@ jobs:
       - uses: actions/checkout@v1
       - uses: denolib/setup-deno@v1
         with:
-          deno-version: $(DENO_VERSION)
-      - run: deno run --allow-read --allow-write https://deno.land/std@$(DENO_VERSION)/prettier/main.ts --check
+          deno-version: ${DENO_VERSION}
+      - run: deno run --allow-read --allow-write https://deno.land/std@${DENO_VERSION}/prettier/main.ts --check
       - run: deno run -c tsconfig.json --allow-net --allow-read test.ts
