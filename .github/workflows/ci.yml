@@ -2,11 +2,10 @@ name: ci
 
 on: [push, pull_request]
 
-variables:
-  DENO_VERSION: "v0.24.0"
-
 jobs:
   build:
+    env:
+      DENO_VERSION: "v0.24.0"
     runs-on: ubuntu-latest
 
     steps:
