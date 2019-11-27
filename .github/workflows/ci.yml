@@ -4,16 +4,12 @@ on: [push, pull_request]
 
 jobs:
   build:
-    env:
-      DENO_VERSION: "v0.24.0"
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v1
-      - run: curl -fsSL https://deno.land/x/install/install.sh | bash -s ${DENO_VERSION}
+      - uses: denolib/setup-deno@master
       - run: |
-          export PATH=$HOME/.deno/bin:$PATH
-          deno run --allow-read --allow-write https://deno.land/std@${DENO_VERSION}/prettier/main.ts --check
-      - run: |
-          export PATH=$HOME/.deno/bin:$PATH
+          deno --version
+          deno fmt --check */**
           deno run -c tsconfig.json --allow-net --allow-read test.ts
