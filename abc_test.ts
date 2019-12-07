@@ -19,24 +19,24 @@ const host = `http://${addr}`;
 
 test(async function AbcStatic() {
   const app = abc();
-  app.static("/sample", "./sample/02_template");
+  app.static("/examples", "./examples/02_template");
   app.start(addr);
 
-  let res = await fetch(`${host}/sample/main.ts`);
+  let res = await fetch(`${host}/examples/main.ts`);
   assertEquals(res.status, Status.OK);
   assertEquals(
     await res.text(),
-    new TextDecoder().decode(await readFile("./sample/02_template/main.ts"))
+    new TextDecoder().decode(await readFile("./examples/02_template/main.ts"))
   );
 
-  res = await fetch(`${host}/sample/`);
+  res = await fetch(`${host}/examples/`);
   assertEquals(res.status, Status.OK);
   assertEquals(
     await res.text(),
-    new TextDecoder().decode(await readFile("./sample/02_template/index.html"))
+    new TextDecoder().decode(await readFile("./examples/02_template/index.html"))
   );
 
-  res = await fetch(`${host}/sample/empty`);
+  res = await fetch(`${host}/examples/empty`);
   assertEquals(res.status, Status.NotFound);
   assertEquals(
     await res.text(),
