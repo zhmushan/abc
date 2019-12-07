@@ -9,7 +9,8 @@
 
 #### Quick links
 
-- [Documentation, demos, and guides](docs/table_of_contents.md)
+- [Guides](https://deno.land/x/abc/docs/table_of_contents.md)
+- [Examples](https://deno.land/x/abc/examples/)
 - [Benchmarks](benchmarks/RESULT)
 
 ## Hello World

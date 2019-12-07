@@ -8,11 +8,9 @@
 - [Data Binding 数据绑定](./data_binding.md)
 - [Static Files 静态资源](./static_files.md)
 - [Exception Filter 异常过滤](./exception_filter.md)
-  <!-- - [Testing 测试](./testing.md)
 
-## 技术
+## 中间件
 
-- [Authentication 认证](./authentication.md)
-- [Database 数据库](./database.md)
-- [Validation 验证](./router/validation.md)
-- [Logger 日志](./logger.md) -->
+- [Logger 日志](./logger.md)
+- [CORS 跨域](./cors.md)
+- [Rate Limiter 限速器](./ratelimiter.md)

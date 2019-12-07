@@ -8,11 +8,9 @@ English | [简体中文](./zh_CN/table_of_contents.md)
 - [Data Binding](./data_binding.md)
 - [Static Files](./static_files.md)
 - [Exception Filter](./exception_filter.md)
-  <!-- - [Testing](./testing.md)
 
-## Techniques
+## Middleware
 
-- [Authentication](./authentication.md)
-- [Database](./database.md)
-- [Validation](./router/validation.md)
-- [Logger](./logger.md) -->
+- [Logger](./logger.md)
+- [CORS](./cors.md)
+- [Rate Limiter](./ratelimiter.md)
