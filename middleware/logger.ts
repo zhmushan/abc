@@ -1,15 +1,10 @@
-import { MiddlewareFunc, HandlerFunc, Context } from "../mod.ts";
+import { MiddlewareFunc, HandlerFunc } from "../abc.ts";
+import { Context } from "../context.ts";
 import { Skipper, DefaultSkipper } from "./skipper.ts";
-
-export enum LoggerFlag {
-  Time = "#{time}",
-  Method = "#{method}",
-  Path = "#{path}"
-}
 
 export const DefaultLoggerConfig: LoggerConfig = {
   skipper: DefaultSkipper,
-  format: `time: '${LoggerFlag.Time}', method: '${LoggerFlag.Method}', path: '${LoggerFlag.Path}'`
+  format: ``
 };
 
 export function logger(config = DefaultLoggerConfig): MiddlewareFunc {
@@ -25,15 +20,6 @@ export function logger(config = DefaultLoggerConfig): MiddlewareFunc {
         return next(c);
       }
       let outstr = config.format;
-      for (const key in LoggerFlag) {
-        if (LoggerFlag[key] === LoggerFlag.Time) {
-          outstr = outstr.replace(LoggerFlag.Time, new Date().toString());
-        } else if (LoggerFlag[key] === LoggerFlag.Method) {
-          outstr = outstr.replace(LoggerFlag.Method, c.method);
-        } else if (LoggerFlag[key] === LoggerFlag.Path) {
-          outstr = outstr.replace(LoggerFlag.Path, c.path);
-        }
-      }
       console.log(outstr);
       return next(c);
     };
