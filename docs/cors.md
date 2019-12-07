@@ -1,7 +1,9 @@
-CORS is a mechanism that allows resources to be requested from another domain, which enable secure cross-domain
+## CORS
+
+`CORS` is a mechanism that allows resources to be requested from another domain, which enable secure cross-domain
 data transfers.
 
-## Usage
+### Usage
 
 ```ts
 const config: CORSConfig = {
@@ -12,7 +14,7 @@ const app = abc();
 app.use(cors(config));
 ```
 
-## Default Configuration
+### Default Configuration
 
 ```ts
 export const DefaultCORSConfig: CORSConfig = {

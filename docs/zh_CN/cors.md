@@ -1,6 +1,8 @@
-CORS 是一种机制，允许从另一个域请求资源，从而启用安全的跨域数据传输。
+## 跨域
 
-## 用法
+`CORS` 是一种机制，允许从另一个域请求资源，从而启用安全的跨域数据传输。
+
+### 用法
 
 ```ts
 const config: CORSConfig = {
@@ -11,7 +13,7 @@ const app = abc();
 app.use(cors(config));
 ```
 
-## 默认配置
+### 默认配置
 
 ```ts
 export const DefaultCORSConfig: CORSConfig = {
