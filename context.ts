@@ -2,6 +2,7 @@ import { ServerRequest, Response, Status, path } from "./deps.ts";
 import { Abc, NotFoundHandler } from "./abc.ts";
 import { bind } from "./binder.ts";
 import { Type } from "./type.ts";
+import { Header, MIME } from "./constants.ts";
 const { cwd, lstat, readFile } = Deno;
 
 export class Context {
@@ -74,8 +75,8 @@ export class Context {
     if (!this.response.headers) {
       this.response.headers = new Headers();
     }
-    if (!this.response.headers.has("content-type")) {
-      this.response.headers.set("content-type", v);
+    if (!this.response.headers.has(Header.ContentType)) {
+      this.response.headers.set(Header.ContentType, v);
     }
   }
 
@@ -86,13 +87,13 @@ export class Context {
   }
 
   string(v: string, code = Status.OK) {
-    this.writeContentType("text/plain");
+    this.writeContentType(MIME.TextPlain);
     this.response.status = code;
     this.response.body = new TextEncoder().encode(v);
   }
 
   json(v: Record<string, any> | string, code = Status.OK) {
-    this.writeContentType("application/json");
+    this.writeContentType(MIME.ApplicationJSON);
     this.response.status = code;
     this.response.body = new TextEncoder().encode(
       typeof v === "object" ? JSON.stringify(v) : v
@@ -101,14 +102,14 @@ export class Context {
 
   /** Sends an HTTP response with status code. */
   html(v: string, code = Status.OK) {
-    this.writeContentType("text/html");
+    this.writeContentType(MIME.TextHTML);
     this.response.status = code;
     this.response.body = new TextEncoder().encode(v);
   }
 
   /** Sends an HTTP blob response with status code. */
   htmlBlob(b: Uint8Array | Deno.Reader, code = Status.OK) {
-    this.blob(b, "text/html", code);
+    this.blob(b, MIME.TextHTML, code);
   }
 
   /**

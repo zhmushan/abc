@@ -3,6 +3,7 @@ import { Context } from "./context.ts";
 import { Status, STATUS_TEXT } from "./deps.ts";
 import { Parser, ParserFunction } from "./parser.ts";
 import { Type } from "./type.ts";
+import { Header, MIME } from "./constants.ts";
 
 export const BINDER_PROP_TYPE_PAIRS = "abc:binder_prop_type_pairs";
 const Any = "any";
@@ -30,7 +31,7 @@ function _bind<T>(
 
 export async function bind<T>(cls: Type<T>, c: Context): Promise<T> {
   const req = c.request;
-  const cType = req.headers.get("Content-Type");
+  const cType = req.headers.get(Header.ContentType);
   if (!cType) {
     return;
   }
@@ -40,11 +41,11 @@ export async function bind<T>(cls: Type<T>, c: Context): Promise<T> {
   const types = Reflect.getMetadata(BINDER_PROP_TYPE_PAIRS, cls);
 
   let useFunc: ParserFunction;
-  if (cType.includes("application/json")) {
+  if (cType.includes(MIME.ApplicationJSON)) {
     useFunc = "json";
-  } else if (cType.includes("application/x-www-form-urlencoded")) {
+  } else if (cType.includes(MIME.ApplicationForm)) {
     useFunc = "urlencoded";
-  } else if (cType.includes("multipart/form-data")) {
+  } else if (cType.includes(MIME.MultipartForm)) {
     useFunc = "multipart";
   }
   if (!useFunc) {

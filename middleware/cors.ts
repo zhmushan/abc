@@ -1,7 +1,7 @@
 import { Skipper, DefaultSkipper } from "./skipper.ts";
 import { MiddlewareFunc, HandlerFunc } from "../abc.ts";
 import { Context } from "../context.ts";
-import { HttpMethod } from "../http_method.ts";
+import { HttpMethod, Header } from "../constants.ts";
 import { Status } from "../deps.ts";
 
 export const DefaultCORSConfig: CORSConfig = {
@@ -35,7 +35,7 @@ export function cors(config = DefaultCORSConfig): MiddlewareFunc {
       }
       const req = c.request;
       const resp = c.response;
-      const origin = req.headers.get("Origin");
+      const origin = req.headers.get(Header.Origin);
       if (!resp.headers) resp.headers = new Headers();
 
       let allowOrigin = "";
@@ -54,42 +54,42 @@ export function cors(config = DefaultCORSConfig): MiddlewareFunc {
         }
       }
 
-      resp.headers.append("Vary", "Origin");
+      resp.headers.append(Header.Vary, Header.Origin);
       if (config.allowCredentials) {
-        resp.headers.set("Access-Control-Allow-Credentials", "true");
+        resp.headers.set(Header.AccessControlAllowCredentials, "true");
       }
 
       if (req.method != HttpMethod.Options) {
-        resp.headers.set("Access-Control-Allow-Origin", allowOrigin);
+        resp.headers.set(Header.AccessControlAllowOrigin, allowOrigin);
         if (config.exposeHeaders && config.exposeHeaders.length != 0) {
           resp.headers.set(
-            "Access-Control-Expose-Headers",
+            Header.AccessControlExposeHeaders,
             config.exposeHeaders.join(",")
           );
         }
 
         return next(c);
       }
-      resp.headers.append("Vary", "Access-Control-Allow-Methods");
-      resp.headers.append("Vary", "Access-Control-Allow-Headers");
-      resp.headers.set("Access-Control-Allow-Origin", allowOrigin);
+      resp.headers.append(Header.Vary, Header.AccessControlAllowMethods);
+      resp.headers.append(Header.Vary, Header.AccessControlAllowHeaders);
+      resp.headers.set(Header.AccessControlAllowOrigin, allowOrigin);
       resp.headers.set(
-        "Access-Control-Allow-Methods",
+        Header.AccessControlAllowMethods,
         config.allowMethods.join(",")
       );
       if (config.allowHeaders && config.allowHeaders.length != 0) {
         resp.headers.set(
-          "Access-Control-Allow-Headers",
+          Header.AccessControlRequestHeaders,
           config.allowHeaders.join(",")
         );
       } else {
-        const h = req.headers.get("Access-Control-Allow-Headers");
+        const h = req.headers.get(Header.AccessControlRequestHeaders);
         if (h) {
-          resp.headers.set("Access-Control-Allow-Headers", h);
+          resp.headers.set(Header.AccessControlRequestHeaders, h);
         }
       }
       if (config.maxAge > 0) {
-        resp.headers.set("Access-Control-Max-Age", String(config.maxAge));
+        resp.headers.set(Header.AccessControlMaxAge, String(config.maxAge));
       }
 
       resp.status = Status.NoContent;
