@@ -2,8 +2,6 @@ import { test, assertEquals } from "./dev_deps.ts";
 import { Status } from "./deps.ts";
 import { abc, MiddlewareFunc, HandlerFunc } from "./abc.ts";
 
-let isFinished = false;
-
 test(async function GroupMiddleware() {
   const app = abc();
   const g = app.group("group");
@@ -44,11 +42,5 @@ test(async function GroupMiddleware() {
   assertEquals(res.status, Status.NotFound);
   res = await fetch("http://localhost:8080/group/405");
   assertEquals(res.status, Status.MethodNotAllowed);
-  isFinished = true;
+  app.close();
 });
-
-setInterval(() => {
-  if (isFinished) {
-    Deno.exit();
-  }
-}, 1000);

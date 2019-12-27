@@ -11,4 +11,4 @@ for (const r of paramsRoutes) {
   app.any(r, () => r);
 }
 app.start(addr);
-console.log(`server listening on ${addr}`);
+console.log(`server listening on ${addr.port}`);

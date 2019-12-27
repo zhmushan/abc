@@ -93,7 +93,7 @@ export class Abc {
         }
       }
       this.transformResult(c, result);
-      await req.respond(c.response);
+      req.respond(c.response);
     }
   }
 

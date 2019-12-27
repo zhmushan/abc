@@ -1,5 +1,5 @@
 import { abc } from "../../mod.ts";
-import { renderFile } from "https://deno.land/x/dejs/dejs.ts";
+import { renderFile } from "https://deno.land/x/dejs/mod.ts";
 
 const app = abc();
 
