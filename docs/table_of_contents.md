@@ -13,4 +13,8 @@ English | [简体中文](./zh_CN/table_of_contents.md)
 
 - [Logger](./logger.md)
 - [CORS](./cors.md)
-- [Rate Limiter](./ratelimiter.md)
+
+## Style Guide
+
+- [Deno Style Guide](https://deno.land/std/style_guide.md)
+- [Abc Style Guide](./style_guide.md)

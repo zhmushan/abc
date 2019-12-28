@@ -28,4 +28,4 @@ export const DefaultCORSConfig: CORSConfig = {
     HttpMethod.Put
   ]
 };
-````
+```

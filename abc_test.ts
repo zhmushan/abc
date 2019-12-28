@@ -33,7 +33,9 @@ test(async function AbcStatic() {
   assertEquals(res.status, Status.OK);
   assertEquals(
     await res.text(),
-    new TextDecoder().decode(await readFile("./examples/02_template/index.html"))
+    new TextDecoder().decode(
+      await readFile("./examples/02_template/index.html")
+    )
   );
 
   res = await fetch(`${host}/examples/empty`);
