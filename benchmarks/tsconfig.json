@@ -1,7 +1,0 @@
-{
-  "compilerOptions": {
-    "module": "commonjs",
-    "target": "esnext",
-    "resolveJsonModule": true
-  }
-}

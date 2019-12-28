@@ -1,4 +1,4 @@
-export { test, runTests } from "https://deno.land/std@v0.27.0/testing/mod.ts";
+export { test } from "https://deno.land/std@v0.27.0/testing/mod.ts";
 export {
   assertEquals,
   assertNotEquals,

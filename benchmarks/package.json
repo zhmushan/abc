@@ -1,16 +1,8 @@
 {
-  "dependencies": {
-    "express": "^4.16.4",
-    "fastify": "^2.3.0"
-  },
   "devDependencies": {
-    "@types/express": "^4.16.1",
-    "@types/node": "^12.0.0",
-    "autocannon": "^3.2.1",
-    "ts-node": "^8.1.0",
-    "typescript": "^3.4.5"
+    "autocannon": "^3.2.1"
   },
   "scripts": {
-    "benchmark": "autocannon -c 100 -d 40 -p 10 localhost:8080/1xvn7dxbmaf/7548bowkqc/47k6pj0i0tr/8vv8gbnsj8m/dj0oqlv7je5/3k1ez13u75y/jmye2i4h3yp/5rjr73lnjq3/6g4cb2jtaxg/28v0yzitjtv/i4pjr2lm7q/9jxnunrauvj/ffbjc0jbkch/84bakerbcoq/gea9e0erlfe/it1f18wndc/1cfez4vuppq/hzix2o9db4/15lwoyauhjt/44if3e04jio/gzr6nc8qg5/jrmedwa"
+    "benchmark": "autocannon localhost:8080"
   }
 }

@@ -16,7 +16,7 @@ export interface Renderer {
 }
 
 /* `HandlerFunc` defines a function to serve HTTP requests. */
-export type HandlerFunc = (c?: Context) => Promise<any> | any;
+export type HandlerFunc = (c?: Context) => Promise<unknown> | unknown;
 
 /* `MiddlewareFunc` defines a function to process middleware. */
 export type MiddlewareFunc = (h: HandlerFunc) => HandlerFunc;
@@ -73,27 +73,10 @@ export class Abc {
       for (let i = this.premiddleware.length - 1; i >= 0; --i) {
         h = this.premiddleware[i](h);
       }
-      let result;
-      try {
-        result = await h(c);
-      } catch (e) {
-        if (e instanceof HttpException) {
-          result = c.json(
-            typeof e.response === "object"
-              ? e.response
-              : createHttpExceptionBody(e.response, undefined, e.status),
-            e.status
-          );
-        } else {
-          e = new InternalServerErrorException(e.message);
-          result = c.json(
-            (e as InternalServerErrorException).response,
-            (e as InternalServerErrorException).status
-          );
-        }
-      }
-      this.transformResult(c, result);
-      req.respond(c.response);
+
+      this.transformResult(c, h).then(() => {
+        req.respond(c.response);
+      });
     }
   }
 
@@ -207,7 +190,26 @@ export class Abc {
     return this.get(path, c => c.file(filepath), ...m);
   }
 
-  private transformResult(c: Context, result: any) {
+  private async transformResult(c: Context, h: HandlerFunc) {
+    let result: unknown;
+    try {
+      result = await h(c);
+    } catch (e) {
+      if (e instanceof HttpException) {
+        result = c.json(
+          typeof e.response === "object"
+            ? e.response
+            : createHttpExceptionBody(e.response, undefined, e.status),
+          e.status
+        );
+      } else {
+        e = new InternalServerErrorException(e.message);
+        result = c.json(
+          (e as InternalServerErrorException).response,
+          (e as InternalServerErrorException).status
+        );
+      }
+    }
     if (c.response.status == undefined) {
       switch (typeof result) {
         case "object":
