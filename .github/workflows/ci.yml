@@ -9,7 +9,12 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: denolib/setup-deno@master
-      - run: |
-          deno --version
-          deno fmt --check */**
-          deno test -c tsconfig.json --allow-net --allow-read --allow-env --allow-write test.ts
+
+      - name: Print deno version
+        run: deno --version
+
+      - name: Check format
+        run: deno fmt --check */**
+
+      - name: Run tests
+        run: deno test -c tsconfig.json --allow-net --allow-read --allow-env --allow-write test.ts
