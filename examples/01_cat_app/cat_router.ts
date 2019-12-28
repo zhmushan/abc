@@ -6,3 +6,5 @@ abc()
   .get("/:id", findOne)
   .post("/", create)
   .start({ port: 8080 });
+
+console.log(`server listening on 8080`);

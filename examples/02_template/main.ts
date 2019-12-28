@@ -12,3 +12,5 @@ app.renderer = {
 app
   .get("/", c => c.render("./index.html", { name: "zhmushan" }))
   .start({ port: 8080 });
+
+console.log(`server listening on 8080`);
