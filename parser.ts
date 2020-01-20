@@ -11,7 +11,7 @@ import { NotImplemented } from "./abc.ts";
  *            %x0A /              ; Line feed or New line
  *            %x0D )              ; Carriage return
  */
-function firstchar(str: string) {
+function firstchar(str: string): string {
   return /^[\x20\x09\x0a\x0d]*(.)/.exec(str)[1];
 }
 

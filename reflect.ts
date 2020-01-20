@@ -10,6 +10,7 @@ MERCHANTABLITY OR NON-INFRINGEMENT.
 See the Apache Version 2.0 License for specific language governing permissions
 and limitations under the License.
 ***************************************************************************** */
+/* tslint:disable */
 namespace Reflect {
   // Metadata Proposal
   // https://rbuckton.github.io/reflect-metadata/

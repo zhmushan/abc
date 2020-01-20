@@ -1,0 +1,12 @@
+{
+  "rules": {
+    "typedef": [
+      true,
+      "call-signature",
+      "arrow-call-signature",
+      "property-declaration",
+      "parameter",
+      "arrow-parameter"
+    ]
+  }
+}

@@ -1,7 +1,8 @@
 // inspired by httprouter
 
-import { HandlerFunc } from "./abc.ts";
-import { Context } from "./context.ts";
+// import { HandlerFunc } from "./abc.ts";
+// import { Context } from "./context.ts";
+//@ts-nocheck
 
 export enum NodeType {
   Static,
@@ -18,7 +19,7 @@ interface Param {
 type Children = Node[];
 type Params = Param[];
 
-export function countParams(path: string) {
+export function countParams(path: string): number {
   let n = 0;
   for (let i = 0; i < path.length; ++i) {
     if (path[i] !== ":" && path[i] !== "*") {
@@ -42,7 +43,7 @@ export class Node {
   handle: HandlerFunc;
   maxParams = 0;
 
-  addRoute(path: string, handle: HandlerFunc) {
+  addRoute(path: string, handle: HandlerFunc): void {
     let node = this as Node;
     const fullPath = path;
     ++node.priority;
@@ -180,7 +181,7 @@ export class Node {
   }
 
   // increments priority of the given child and reorders if necessary
-  incrementChildPrio(pos: number) {
+  incrementChildPrio(pos: number): number {
     const node = this as Node;
     ++node.children[pos].priority;
     const prio = node.children[pos].priority;
@@ -214,7 +215,7 @@ export class Node {
     path: string,
     fullPath: string,
     handle: HandlerFunc
-  ) {
+  ): void {
     let node = this as Node;
     let offset = 0; // already handled bytes of the path
 
@@ -477,7 +478,7 @@ export class Node {
 export class Router {
   trees: Record<string, Node> = {};
 
-  add(method: string, path: string, h: HandlerFunc) {
+  add(method: string, path: string, h: HandlerFunc): void {
     if (path[0] !== "/") {
       path = `/${path}`;
     }

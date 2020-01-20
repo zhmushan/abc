@@ -4,16 +4,16 @@ import { Context } from "../../mod.ts";
 let catId = 1;
 const cats = [] as Cat[];
 
-export function findAll() {
+export function findAll(): Cat[] {
   return cats;
 }
 
-export function findOne(c: Context) {
+export function findOne(c: Context): Cat {
   const { id } = c.params as { id: string };
-  return cats.find(cat => cat.id.toString() === id);
+  return cats.find((cat: Cat) => cat.id.toString() === id);
 }
 
-export async function create(c: Context) {
+export async function create(c: Context): Promise<Cat> {
   const cat = await c.bind(Cat);
   cat.id = catId++;
   cats.push(cat);

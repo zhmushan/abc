@@ -1,11 +1,14 @@
-import { test, assertEquals } from "./dev_deps.ts";
+import { test, assertEquals, runIfMain } from "./dev_deps.ts";
 import { Status } from "./deps.ts";
-import { abc, NotFoundHandler } from "./abc.ts";
+import { abc, NotFoundHandler, HandlerFunc } from "./abc.ts";
 import {
   InternalServerErrorException,
   NotFoundException
 } from "./http_exception.ts";
+import { Context } from "./context.ts";
 const { readFile } = Deno;
+
+const decoder = new TextDecoder();
 
 enum HttpMethods {
   Delete = "DELETE",
@@ -17,7 +20,7 @@ enum HttpMethods {
 const addr = "127.0.0.1:8081";
 const host = `http://${addr}`;
 
-test(async function AbcStatic() {
+test(async function AbcStatic(): Promise<void> {
   const app = abc();
   app.static("/examples", "./examples/02_template");
   app.start(addr);
@@ -26,16 +29,14 @@ test(async function AbcStatic() {
   assertEquals(res.status, Status.OK);
   assertEquals(
     await res.text(),
-    new TextDecoder().decode(await readFile("./examples/02_template/main.ts"))
+    decoder.decode(await readFile("./examples/02_template/main.ts"))
   );
 
   res = await fetch(`${host}/examples/`);
   assertEquals(res.status, Status.OK);
   assertEquals(
     await res.text(),
-    new TextDecoder().decode(
-      await readFile("./examples/02_template/index.html")
-    )
+    decoder.decode(await readFile("./examples/02_template/index.html"))
   );
 
   res = await fetch(`${host}/examples/empty`);
@@ -47,7 +48,7 @@ test(async function AbcStatic() {
   app.close();
 });
 
-test(async function AbcFile() {
+test(async function AbcFile(): Promise<void> {
   const app = abc();
   app.file("ci", "./.github/workflows/ci.yml");
   app.file("fileempty", "./fileempty");
@@ -57,7 +58,7 @@ test(async function AbcFile() {
   assertEquals(res.status, Status.OK);
   assertEquals(
     await res.text(),
-    new TextDecoder().decode(await readFile("./.github/workflows/ci.yml"))
+    decoder.decode(await readFile("./.github/workflows/ci.yml"))
   );
 
   res = await fetch(`${host}/fileempty`);
@@ -69,31 +70,31 @@ test(async function AbcFile() {
   app.close();
 });
 
-test(async function AbcMiddleware() {
+test(async function AbcMiddleware(): Promise<void> {
   const app = abc();
   let str = "";
   app
-    .pre(function(next) {
-      return function(c) {
+    .pre(function(next: HandlerFunc): HandlerFunc {
+      return function(c: Context): unknown {
         str += "0";
         return next(c);
       };
     })
     .use(
-      function(next) {
-        return function(c) {
+      function(next: HandlerFunc): HandlerFunc {
+        return function(c: Context): unknown {
           str += "1";
           return next(c);
         };
       },
-      function(next) {
-        return function(c) {
+      function(next: HandlerFunc): HandlerFunc {
+        return function(c: Context): unknown {
           str += "2";
           return next(c);
         };
       },
-      function(next) {
-        return function(c) {
+      function(next: HandlerFunc): HandlerFunc {
+        return function(c: Context): unknown {
           str += "3";
           return next(c);
         };
@@ -109,11 +110,11 @@ test(async function AbcMiddleware() {
   app.close();
 });
 
-test(async function AbcMiddlewareError() {
+test(async function AbcMiddlewareError(): Promise<void> {
   const app = abc();
   const errMsg = "err";
-  app.get("/middlewareerror", NotFoundHandler, function() {
-    return function() {
+  app.get("/middlewareerror", NotFoundHandler, function(): HandlerFunc {
+    return function(): HandlerFunc {
       throw new Error(errMsg);
     };
   });
@@ -128,7 +129,7 @@ test(async function AbcMiddlewareError() {
   app.close();
 });
 
-test(async function AbcHandler() {
+test(async function AbcHandler(): Promise<void> {
   const app = abc();
   app.get("/ok", () => "ok");
   app.start(addr);
@@ -139,7 +140,7 @@ test(async function AbcHandler() {
   app.close();
 });
 
-test(async function AbcHttpMethods() {
+test(async function AbcHttpMethods(): Promise<void> {
   const app = abc();
   app
     .delete("/delete", () => "delete")
@@ -178,7 +179,7 @@ test(async function AbcHttpMethods() {
   app.close();
 });
 
-test(async function NotFound() {
+test(async function NotFound(): Promise<void> {
   const app = abc();
   app.get("/not_found_handler", NotFoundHandler);
   app.start(addr);
@@ -191,3 +192,5 @@ test(async function NotFound() {
   );
   app.close();
 });
+
+runIfMain(import.meta);

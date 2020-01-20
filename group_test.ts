@@ -1,35 +1,36 @@
 import { test, assertEquals } from "./dev_deps.ts";
 import { Status } from "./deps.ts";
 import { abc, MiddlewareFunc, HandlerFunc } from "./abc.ts";
+import { Context } from "./context.ts";
 
-test(async function GroupMiddleware() {
+test(async function GroupMiddleware(): Promise<void> {
   const app = abc();
   const g = app.group("group");
-  const h: HandlerFunc = function() {
+  const h: HandlerFunc = function(): void {
     return;
   };
-  const m1: MiddlewareFunc = function(next) {
-    return function(c) {
+  const m1: MiddlewareFunc = function(next: HandlerFunc): HandlerFunc {
+    return function(c: Context): unknown {
       return next(c);
     };
   };
-  const m2: MiddlewareFunc = function(next) {
-    return function(c) {
+  const m2: MiddlewareFunc = function(next: HandlerFunc): HandlerFunc {
+    return function(c: Context): unknown {
       return next(c);
     };
   };
-  const m3: MiddlewareFunc = function(next) {
-    return function(c) {
+  const m3: MiddlewareFunc = function(next: HandlerFunc): HandlerFunc {
+    return function(c: Context): unknown {
       return next(c);
     };
   };
-  const m4: MiddlewareFunc = function() {
-    return function(c) {
+  const m4: MiddlewareFunc = function(): HandlerFunc {
+    return function(c: Context): void {
       c.response.status = 404;
     };
   };
-  const m5: MiddlewareFunc = function() {
-    return function(c) {
+  const m5: MiddlewareFunc = function(): HandlerFunc {
+    return function(c: Context): void {
       c.response.status = 405;
     };
   };
