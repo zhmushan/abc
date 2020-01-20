@@ -17,7 +17,7 @@ export const DefaultCORSConfig: CORSConfig = {
   ]
 };
 
-export function cors(config = DefaultCORSConfig): MiddlewareFunc {
+export function cors(config: CORSConfig = DefaultCORSConfig): MiddlewareFunc {
   if (config.skipper == null) {
     config.skipper = DefaultCORSConfig.skipper;
   }
