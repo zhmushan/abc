@@ -16,7 +16,7 @@ jobs:
           node-version: 12
 
       - name: Install deps
-        run: npm i tslint typescript
+        run: npm i -g tslint typescript
 
       - name: Print deno version
         run: deno --version
@@ -25,7 +25,7 @@ jobs:
         run: deno fmt --check */**
 
       - name: Lint
-        run: npx tslint *.ts middleware/*.ts
+        run: npx tslint **/*.ts
 
       - name: Run tests
         run: deno test -c tsconfig.json --allow-net --allow-read --allow-env --allow-write test.ts
