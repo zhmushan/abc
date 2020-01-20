@@ -60,7 +60,7 @@ export async function bind<T>(cls: Type<T>, c: Context): Promise<T> {
 }
 
 export function Binder(): <T>(target: Type<T>) => void {
-  return function<T>(target: Type<T>) {
+  return function<T>(target: Type<T>): void {
     const types = Reflect.getMetadata("design:paramtypes", target);
     const instance = new target(...types);
     const pairs = {};

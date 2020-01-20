@@ -13,7 +13,7 @@ export class Context {
   set request(r: ServerRequest) {
     this._request = r;
   }
-  get request() {
+  get request(): ServerRequest {
     return this._request;
   }
 
@@ -84,18 +84,16 @@ export class Context {
   }
 
   async body(): Promise<Record<string, unknown>> {
-    return JSON.parse(
-      decoder.decode(await readAll(this.request.body))
-    );
+    return JSON.parse(decoder.decode(await readAll(this.request.body)));
   }
 
-  string(v: string, code = Status.OK): void {
+  string(v: string, code: Status = Status.OK): void {
     this.writeContentType(MIME.TextPlain);
     this.response.status = code;
     this.response.body = encoder.encode(v);
   }
 
-  json(v: Record<string, any> | string, code = Status.OK): void {
+  json(v: Record<string, any> | string, code: Status = Status.OK): void {
     this.writeContentType(MIME.ApplicationJSON);
     this.response.status = code;
     this.response.body = encoder.encode(
@@ -104,14 +102,14 @@ export class Context {
   }
 
   /** Sends an HTTP response with status code. */
-  html(v: string, code = Status.OK): void {
+  html(v: string, code: Status = Status.OK): void {
     this.writeContentType(MIME.TextHTML);
     this.response.status = code;
     this.response.body = encoder.encode(v);
   }
 
   /** Sends an HTTP blob response with status code. */
-  htmlBlob(b: Uint8Array | Deno.Reader, code = Status.OK): void {
+  htmlBlob(b: Uint8Array | Deno.Reader, code: Status = Status.OK): void {
     this.blob(b, MIME.TextHTML, code);
   }
 
@@ -119,7 +117,11 @@ export class Context {
    * Renders a template with data and sends a text/html response with status code.
    * Abc.renderer must be registered first.
    */
-  async render<T>(name: string, data = {} as T, code = Status.OK): Promise<void> {
+  async render<T>(
+    name: string,
+    data: T = {} as T,
+    code: Status = Status.OK
+  ): Promise<void> {
     if (!this.abc.renderer) {
       throw new Error();
     }
@@ -128,7 +130,11 @@ export class Context {
   }
 
   /** Sends a blob response with content type and status code. */
-  blob(b: Uint8Array | Deno.Reader, contentType: string, code = Status.OK): void {
+  blob(
+    b: Uint8Array | Deno.Reader,
+    contentType: string,
+    code: Status = Status.OK
+  ): void {
     this.writeContentType(contentType);
     this.response.status = code;
     this.response.body = b;

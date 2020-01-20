@@ -5,3 +5,4 @@ import "./context_test.ts";
 import "./binder_test.ts";
 import "./parser_test.ts";
 import "./middleware/logger_test.ts";
+import "./middleware/cors_test.ts";

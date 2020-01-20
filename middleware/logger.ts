@@ -6,7 +6,7 @@ export type Formatter = (c: Context) => string;
 
 const encoder = new TextEncoder();
 
-export const DefaultFormatter: Formatter = c => {
+export const DefaultFormatter: Formatter = (c: Context): string => {
   const req = c.request;
 
   const time = new Date().toISOString();
@@ -23,7 +23,9 @@ export const DefaultLoggerConfig: LoggerConfig = {
   output: Deno.stdout
 };
 
-export function logger(config = DefaultLoggerConfig): MiddlewareFunc {
+export function logger(
+  config: LoggerConfig = DefaultLoggerConfig
+): MiddlewareFunc {
   if (config.formatter == null) {
     config.formatter = DefaultLoggerConfig.formatter;
   }
@@ -34,7 +36,7 @@ export function logger(config = DefaultLoggerConfig): MiddlewareFunc {
     config.output = Deno.stdout;
   }
   return function(next: HandlerFunc): HandlerFunc {
-    return function(c: Context) {
+    return function(c: Context): unknown {
       if (config.skipper(c)) {
         return next(c);
       }

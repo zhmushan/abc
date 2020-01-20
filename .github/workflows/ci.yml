@@ -11,12 +11,18 @@ jobs:
       - uses: denolib/setup-deno@master
         with:
           deno-version: 0.30.0
+      - uses: actions/setup-node@master
+        with:
+          node-version: 12
 
       - name: Print deno version
         run: deno --version
 
       - name: Check format
         run: deno fmt --check */**
+
+      - name: Lint
+        run: npx tslint *.ts middleware/*.ts
 
       - name: Run tests
         run: deno test -c tsconfig.json --allow-net --allow-read --allow-env --allow-write test.ts

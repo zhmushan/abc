@@ -16,7 +16,7 @@ export interface Renderer {
 }
 
 /* `HandlerFunc` defines a function to serve HTTP requests. */
-export type HandlerFunc = (c?: Context) => Promise<unknown> | unknown;
+export type HandlerFunc = (c: Context) => Promise<unknown> | unknown;
 
 /* `MiddlewareFunc` defines a function to process middleware. */
 export type MiddlewareFunc = (h: HandlerFunc) => HandlerFunc;
@@ -26,7 +26,7 @@ interface ServerConfig {
   hostname?: string;
 }
 
-export function NotFoundHandler(_?: Context): never {
+export function NotFoundHandler(): never {
   throw new NotFoundException();
 }
 
@@ -156,7 +156,7 @@ export class Abc {
     handler: HandlerFunc,
     ...middleware: MiddlewareFunc[]
   ): Abc {
-    this.router.add(method, path, c => {
+    this.router.add(method, path, (c: Context) => {
       let h = handler;
       for (const m of middleware) {
         h = m(h);
@@ -175,7 +175,7 @@ export class Abc {
 
   /** `static` registers a new route with path prefix to serve static files from the provided root directory. */
   static(prefix: string, root: string): Abc {
-    const h = function(c: Context) {
+    const h = function(c: Context): Promise<string> {
       const filepath: string = c.params.filepath;
       return c.file(path.join(root, filepath));
     };
@@ -187,7 +187,7 @@ export class Abc {
 
   /** `file` registers a new route with path to serve a static file with optional route-level middleware. */
   file(path: string, filepath: string, ...m: MiddlewareFunc[]): Abc {
-    return this.get(path, c => c.file(filepath), ...m);
+    return this.get(path, (c: Context) => c.file(filepath), ...m);
   }
 
   private async transformResult(c: Context, h: HandlerFunc): Promise<void> {

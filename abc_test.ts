@@ -1,10 +1,11 @@
 import { test, assertEquals, runIfMain } from "./dev_deps.ts";
 import { Status } from "./deps.ts";
-import { abc, NotFoundHandler } from "./abc.ts";
+import { abc, NotFoundHandler, HandlerFunc } from "./abc.ts";
 import {
   InternalServerErrorException,
   NotFoundException
 } from "./http_exception.ts";
+import { Context } from "./context.ts";
 const { readFile } = Deno;
 
 const decoder = new TextDecoder();
@@ -35,9 +36,7 @@ test(async function AbcStatic(): Promise<void> {
   assertEquals(res.status, Status.OK);
   assertEquals(
     await res.text(),
-    decoder.decode(
-      await readFile("./examples/02_template/index.html")
-    )
+    decoder.decode(await readFile("./examples/02_template/index.html"))
   );
 
   res = await fetch(`${host}/examples/empty`);
@@ -75,27 +74,27 @@ test(async function AbcMiddleware(): Promise<void> {
   const app = abc();
   let str = "";
   app
-    .pre(function(next) {
-      return function(c) {
+    .pre(function(next: HandlerFunc): HandlerFunc {
+      return function(c: Context): unknown {
         str += "0";
         return next(c);
       };
     })
     .use(
-      function(next) {
-        return function(c) {
+      function(next: HandlerFunc): HandlerFunc {
+        return function(c: Context): unknown {
           str += "1";
           return next(c);
         };
       },
-      function(next) {
-        return function(c) {
+      function(next: HandlerFunc): HandlerFunc {
+        return function(c: Context): unknown {
           str += "2";
           return next(c);
         };
       },
-      function(next) {
-        return function(c) {
+      function(next: HandlerFunc): HandlerFunc {
+        return function(c: Context): unknown {
           str += "3";
           return next(c);
         };
@@ -114,8 +113,8 @@ test(async function AbcMiddleware(): Promise<void> {
 test(async function AbcMiddlewareError(): Promise<void> {
   const app = abc();
   const errMsg = "err";
-  app.get("/middlewareerror", NotFoundHandler, function() {
-    return function() {
+  app.get("/middlewareerror", NotFoundHandler, function(): HandlerFunc {
+    return function(): HandlerFunc {
       throw new Error(errMsg);
     };
   });

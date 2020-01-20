@@ -29,7 +29,7 @@ export function cors(config = DefaultCORSConfig): MiddlewareFunc {
   }
 
   return function(next: HandlerFunc): HandlerFunc {
-    return function(c: Context) {
+    return function(c: Context): unknown {
       if (config.skipper(c)) {
         return next(c);
       }

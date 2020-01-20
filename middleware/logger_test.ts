@@ -14,33 +14,33 @@ const decoder = new TextDecoder();
 
 class Writer implements Deno.Writer {
   out: null | string;
-  async write(p: Uint8Array) {
+  async write(p: Uint8Array): Promise<number> {
     this.out = decoder.decode(p);
     return 0;
   }
 }
 
-test(function MiddlewareLogger() {
+test(function MiddlewareLogger(): void {
   const w = new Writer();
   logger({
     output: w
-  })(c => c)(ctx);
+  })((c: Context) => c)(ctx);
   assert(w.out.endsWith(" GET / HTTP/1.1\n"));
   assert(new Date(w.out.split(" ")[0]).getTime() >= dt.getTime());
 });
 
-test(function MiddlewareLoggerDefaultFormatter() {
+test(function MiddlewareLoggerDefaultFormatter(): void {
   const logInfo = DefaultFormatter(ctx);
   assert(logInfo.endsWith(" GET / HTTP/1.1\n"));
   assert(new Date(logInfo.split(" ")[0]).getTime() >= dt.getTime());
 });
 
-test(function MiddlewareLoggerCustomFormatter() {
+test(function MiddlewareLoggerCustomFormatter(): void {
   const info = "Hello, 你好！";
   const w = new Writer();
   logger({
     output: w,
-    formatter: () => info
-  })(c => c)(ctx);
+    formatter: (): string => info
+  })((c: Context) => c)(ctx);
   assertEquals(w.out, info);
 });

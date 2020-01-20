@@ -13,7 +13,7 @@ export class Group {
     this.middleware = [];
   }
 
-  use(...m: MiddlewareFunc[]) {
+  use(...m: MiddlewareFunc[]): Group {
     this.middleware.push(...m);
     if (this.middleware.length !== 0) {
       this.any("", NotFoundHandler);
@@ -21,34 +21,34 @@ export class Group {
     return this;
   }
 
-  connect(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
+  connect(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group {
     return this.add("CONNECT", path, h, ...m);
   }
-  delete(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
+  delete(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group {
     return this.add("DELETE", path, h, ...m);
   }
-  get(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
+  get(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group {
     return this.add("GET", path, h, ...m);
   }
-  head(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
+  head(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group {
     return this.add("HEAD", path, h, ...m);
   }
-  options(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
+  options(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group {
     return this.add("OPTIONS", path, h, ...m);
   }
-  patch(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
+  patch(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group {
     return this.add("PATCH", path, h, ...m);
   }
-  post(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
+  post(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group {
     return this.add("POST", path, h, ...m);
   }
-  put(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
+  put(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group {
     return this.add("PUT", path, h, ...m);
   }
-  trace(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
+  trace(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group {
     return this.add("TRACE", path, h, ...m);
   }
-  any(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]) {
+  any(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group {
     const methods = [
       "CONNECT",
       "DELETE",
@@ -70,7 +70,7 @@ export class Group {
     path: string,
     h: HandlerFunc,
     ...m: MiddlewareFunc[]
-  ) {
+  ): Group {
     for (const method of methods) {
       this.add(method, path, h, ...m);
     }
@@ -81,7 +81,7 @@ export class Group {
     path: string,
     handler: HandlerFunc,
     ...middleware: MiddlewareFunc[]
-  ) {
+  ): Group {
     this.abc.add(
       method,
       this.prefix + path,
@@ -92,17 +92,17 @@ export class Group {
     return this;
   }
 
-  static(prefix: string, root: string) {
+  static(prefix: string, root: string): Group {
     this.abc.static(path.join(this.prefix, prefix), root);
     return this;
   }
 
-  file(p: string, filepath: string, ...m: MiddlewareFunc[]) {
+  file(p: string, filepath: string, ...m: MiddlewareFunc[]): Group {
     this.abc.file(path.join(this.prefix, p), filepath, ...m);
     return this;
   }
 
-  group(prefix: string, ...m: MiddlewareFunc[]) {
+  group(prefix: string, ...m: MiddlewareFunc[]): Group {
     const g = this.abc.group(this.prefix + prefix, ...this.middleware, ...m);
     return g;
   }
@@ -113,7 +113,7 @@ export interface GroupOptions {
   prefix: string;
 }
 
-export function group(options = {} as GroupOptions) {
+export function group(options: GroupOptions = {} as GroupOptions): Group {
   const g = new Group(options);
   return g;
 }
