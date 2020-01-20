@@ -9,6 +9,8 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: denolib/setup-deno@master
+        with:
+          deno-version: 0.30.0
 
       - name: Print deno version
         run: deno --version

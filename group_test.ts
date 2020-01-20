@@ -2,7 +2,7 @@ import { test, assertEquals } from "./dev_deps.ts";
 import { Status } from "./deps.ts";
 import { abc, MiddlewareFunc, HandlerFunc } from "./abc.ts";
 
-test(async function GroupMiddleware() {
+test(async function GroupMiddleware(): Promise<void> {
   const app = abc();
   const g = app.group("group");
   const h: HandlerFunc = function() {

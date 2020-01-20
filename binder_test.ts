@@ -1,14 +1,32 @@
 import { test, assertEquals, assertThrowsAsync } from "./dev_deps.ts";
-import { Binder, BINDER_PROP_TYPE_PAIRS, bind } from "./binder.ts";
-import { context } from "./context.ts";
+import { Binder, BinderPropTypeParis, bind } from "./binder.ts";
+import { context, Context } from "./context.ts";
 
 interface FakeServerRequest {
-  body: () => Uint8Array;
+  body: Deno.Reader;
   headers: Headers;
 }
 
-function injectContext(r: FakeServerRequest) {
+const encoder = new TextEncoder();
+
+function injectContext(r: FakeServerRequest): Context {
   return context({ r: r as any });
+}
+
+function createMockBodyReader(body: string): Deno.Reader {
+  const buf = encoder.encode(body);
+  let offset = 0;
+  return {
+    async read(p: Uint8Array): Promise<number | Deno.EOF> {
+      if (offset >= buf.length) {
+        return Deno.EOF;
+      }
+      const chunkSize = Math.min(p.length, buf.length - offset);
+      p.set(buf);
+      offset += chunkSize;
+      return chunkSize;
+    }
+  };
 }
 
 @Binder()
@@ -28,18 +46,18 @@ class Any {
   constructor(public field1: any) {}
 }
 
-test(function BinderDecorator() {
-  assertEquals(Reflect.getMetadata(BINDER_PROP_TYPE_PAIRS, A), {
+test(function BinderDecorator(): void {
+  assertEquals(Reflect.getMetadata(BinderPropTypeParis, A), {
     foo: "string",
     bar: "number"
   });
 
-  assertEquals(Reflect.getMetadata(BINDER_PROP_TYPE_PAIRS, Any), {
+  assertEquals(Reflect.getMetadata(BinderPropTypeParis, Any), {
     field1: "any"
   });
 });
 
-test(async function BindJSON() {
+test(async function BindJSON(): Promise<void> {
   const data = [
     {
       foo: "foo",
@@ -62,14 +80,14 @@ test(async function BindJSON() {
 
   const sample = new A("foo", 1024);
   let ctx = injectContext({
-    body: () => new TextEncoder().encode(JSON.stringify(data[0])),
+    body: createMockBodyReader(JSON.stringify(data[0])),
     headers: new Headers({ "Content-Type": "application/json" })
   });
   const instance = await bind(A, ctx);
   assertEquals(instance, sample);
 
   ctx = injectContext({
-    body: () => new TextEncoder().encode(JSON.stringify(data[1])),
+    body: createMockBodyReader(JSON.stringify(data[1])),
     headers: new Headers({ "Content-Type": "application/json" })
   });
   assertThrowsAsync(
@@ -81,7 +99,7 @@ test(async function BindJSON() {
   );
 
   ctx = injectContext({
-    body: () => new TextEncoder().encode(JSON.stringify(data[2])),
+    body: createMockBodyReader(JSON.stringify(data[2])),
     headers: new Headers({ "Content-Type": "application/json" })
   });
   assertThrowsAsync(
@@ -93,7 +111,7 @@ test(async function BindJSON() {
   );
 
   ctx = injectContext({
-    body: () => new TextEncoder().encode(JSON.stringify(data[3])),
+    body: createMockBodyReader(JSON.stringify(data[3])),
     headers: new Headers({ "Content-Type": "application/json" })
   });
   assertThrowsAsync(
@@ -105,7 +123,7 @@ test(async function BindJSON() {
   );
 });
 
-test(async function BindNestingJSON() {
+test(async function BindNestingJSON(): Promise<void> {
   const data = [
     { num: 1, a: { _foo: "foo", foo: "foo", bar: 123 } },
     { num: 1, a: { _foo: "foo", foo: "foo", bar: "bar" } }
@@ -113,14 +131,14 @@ test(async function BindNestingJSON() {
 
   const sample = new B(1, new A("foo", 123));
   let ctx = injectContext({
-    body: () => new TextEncoder().encode(JSON.stringify(data[0])),
+    body: createMockBodyReader(JSON.stringify(data[0])),
     headers: new Headers({ "Content-Type": "application/json" })
   });
   const instance = await bind(B, ctx);
   assertEquals(instance, sample);
 
   ctx = injectContext({
-    body: () => new TextEncoder().encode(JSON.stringify(data[1])),
+    body: createMockBodyReader(JSON.stringify(data[1])),
     headers: new Headers({ "Content-Type": "application/json" })
   });
   assertThrowsAsync(
@@ -132,7 +150,7 @@ test(async function BindNestingJSON() {
   );
 });
 
-test(async function BindFieldWithAny() {
+test(async function BindFieldWithAny(): Promise<void> {
   const data = [
     {
       field1: "1"
@@ -144,19 +162,19 @@ test(async function BindFieldWithAny() {
   ];
 
   let ctx = injectContext({
-    body: () => new TextEncoder().encode(JSON.stringify(data[0])),
+    body: createMockBodyReader(JSON.stringify(data[0])),
     headers: new Headers({ "Content-Type": "application/json" })
   });
   assertEquals(await bind(Any, ctx), new Any("1"));
 
   ctx = injectContext({
-    body: () => new TextEncoder().encode(JSON.stringify(data[1])),
+    body: createMockBodyReader(JSON.stringify(data[1])),
     headers: new Headers({ "Content-Type": "application/json" })
   });
   assertEquals(await bind(Any, ctx), new Any(1));
 
   ctx = injectContext({
-    body: () => new TextEncoder().encode(JSON.stringify(data[2])),
+    body: createMockBodyReader(JSON.stringify(data[2])),
     headers: new Headers({ "Content-Type": "application/json" })
   });
   assertThrowsAsync(

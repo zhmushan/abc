@@ -3,7 +3,10 @@ import { Abc, NotFoundHandler } from "./abc.ts";
 import { bind } from "./binder.ts";
 import { Type } from "./type.ts";
 import { Header, MIME } from "./constants.ts";
-const { cwd, lstat, readFile } = Deno;
+const { cwd, lstat, readFile, readAll } = Deno;
+
+const encoder = new TextEncoder();
+const decoder = new TextDecoder();
 
 export class Context {
   private _request: ServerRequest;
@@ -18,7 +21,7 @@ export class Context {
   set response(r: Response) {
     this._response = r;
   }
-  get response() {
+  get response(): Response {
     return this._response;
   }
 
@@ -39,7 +42,7 @@ export class Context {
   }
 
   private _url: URL;
-  set url(u) {
+  set url(u: URL) {
     this._url = u;
   }
   get url(): URL {
@@ -47,10 +50,10 @@ export class Context {
   }
 
   private _params: Record<string, string>;
-  set params(p) {
+  set params(p: Record<string, string>) {
     this._params = p;
   }
-  get params() {
+  get params(): Record<string, string> {
     return this._params;
   }
 
@@ -58,7 +61,7 @@ export class Context {
   set abc(abc: Abc) {
     this._abc = abc;
   }
-  get abc() {
+  get abc(): Abc {
     return this._abc;
   }
 
@@ -71,7 +74,7 @@ export class Context {
     this.params = {};
   }
 
-  private writeContentType(v: string) {
+  private writeContentType(v: string): void {
     if (!this.response.headers) {
       this.response.headers = new Headers();
     }
@@ -80,35 +83,35 @@ export class Context {
     }
   }
 
-  async body() {
+  async body(): Promise<Record<string, unknown>> {
     return JSON.parse(
-      new TextDecoder().decode(await this.request.body())
-    ) as Record<string, any>;
+      decoder.decode(await readAll(this.request.body))
+    );
   }
 
-  string(v: string, code = Status.OK) {
+  string(v: string, code = Status.OK): void {
     this.writeContentType(MIME.TextPlain);
     this.response.status = code;
-    this.response.body = new TextEncoder().encode(v);
+    this.response.body = encoder.encode(v);
   }
 
-  json(v: Record<string, any> | string, code = Status.OK) {
+  json(v: Record<string, any> | string, code = Status.OK): void {
     this.writeContentType(MIME.ApplicationJSON);
     this.response.status = code;
-    this.response.body = new TextEncoder().encode(
+    this.response.body = encoder.encode(
       typeof v === "object" ? JSON.stringify(v) : v
     );
   }
 
   /** Sends an HTTP response with status code. */
-  html(v: string, code = Status.OK) {
+  html(v: string, code = Status.OK): void {
     this.writeContentType(MIME.TextHTML);
     this.response.status = code;
-    this.response.body = new TextEncoder().encode(v);
+    this.response.body = encoder.encode(v);
   }
 
   /** Sends an HTTP blob response with status code. */
-  htmlBlob(b: Uint8Array | Deno.Reader, code = Status.OK) {
+  htmlBlob(b: Uint8Array | Deno.Reader, code = Status.OK): void {
     this.blob(b, MIME.TextHTML, code);
   }
 
@@ -116,7 +119,7 @@ export class Context {
    * Renders a template with data and sends a text/html response with status code.
    * Abc.renderer must be registered first.
    */
-  async render<T>(name: string, data = {} as T, code = Status.OK) {
+  async render<T>(name: string, data = {} as T, code = Status.OK): Promise<void> {
     if (!this.abc.renderer) {
       throw new Error();
     }
@@ -125,13 +128,13 @@ export class Context {
   }
 
   /** Sends a blob response with content type and status code. */
-  blob(b: Uint8Array | Deno.Reader, contentType: string, code = Status.OK) {
+  blob(b: Uint8Array | Deno.Reader, contentType: string, code = Status.OK): void {
     this.writeContentType(contentType);
     this.response.status = code;
     this.response.body = b;
   }
 
-  async file(filepath: string) {
+  async file(filepath: string): Promise<string> {
     filepath = path.join(cwd(), filepath);
     try {
       const fileinfo = await lstat(filepath);
@@ -141,7 +144,7 @@ export class Context {
       ) {
         filepath = path.join(filepath, "index.html");
       }
-      return new TextDecoder().decode(await readFile(filepath));
+      return decoder.decode(await readFile(filepath));
     } catch {
       NotFoundHandler();
     }
@@ -158,7 +161,7 @@ export interface ContextOptions {
   abc?: Abc;
 }
 
-export function context(options = {} as ContextOptions) {
+export function context(options: ContextOptions = {}): Context {
   const c = new Context(options);
   return c;
 }

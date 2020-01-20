@@ -1,7 +1,7 @@
 import { test, assertEquals } from "./dev_deps.ts";
 import { context } from "./context.ts";
 
-test(function StringResponse() {
+test(function StringResponse(): void {
   const results = [
     `{foo: "bar"}`,
     `<h1>Title</h1>`,
@@ -22,7 +22,7 @@ test(function StringResponse() {
   }
 });
 
-test(function JSONResponse() {
+test(function JSONResponse(): void {
   const results = [{ foo: "bar" }, `{foo: "bar"}`, [1, 2], {}, [], `[]`];
   const c = context();
   for (const r of results) {
@@ -36,7 +36,7 @@ test(function JSONResponse() {
   }
 });
 
-test(function HTMLResponse() {
+test(function HTMLResponse(): void {
   const results = [
     `{foo: "bar"}`,
     `<h1>Title</h1>`,

@@ -1,7 +1,7 @@
 import { test, assertEquals, assertThrows } from "./dev_deps.ts";
 import { Parser } from "./parser.ts";
 
-test(function ParseUrlencoded() {
+test(function ParseUrlencoded(): void {
   const cases: Array<[string, Record<string, any>]> = [
     [`foo=bar`, { foo: "bar" }]
   ];
@@ -10,7 +10,7 @@ test(function ParseUrlencoded() {
   }
 });
 
-test(function ParseJSON() {
+test(function ParseJSON(): void {
   const cases: Array<[string, Record<string, any>]> = [
     [`{"foo": "bar"}`, { foo: "bar" }]
   ];
@@ -19,7 +19,7 @@ test(function ParseJSON() {
   }
 });
 
-test(function ParseMultipart() {
+test(function ParseMultipart(): void {
   assertThrows(
     () => {
       Parser.multipart("");

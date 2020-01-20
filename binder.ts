@@ -4,15 +4,17 @@ import { Status, STATUS_TEXT } from "./deps.ts";
 import { Parser, ParserFunction } from "./parser.ts";
 import { Type } from "./type.ts";
 import { Header, MIME } from "./constants.ts";
+const { readAll } = Deno;
 
-export const BINDER_PROP_TYPE_PAIRS = "abc:binder_prop_type_pairs";
+export const BinderPropTypeParis = "abc:binder_prop_type_pairs";
 const Any = "any";
+const decoder = new TextDecoder();
 
 function _bind<T>(
   data: Record<string, any>,
   types: Record<string, any>,
   instance: T
-) {
+): void {
   for (const key in types) {
     if (data.hasOwnProperty(key)) {
       if (typeof types[key] === "object") {
@@ -37,8 +39,8 @@ export async function bind<T>(cls: Type<T>, c: Context): Promise<T> {
   }
   let data: Record<string, any> = null;
   const instance = new cls();
-  const body = new TextDecoder().decode(await req.body());
-  const types = Reflect.getMetadata(BINDER_PROP_TYPE_PAIRS, cls);
+  const body = decoder.decode(await readAll(req.body));
+  const types = Reflect.getMetadata(BinderPropTypeParis, cls);
 
   let useFunc: ParserFunction;
   if (cType.includes(MIME.ApplicationJSON)) {
@@ -57,14 +59,14 @@ export async function bind<T>(cls: Type<T>, c: Context): Promise<T> {
   return instance;
 }
 
-export function Binder() {
+export function Binder(): <T>(target: Type<T>) => void {
   return function<T>(target: Type<T>) {
     const types = Reflect.getMetadata("design:paramtypes", target);
     const instance = new target(...types);
     const pairs = {};
     for (const key of Object.keys(instance)) {
-      if (Reflect.hasMetadata(BINDER_PROP_TYPE_PAIRS, instance[key])) {
-        pairs[key] = Reflect.getMetadata(BINDER_PROP_TYPE_PAIRS, instance[key]);
+      if (Reflect.hasMetadata(BinderPropTypeParis, instance[key])) {
+        pairs[key] = Reflect.getMetadata(BinderPropTypeParis, instance[key]);
       } else {
         const fieldType = typeof instance[key]();
         if (fieldType === "object") {
@@ -74,6 +76,6 @@ export function Binder() {
         }
       }
     }
-    Reflect.defineMetadata(BINDER_PROP_TYPE_PAIRS, pairs, target);
+    Reflect.defineMetadata(BinderPropTypeParis, pairs, target);
   };
 }
