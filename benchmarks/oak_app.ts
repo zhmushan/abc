@@ -6,12 +6,12 @@ const app = new Application();
 const router = new Router();
 
 for (const r of staticRoutes) {
-  router.all(r, (c: Context) => {
+  router.all(r, (c: Context): void => {
     c.response.body = r;
   });
 }
 for (const r of paramsRoutes) {
-  router.all(r, (c: Context) => {
+  router.all(r, (c: Context): void => {
     c.response.body = r;
   });
 }

@@ -1,9 +1,9 @@
 import "./reflect.ts";
 import { Context } from "./context.ts";
 import { Status, STATUS_TEXT } from "./deps.ts";
-import { Parser, ParserFunction } from "./parser.ts";
+import { Parser } from "./parser.ts";
 import { Type } from "./type.ts";
-import { Header, MIME } from "./constants.ts";
+import { Header } from "./constants.ts";
 const { readAll } = Deno;
 
 export const BinderPropTypeParis = "abc:binder_prop_type_pairs";
@@ -37,23 +37,14 @@ export async function bind<T>(cls: Type<T>, c: Context): Promise<T> {
   if (!cType) {
     return;
   }
-  let data: Record<string, any> = null;
   const instance = new cls();
   const body = decoder.decode(await readAll(req.body));
   const types = Reflect.getMetadata(BinderPropTypeParis, cls);
 
-  let useFunc: ParserFunction;
-  if (cType.includes(MIME.ApplicationJSON)) {
-    useFunc = "json";
-  } else if (cType.includes(MIME.ApplicationForm)) {
-    useFunc = "urlencoded";
-  } else if (cType.includes(MIME.MultipartForm)) {
-    useFunc = "multipart";
-  }
-  if (!useFunc) {
-    throw new Error(STATUS_TEXT.get(Status.UnsupportedMediaType));
-  }
-  data = Parser[useFunc](body);
+  const parser = new Parser(cType);
+  const data = parser.parse(body);
+
+  if (!data) throw new Error(STATUS_TEXT.get(Status.UnsupportedMediaType));
   _bind(data, types, instance);
 
   return instance;

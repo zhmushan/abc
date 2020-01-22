@@ -91,7 +91,7 @@ test(async function BindJSON(): Promise<void> {
     headers: new Headers({ "Content-Type": "application/json" })
   });
   assertThrowsAsync(
-    async () => {
+    async (): Promise<void> => {
       await bind(A, ctx);
     },
     Error,
@@ -103,7 +103,7 @@ test(async function BindJSON(): Promise<void> {
     headers: new Headers({ "Content-Type": "application/json" })
   });
   assertThrowsAsync(
-    async () => {
+    async (): Promise<void> => {
       await bind(A, ctx);
     },
     Error,
@@ -115,7 +115,7 @@ test(async function BindJSON(): Promise<void> {
     headers: new Headers({ "Content-Type": "application/json" })
   });
   assertThrowsAsync(
-    async () => {
+    async (): Promise<void> => {
       await bind(A, ctx);
     },
     Error,
@@ -142,7 +142,7 @@ test(async function BindNestingJSON(): Promise<void> {
     headers: new Headers({ "Content-Type": "application/json" })
   });
   assertThrowsAsync(
-    async () => {
+    async (): Promise<void> => {
       await bind(B, ctx);
     },
     Error,
@@ -178,7 +178,7 @@ test(async function BindFieldWithAny(): Promise<void> {
     headers: new Headers({ "Content-Type": "application/json" })
   });
   assertThrowsAsync(
-    async () => {
+    async (): Promise<void> => {
       await bind(Any, ctx);
     },
     Error,

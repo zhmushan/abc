@@ -1,8 +1,5 @@
-// inspired by httprouter
-
-// import { HandlerFunc } from "./abc.ts";
-// import { Context } from "./context.ts";
-//@ts-nocheck
+import { HandlerFunc } from "./abc.ts";
+import { Context } from "./context.ts";
 
 export enum NodeType {
   Static,

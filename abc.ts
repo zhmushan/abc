@@ -74,7 +74,7 @@ export class Abc {
         h = this.premiddleware[i](h);
       }
 
-      this.transformResult(c, h).then(() => {
+      this.transformResult(c, h).then((): void => {
         req.respond(c.response);
       });
     }
@@ -156,7 +156,7 @@ export class Abc {
     handler: HandlerFunc,
     ...middleware: MiddlewareFunc[]
   ): Abc {
-    this.router.add(method, path, (c: Context) => {
+    this.router.add(method, path, (c: Context): unknown => {
       let h = handler;
       for (const m of middleware) {
         h = m(h);
@@ -187,7 +187,11 @@ export class Abc {
 
   /** `file` registers a new route with path to serve a static file with optional route-level middleware. */
   file(path: string, filepath: string, ...m: MiddlewareFunc[]): Abc {
-    return this.get(path, (c: Context) => c.file(filepath), ...m);
+    return this.get(
+      path,
+      (c: Context): Promise<string> => c.file(filepath),
+      ...m
+    );
   }
 
   private async transformResult(c: Context, h: HandlerFunc): Promise<void> {

@@ -6,10 +6,10 @@ const Port = 8080;
 
 const app = abc();
 for (const r of staticRoutes) {
-  app.any(r, () => r);
+  app.any(r, (): string => r);
 }
 for (const r of paramsRoutes) {
-  app.any(r, () => r);
+  app.any(r, (): string => r);
 }
 app.start({ port: Port });
 

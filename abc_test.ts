@@ -100,7 +100,7 @@ test(async function AbcMiddleware(): Promise<void> {
         };
       }
     )
-    .get("/middleware", () => str);
+    .get("/middleware", (): string => str);
   app.start(addr);
 
   const res = await fetch(`${host}/middleware`);
@@ -131,7 +131,7 @@ test(async function AbcMiddlewareError(): Promise<void> {
 
 test(async function AbcHandler(): Promise<void> {
   const app = abc();
-  app.get("/ok", () => "ok");
+  app.get("/ok", (): string => "ok");
   app.start(addr);
 
   const res = await fetch(`${host}/ok`);
@@ -143,12 +143,12 @@ test(async function AbcHandler(): Promise<void> {
 test(async function AbcHttpMethods(): Promise<void> {
   const app = abc();
   app
-    .delete("/delete", () => "delete")
-    .get("/get", () => "get")
-    .post("/post", () => "post")
-    .put("/put", () => "put")
-    .any("/any", () => "any")
-    .match(Object.values(HttpMethods), "/match", () => "match");
+    .delete("/delete", (): string => "delete")
+    .get("/get", (): string => "get")
+    .post("/post", (): string => "post")
+    .put("/put", (): string => "put")
+    .any("/any", (): string => "any")
+    .match(Object.values(HttpMethods), "/match", (): string => "match");
   app.start(addr);
 
   let res = await fetch(`${host}/delete`, { method: HttpMethods.Delete });
