@@ -28,4 +28,4 @@ jobs:
         run: npx tslint **/*.ts
 
       - name: Run tests
-        run: deno test -c tsconfig.json --allow-net --allow-read --allow-env --allow-write test.ts
+        run: deno test -A -c tsconfig.json

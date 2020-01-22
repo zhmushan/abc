@@ -1,4 +1,4 @@
-import { test, assertEquals, assertThrows } from "./dev_deps.ts";
+import { test, assertEquals, assertThrows, runIfMain } from "./dev_deps.ts";
 import { Parser } from "./parser.ts";
 import { MIME } from "./constants.ts";
 
@@ -32,3 +32,5 @@ test(function ParseMultipart(): void {
     "Not Implemented"
   );
 });
+
+runIfMain(import.meta);

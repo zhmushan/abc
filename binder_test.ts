@@ -1,4 +1,9 @@
-import { test, assertEquals, assertThrowsAsync } from "./dev_deps.ts";
+import {
+  test,
+  assertEquals,
+  assertThrowsAsync,
+  runIfMain
+} from "./dev_deps.ts";
 import { Binder, BinderPropTypeParis, bind } from "./binder.ts";
 import { context, Context } from "./context.ts";
 
@@ -185,3 +190,5 @@ test(async function BindFieldWithAny(): Promise<void> {
     "field1 is required"
   );
 });
+
+runIfMain(import.meta);

@@ -1,4 +1,4 @@
-import { test, assertEquals } from "./dev_deps.ts";
+import { test, assertEquals, runIfMain } from "./dev_deps.ts";
 import { context } from "./context.ts";
 
 test(function StringResponse(): void {
@@ -56,3 +56,5 @@ test(function HTMLResponse(): void {
     assertEquals(c.response.headers.get("Content-Type"), "text/html");
   }
 });
+
+runIfMain(import.meta);

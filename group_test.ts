@@ -1,4 +1,4 @@
-import { test, assertEquals } from "./dev_deps.ts";
+import { test, assertEquals, runIfMain } from "./dev_deps.ts";
 import { Status } from "./deps.ts";
 import { abc, MiddlewareFunc, HandlerFunc } from "./abc.ts";
 import { Context } from "./context.ts";
@@ -45,3 +45,5 @@ test(async function GroupMiddleware(): Promise<void> {
   assertEquals(res.status, Status.MethodNotAllowed);
   app.close();
 });
+
+runIfMain(import.meta);

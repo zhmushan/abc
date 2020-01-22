@@ -1,4 +1,4 @@
-import { test, assertEquals, assert } from "../dev_deps.ts";
+import { test, assertEquals, assert, runIfMain } from "../dev_deps.ts";
 import { DefaultFormatter, logger } from "./logger.ts";
 import { Context } from "../context.ts";
 
@@ -44,3 +44,5 @@ test(function MiddlewareLoggerCustomFormatter(): void {
   })((c: Context): Context => c)(ctx);
   assertEquals(w.out, info);
 });
+
+runIfMain(import.meta);
