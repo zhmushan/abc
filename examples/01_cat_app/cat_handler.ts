@@ -10,8 +10,8 @@ export function findAll(): Cat[] {
 
 export function findOne(c: Context): Cat {
   const { id } = c.params as { id: string };
-  return cats.find((cat: Cat): void => {
-    cat.id.toString() === id;
+  return cats.find((cat: Cat): boolean => {
+    return cat.id.toString() === id;
   });
 }
 
