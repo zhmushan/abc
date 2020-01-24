@@ -10,8 +10,11 @@ app.renderer = {
 };
 
 app
-  .get("/", (c: Context): string =>
-    c.render("./index.html", { name: "zhmushan" })
+  .get(
+    "/",
+    (c: Context): Promise<void> => {
+      return c.render("./index.html", { name: "zhmushan" });
+    }
   )
   .start({ port: 8080 });
 

@@ -10,7 +10,9 @@ export function findAll(): Cat[] {
 
 export function findOne(c: Context): Cat {
   const { id } = c.params as { id: string };
-  return cats.find((cat: Cat): string => cat.id.toString() === id);
+  return cats.find((cat: Cat): boolean => {
+    return cat.id.toString() === id;
+  });
 }
 
 export async function create(c: Context): Promise<Cat> {
