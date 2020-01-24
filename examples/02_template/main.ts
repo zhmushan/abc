@@ -12,8 +12,8 @@ app.renderer = {
 app
   .get(
     "/",
-    (c: Context): Promise<void> => {
-      return c.render("./index.html", { name: "zhmushan" });
+    async (c: Context): Promise<void> => {
+      await c.render("./index.html", { name: "zhmushan" });
     }
   )
   .start({ port: 8080 });
