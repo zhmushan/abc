@@ -9,7 +9,7 @@ const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
 export class Context {
-  private _request: ServerRequest;
+  private _request!: ServerRequest;
   set request(r: ServerRequest) {
     this._request = r;
   }
@@ -17,7 +17,7 @@ export class Context {
     return this._request;
   }
 
-  private _response: Response;
+  private _response!: Response;
   set response(r: Response) {
     this._response = r;
   }
@@ -34,14 +34,14 @@ export class Context {
   }
 
   get queryParams(): Record<string, string> {
-    const params = {};
+    const params: Record<string, string> = {};
     for (const key of this.url.searchParams.keys()) {
-      params[key] = this.url.searchParams.get(key);
+      params[key] = this.url.searchParams.get(key)!;
     }
     return params;
   }
 
-  private _url: URL;
+  private _url!: URL;
   set url(u: URL) {
     this._url = u;
   }
@@ -49,7 +49,7 @@ export class Context {
     return this._url;
   }
 
-  private _params: Record<string, string>;
+  private _params!: Record<string, string>;
   set params(p: Record<string, string>) {
     this._params = p;
   }
@@ -57,7 +57,7 @@ export class Context {
     return this._params;
   }
 
-  private _abc: Abc;
+  private _abc!: Abc;
   set abc(abc: Abc) {
     this._abc = abc;
   }

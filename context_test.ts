@@ -1,5 +1,6 @@
-import { test, assertEquals, runIfMain } from "./dev_deps.ts";
+import { assertEquals, runIfMain } from "./dev_deps.ts";
 import { context } from "./context.ts";
+const { test } = Deno;
 
 test(function StringResponse(): void {
   const results = [
@@ -18,7 +19,7 @@ test(function StringResponse(): void {
     c.string(r);
     assertEquals(c.response.status, 200);
     assertEquals(c.response.body, new TextEncoder().encode(r));
-    assertEquals(c.response.headers.get("Content-Type"), "text/plain");
+    assertEquals(c.response.headers!.get("Content-Type"), "text/plain");
   }
 });
 
@@ -32,7 +33,7 @@ test(function JSONResponse(): void {
       c.response.body,
       new TextEncoder().encode(typeof r === "object" ? JSON.stringify(r) : r)
     );
-    assertEquals(c.response.headers.get("Content-Type"), "application/json");
+    assertEquals(c.response.headers!.get("Content-Type"), "application/json");
   }
 });
 
@@ -53,7 +54,7 @@ test(function HTMLResponse(): void {
     c.html(r);
     assertEquals(c.response.status, 200);
     assertEquals(c.response.body, new TextEncoder().encode(r));
-    assertEquals(c.response.headers.get("Content-Type"), "text/html");
+    assertEquals(c.response.headers!.get("Content-Type"), "text/html");
   }
 });
 

@@ -38,8 +38,8 @@ export class Abc {
   router: Router;
   middleware: MiddlewareFunc[];
   premiddleware: MiddlewareFunc[];
-  renderer: Renderer;
-  server: Server;
+  renderer!: Renderer;
+  server!: Server;
 
   constructor() {
     this.router = new Router();
@@ -81,7 +81,7 @@ export class Abc {
   }
 
   close(): void {
-    this.server.listener.close();
+    this.server.close();
   }
 
   /** `pre` adds middleware which is run before router. */
@@ -217,7 +217,7 @@ export class Abc {
     if (c.response.status == undefined) {
       switch (typeof result) {
         case "object":
-          c.json(result);
+          c.json(result as Record<string, unknown>);
           break;
         case "string":
           /^\s*</.test(result) ? c.html(result) : c.string(result);

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import "./reflect.ts";
 import { Context } from "./context.ts";
 import { Status, STATUS_TEXT } from "./deps.ts";

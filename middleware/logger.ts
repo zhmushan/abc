@@ -37,10 +37,10 @@ export function logger(
   }
   return function(next: HandlerFunc): HandlerFunc {
     return function(c: Context): unknown {
-      if (config.skipper(c)) {
+      if (config.skipper!(c)) {
         return next(c);
       }
-      config.output.write(encoder.encode(config.formatter(c)));
+      config.output!.write(encoder.encode(config.formatter!(c)));
       return next(c);
     };
   };

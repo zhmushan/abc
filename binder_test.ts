@@ -1,11 +1,11 @@
 import {
-  test,
   assertEquals,
   assertThrowsAsync,
   runIfMain
 } from "./dev_deps.ts";
 import { Binder, BinderPropTypeParis, bind } from "./binder.ts";
 import { context, Context } from "./context.ts";
+const { test } = Deno;
 
 interface FakeServerRequest {
   body: Deno.Reader;
@@ -36,8 +36,8 @@ function createMockBodyReader(body: string): Deno.Reader {
 
 @Binder()
 class A {
-  public _foo: string;
-  public _bar: number;
+  public _foo!: string;
+  public _bar!: number;
   constructor(public foo: string, public bar: number) {}
 }
 
@@ -52,11 +52,12 @@ class Any {
 }
 
 test(function BinderDecorator(): void {
+  // @ts-ignore
   assertEquals(Reflect.getMetadata(BinderPropTypeParis, A), {
     foo: "string",
     bar: "number"
   });
-
+  // @ts-ignore
   assertEquals(Reflect.getMetadata(BinderPropTypeParis, Any), {
     field1: "any"
   });
@@ -95,37 +96,25 @@ test(async function BindJSON(): Promise<void> {
     body: createMockBodyReader(JSON.stringify(data[1])),
     headers: new Headers({ "Content-Type": "application/json" })
   });
-  assertThrowsAsync(
-    async (): Promise<void> => {
-      await bind(A, ctx);
-    },
-    Error,
-    "foo should be string"
-  );
+  assertThrowsAsync(async (): Promise<void> => {
+    await bind(A, ctx);
+  }, Error, "foo should be string");
 
   ctx = injectContext({
     body: createMockBodyReader(JSON.stringify(data[2])),
     headers: new Headers({ "Content-Type": "application/json" })
   });
-  assertThrowsAsync(
-    async (): Promise<void> => {
-      await bind(A, ctx);
-    },
-    Error,
-    "bar should be number"
-  );
+  assertThrowsAsync(async (): Promise<void> => {
+    await bind(A, ctx);
+  }, Error, "bar should be number");
 
   ctx = injectContext({
     body: createMockBodyReader(JSON.stringify(data[3])),
     headers: new Headers({ "Content-Type": "application/json" })
   });
-  assertThrowsAsync(
-    async (): Promise<void> => {
-      await bind(A, ctx);
-    },
-    Error,
-    "bar is required"
-  );
+  assertThrowsAsync(async (): Promise<void> => {
+    await bind(A, ctx);
+  }, Error, "bar is required");
 });
 
 test(async function BindNestingJSON(): Promise<void> {
@@ -146,13 +135,9 @@ test(async function BindNestingJSON(): Promise<void> {
     body: createMockBodyReader(JSON.stringify(data[1])),
     headers: new Headers({ "Content-Type": "application/json" })
   });
-  assertThrowsAsync(
-    async (): Promise<void> => {
-      await bind(B, ctx);
-    },
-    Error,
-    "bar should be number"
-  );
+  assertThrowsAsync(async (): Promise<void> => {
+    await bind(B, ctx);
+  }, Error, "bar should be number");
 });
 
 test(async function BindFieldWithAny(): Promise<void> {
@@ -182,13 +167,9 @@ test(async function BindFieldWithAny(): Promise<void> {
     body: createMockBodyReader(JSON.stringify(data[2])),
     headers: new Headers({ "Content-Type": "application/json" })
   });
-  assertThrowsAsync(
-    async (): Promise<void> => {
-      await bind(Any, ctx);
-    },
-    Error,
-    "field1 is required"
-  );
+  assertThrowsAsync(async (): Promise<void> => {
+    await bind(Any, ctx);
+  }, Error, "field1 is required");
 });
 
 runIfMain(import.meta);

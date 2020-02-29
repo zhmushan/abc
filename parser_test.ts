@@ -1,6 +1,7 @@
-import { test, assertEquals, assertThrows, runIfMain } from "./dev_deps.ts";
+import { assertEquals, assertThrows, runIfMain } from "./dev_deps.ts";
 import { Parser } from "./parser.ts";
 import { MIME } from "./constants.ts";
+const { test } = Deno;
 
 test(function ParseUrlencoded(): void {
   const parser = new Parser(MIME.ApplicationForm);

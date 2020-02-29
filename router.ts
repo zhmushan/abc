@@ -37,7 +37,7 @@ export class Node {
   wildChild = false;
   nType = NodeType.Static;
   indices = "";
-  handle: HandlerFunc;
+  handle!: HandlerFunc;
   maxParams = 0;
 
   addRoute(path: string, handle: HandlerFunc): void {
@@ -48,7 +48,8 @@ export class Node {
 
     // non-empty tree
     if (node.path.length > 0 || node.children.length > 0) {
-      walk: while (true) {
+      walk:
+      while (true) {
         // Update maxParams of the current node
         if (numParams > node.maxParams) {
           node.maxParams = numParams;
@@ -82,7 +83,7 @@ export class Node {
           node.children = [child];
           node.indices = node.path[i];
           node.path = path.slice(0, i);
-          node.handle = null;
+          node.handle = undefined!;
           node.wildChild = false;
         }
 
@@ -117,8 +118,8 @@ export class Node {
               } else {
                 pathSeg = path.split("/", 1)[0];
               }
-              const prefix =
-                fullPath.slice(0, fullPath.indexOf(pathSeg)) + node.path;
+              const prefix = fullPath.slice(0, fullPath.indexOf(pathSeg)) +
+                node.path;
               throw new Error(
                 `'${pathSeg}' in new path '${fullPath}' conflicts with existing wildcard '${node.path}' in existing prefix '${prefix}'`
               );
@@ -161,7 +162,7 @@ export class Node {
           return;
         } else if (i === path.length) {
           // Make node a (in-path) leaf
-          if (node.handle) {
+          if (node.handle!) {
             throw new Error(
               `a handle is already registered for path '${fullPath}'`
             );
@@ -197,11 +198,14 @@ export class Node {
 
     // build new index char string
     if (newPos !== pos) {
-      node.indices =
-        node.indices.slice(0, newPos) + // unchanged prefix, might be empty
-        node.indices.slice(pos, pos + 1) + // the index char we move
-        node.indices.slice(newPos, pos) +
-        node.indices.slice(pos + 1); // rest without char at 'pos'
+      node
+        .indices = node.indices.slice(
+          0,
+          newPos
+        ) + // unchanged prefix, might be empty
+          node.indices.slice(pos, pos + 1) + // the index char we move
+          node.indices.slice(newPos, pos) +
+          node.indices.slice(pos + 1); // rest without char at 'pos'
     }
 
     return newPos;
@@ -231,9 +235,10 @@ export class Node {
           case ":":
           case "*":
             throw new Error(
-              `only one wildcard per path segment is allowed, has: '${path.slice(
-                i
-              )}' in path '${fullPath}'`
+              `only one wildcard per path segment is allowed, has: '${path
+                .slice(
+                  i
+                )}' in path '${fullPath}'`
             );
           default:
             ++end;
@@ -344,7 +349,8 @@ export class Node {
     let node = this as Node;
     let handle: HandlerFunc, p: Params, tsr: boolean;
     // outer loop for walking the tree
-    walk: while (true) {
+    walk:
+    while (true) {
       if (path.length > node.path.length) {
         if (path.slice(0, node.path.length) === node.path) {
           path = path.slice(node.path.length);
@@ -376,12 +382,12 @@ export class Node {
               for (; end < path.length && path[end] !== "/"; ++end);
 
               // save param value
-              if (!p) {
+              if (!p!) {
                 // lazy allocation
                 p = [];
               }
-              const i = p.length;
-              p[i] = {
+              const i = p!.length;
+              p![i] = {
                 key: node.path.slice(1),
                 value: path.slice(0, end)
               };
@@ -400,24 +406,24 @@ export class Node {
               }
 
               handle = node.handle;
-              if (handle) {
+              if (handle!) {
                 break walk;
               } else if (node.children.length === 1) {
                 // No handle found. Check if a handle for this path + a
                 // trailing slash exists for TSR recommendation
                 node = node.children[0];
-                tsr = node.handle && node.path === "/";
+                tsr = node.handle && node.path === "/" && true;
               }
               break walk;
             }
             case NodeType.CatchAll: {
               // save param value
-              if (!p) {
+              if (!p!) {
                 // lazy allocation
                 p = [];
               }
-              const i = p.length;
-              p[i] = {
+              const i = p!.length;
+              p![i] = {
                 key: node.path.slice(2),
                 value: path
               };
@@ -434,7 +440,7 @@ export class Node {
         // We should have reached the node containing the handle.
         // Check if this node has a handle registered.
         handle = node.handle;
-        if (handle) {
+        if (handle!) {
           break walk;
         }
 
@@ -448,8 +454,7 @@ export class Node {
         for (let i = 0; i < node.indices.length; ++i) {
           if (node.indices[i] === "/") {
             node = node.children[i];
-            tsr =
-              (node.handle && node.path.length === 1) ||
+            tsr = (node.handle && node.path.length === 1) ||
               (node.children[0].handle && node.nType === NodeType.CatchAll);
             break walk;
           }
@@ -460,15 +465,14 @@ export class Node {
 
       // Nothing found. We can recommend to redirect to the same URL with an
       // extra trailing slash if a leaf exists for that path
-      tsr =
-        path === "/" ||
+      tsr = path === "/" ||
         (node.path.length === path.length + 1 &&
           node.path[path.length] === "/" &&
           node.handle &&
           path === node.path.slice(0, node.path.length - 1));
       break walk;
     }
-    return [handle, p, tsr];
+    return [handle!, p!, tsr!];
   }
 }
 
@@ -489,7 +493,7 @@ export class Router {
     root.addRoute(path, h);
   }
 
-  find(method: string, c: Context): HandlerFunc {
+  find(method: string, c: Context): HandlerFunc | undefined {
     const node = this.trees[method];
     if (node) {
       const [handle, params, _] = node.getValue(c.path);

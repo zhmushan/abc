@@ -1,7 +1,8 @@
-import { test, assertEquals, runIfMain } from "../dev_deps.ts";
+import { assertEquals, runIfMain } from "../dev_deps.ts";
 import { cors } from "./cors.ts";
 import { Context } from "../context.ts";
 import { Header } from "../constants.ts";
+const { test } = Deno;
 
 test(function MiddlewareCORS(): void {
   const headers = new Headers();

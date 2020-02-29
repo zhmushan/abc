@@ -30,16 +30,16 @@ export function cors(config: CORSConfig = DefaultCORSConfig): MiddlewareFunc {
 
   return function(next: HandlerFunc): HandlerFunc {
     return function(c: Context): unknown {
-      if (config.skipper(c)) {
+      if (config.skipper!(c)) {
         return next(c);
       }
       const req = c.request;
       const resp = c.response;
-      const origin = req.headers.get(Header.Origin);
+      const origin = req.headers!.get(Header.Origin)!;
       if (!resp.headers) resp.headers = new Headers();
 
       let allowOrigin = "";
-      for (const o of config.allowOrigins) {
+      for (const o of config.allowOrigins!) {
         if (o == "*" && config.allowCredentials) {
           allowOrigin = origin;
           break;
@@ -75,7 +75,7 @@ export function cors(config: CORSConfig = DefaultCORSConfig): MiddlewareFunc {
       resp.headers.set(Header.AccessControlAllowOrigin, allowOrigin);
       resp.headers.set(
         Header.AccessControlAllowMethods,
-        config.allowMethods.join(",")
+        config.allowMethods!.join(",")
       );
       if (config.allowHeaders && config.allowHeaders.length != 0) {
         resp.headers.set(
@@ -88,7 +88,7 @@ export function cors(config: CORSConfig = DefaultCORSConfig): MiddlewareFunc {
           resp.headers.set(Header.AccessControlRequestHeaders, h);
         }
       }
-      if (config.maxAge > 0) {
+      if (config.maxAge! > 0) {
         resp.headers.set(Header.AccessControlMaxAge, String(config.maxAge));
       }
 

@@ -1,7 +1,8 @@
-import { test, assertEquals, runIfMain } from "./dev_deps.ts";
+import { assertEquals, runIfMain } from "./dev_deps.ts";
 import { Status } from "./deps.ts";
 import { abc, MiddlewareFunc, HandlerFunc } from "./abc.ts";
 import { Context } from "./context.ts";
+const { test } = Deno;
 
 test(async function GroupMiddleware(): Promise<void> {
   const app = abc();

@@ -1,4 +1,3 @@
-import { parse } from "./deps.ts";
 import { NotImplemented } from "./abc.ts";
 import { MIME } from "./constants.ts";
 
@@ -13,7 +12,7 @@ import { MIME } from "./constants.ts";
  *            %x0D )              ; Carriage return
  */
 function firstchar(str: string): string {
-  return /^[\x20\x09\x0a\x0d]*(.)/.exec(str)[1];
+  return /^[\x20\x09\x0a\x0d]*(.)/.exec(str)![1];
 }
 
 function json(data: string): Record<string, unknown> {
@@ -30,13 +29,23 @@ function json(data: string): Record<string, unknown> {
 }
 
 function urlencoded(data: string): Record<string, unknown> {
-  const result: Record<string, unknown> = parse(data);
-  return result;
+  return paramsToObject(new URLSearchParams(data).entries());
 }
 
 function multipart(data: string): Record<string, unknown> {
   data;
   throw NotImplemented();
+}
+
+function paramsToObject(
+  entries: IterableIterator<[string, string]>
+): Record<string, unknown> {
+  let rtv = {} as Record<string, unknown>;
+  for (let entry of entries) {
+    const [key, value] = entry;
+    rtv[key] = value;
+  }
+  return rtv;
 }
 
 export class Parser {
@@ -55,6 +64,6 @@ export class Parser {
       rtv = multipart(data);
     }
 
-    return rtv;
+    return rtv!;
   }
 }

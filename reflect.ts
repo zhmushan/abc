@@ -1,3 +1,4 @@
+// @ts-nocheck
 /*! *****************************************************************************
 Copyright (C) Microsoft. All rights reserved.
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
@@ -22,8 +23,7 @@ namespace Reflect {
     length: number;
   }
 
-  type IteratorResult<T> =
-    | { value: T; done: false }
+  type IteratorResult<T> = { value: T; done: false }
     | { value: never; done: true };
 
   interface Iterator<T> {
@@ -53,8 +53,8 @@ namespace Reflect {
   }
 
   interface MapConstructor {
-    new (): Map<any, any>;
-    new <K, V>(): Map<K, V>;
+    new(): Map<any, any>;
+    new<K, V>(): Map<K, V>;
     prototype: Map<any, any>;
   }
 
@@ -70,8 +70,8 @@ namespace Reflect {
   }
 
   interface SetConstructor {
-    new (): Set<any>;
-    new <T>(): Set<T>;
+    new(): Set<any>;
+    new<T>(): Set<T>;
     prototype: Set<any>;
   }
 
@@ -84,8 +84,8 @@ namespace Reflect {
   }
 
   interface WeakMapConstructor {
-    new (): WeakMap<any, any>;
-    new <K, V>(): WeakMap<K, V>;
+    new(): WeakMap<any, any>;
+    new<K, V>(): WeakMap<K, V>;
     prototype: WeakMap<any, any>;
   }
 
@@ -99,8 +99,10 @@ namespace Reflect {
   declare const WeakMap: WeakMapConstructor;
   declare const Map: MapConstructor;
   declare const global: any;
+
   // @ts-ignore
   declare const crypto: Crypto;
+
   // @ts-ignore
   declare const msCrypto: Crypto;
   declare const process: any;
@@ -689,22 +691,19 @@ namespace Reflect {
 
   (function(
     this: any,
-    factory: (
-      exporter: <K extends keyof typeof Reflect>(
-        key: K,
-        value: typeof Reflect[K]
-      ) => void
-    ) => void
+    factory: (exporter: <K extends keyof typeof Reflect>(
+      key: K,
+      value: typeof Reflect[K]
+    ) => void) => void
   ) {
     var self;
-    const root =
-      typeof global === "object"
-        ? global
-        : typeof self === "object"
+    const root = typeof global === "object"
+      ? global
+      : typeof self === "object"
         ? self
         : typeof this === "object"
-        ? this
-        : Function("return this;")();
+          ? this
+          : Function("return this;")();
 
     let exporter = makeExporter(Reflect);
     if (typeof root.Reflect === "undefined") {
@@ -749,7 +748,8 @@ namespace Reflect {
       supportsSymbol && typeof Symbol.iterator !== "undefined"
         ? Symbol.iterator
         : "@@iterator";
-    const supportsCreate = typeof Object.create === "function"; // feature test for Object.create support
+    const supportsCreate = typeof Object.create ===
+      "function"; // feature test for Object.create support
     const supportsProto = { __proto__: [] } instanceof Array; // feature test for __proto__ support
     const downLevel = !supportsCreate && !supportsProto;
 
@@ -758,39 +758,40 @@ namespace Reflect {
       create: supportsCreate
         ? <V>() => MakeDictionary(Object.create(null) as HashMap<V>)
         : supportsProto
-        ? <V>() => MakeDictionary({ __proto__: null as any } as HashMap<V>)
-        : <V>() => MakeDictionary({} as HashMap<V>),
+          ? <V>() => MakeDictionary({ __proto__: null as any } as HashMap<V>)
+          : <V>() => MakeDictionary({} as HashMap<V>),
 
       has: downLevel
         ? <V>(map: HashMap<V>, key: string | number | symbol) =>
-            hasOwn.call(map, key)
+          hasOwn.call(
+            map,
+            key
+          )
         : <V>(map: HashMap<V>, key: string | number | symbol) => key in map,
 
       get: downLevel
-        ? <V>(map: HashMap<V>, key: string | number | symbol): V | undefined =>
-            hasOwn.call(map, key) ? map[key as string | number] : undefined
-        : <V>(map: HashMap<V>, key: string | number | symbol): V | undefined =>
-            map[key as string | number]
+        ? <V>(map: HashMap<V>, key: string | number | symbol): V
+          | undefined =>
+          hasOwn.call(map, key) ? map[key as string | number] : undefined
+        : <V>(map: HashMap<V>, key: string | number | symbol): V
+          | undefined => map[key as string | number]
     };
 
     // Load global or shim versions of Map, Set, and WeakMap
     const functionPrototype = Object.getPrototypeOf(Function);
-    const usePolyfill =
-      typeof process === "object" &&
+    const usePolyfill = typeof process === "object" &&
       process.env &&
       process.env["REFLECT_METADATA_USE_MAP_POLYFILL"] === "true";
-    const _Map: typeof Map =
-      !usePolyfill &&
+    const _Map: typeof Map = !usePolyfill &&
       typeof Map === "function" &&
       typeof Map.prototype.entries === "function"
-        ? Map
-        : CreateMapPolyfill();
-    const _Set: typeof Set =
-      !usePolyfill &&
+      ? Map
+      : CreateMapPolyfill();
+    const _Set: typeof Set = !usePolyfill &&
       typeof Set === "function" &&
       typeof Set.prototype.entries === "function"
-        ? Set
-        : CreateSetPolyfill();
+      ? Set
+      : CreateSetPolyfill();
     const _WeakMap: typeof WeakMap =
       !usePolyfill && typeof WeakMap === "function"
         ? WeakMap
@@ -803,7 +804,10 @@ namespace Reflect {
       Map<string | symbol | undefined, Map<any, any>>
     >();
 
-    function decorate(decorators: ClassDecorator[], target: Function): Function;
+    function decorate(
+      decorators: ClassDecorator[],
+      target: Function
+    ): Function;
     function decorate(
       decorators: (PropertyDecorator | MethodDecorator)[],
       target: any,
@@ -869,12 +873,13 @@ namespace Reflect {
           !IsObject(attributes) &&
           !IsUndefined(attributes) &&
           !IsNull(attributes)
-        )
+        ) {
           throw new TypeError();
+        }
         if (IsNull(attributes)) attributes = undefined;
         propertyKey = ToPropertyKey(propertyKey);
         return DecorateProperty(
-          <MemberDecorator[]>decorators,
+          <MemberDecorator[]> decorators,
           target,
           propertyKey,
           attributes
@@ -883,8 +888,8 @@ namespace Reflect {
         if (!IsArray(decorators)) throw new TypeError();
         if (!IsConstructor(target)) throw new TypeError();
         return DecorateConstructor(
-          <ClassDecorator[]>decorators,
-          <Function>target
+          <ClassDecorator[]> decorators,
+          <Function> target
         );
       }
     }
@@ -939,8 +944,9 @@ namespace Reflect {
       function decorator(target: any, propertyKey: string | symbol): void;
       function decorator(target: any, propertyKey?: string | symbol): void {
         if (!IsObject(target)) throw new TypeError();
-        if (!IsUndefined(propertyKey) && !IsPropertyKey(propertyKey))
+        if (!IsUndefined(propertyKey) && !IsPropertyKey(propertyKey)) {
           throw new TypeError();
+        }
         OrdinaryDefineOwnMetadata(
           metadataKey,
           metadataValue,
@@ -1429,7 +1435,7 @@ namespace Reflect {
         const decorated = decorator(target);
         if (!IsUndefined(decorated) && !IsNull(decorated)) {
           if (!IsConstructor(decorated)) throw new TypeError();
-          target = <Function>decorated;
+          target = <Function> decorated;
         }
       }
       return target;
@@ -1446,7 +1452,7 @@ namespace Reflect {
         const decorated = decorator(target, propertyKey, descriptor);
         if (!IsUndefined(decorated) && !IsNull(decorated)) {
           if (!IsObject(decorated)) throw new TypeError();
-          descriptor = <PropertyDescriptor>decorated;
+          descriptor = <PropertyDescriptor> decorated;
         }
       }
       return descriptor;
@@ -1472,7 +1478,10 @@ namespace Reflect {
       let targetMetadata = Metadata.get(O);
       if (IsUndefined(targetMetadata)) {
         if (!Create) return undefined;
-        targetMetadata = new _Map<string | symbol | undefined, Map<any, any>>();
+        targetMetadata = new _Map<
+          string | symbol | undefined,
+          Map<any, any>
+        >();
         Metadata.set(O, targetMetadata);
       }
       let metadataMap = targetMetadata.get(P);
@@ -1698,8 +1707,8 @@ namespace Reflect {
         PreferredType === Tag.String
           ? "string"
           : PreferredType === Tag.Number
-          ? "number"
-          : "default";
+            ? "number"
+            : "default";
       const exoticToPrim = GetMethod(input, toPrimitiveSymbol);
       if (exoticToPrim !== undefined) {
         const result = exoticToPrim.call(input, hint);
@@ -1770,8 +1779,8 @@ namespace Reflect {
       return Array.isArray
         ? Array.isArray(argument)
         : argument instanceof Object
-        ? argument instanceof Array
-        : Object.prototype.toString.call(argument) === "[object Array]";
+          ? argument instanceof Array
+          : Object.prototype.toString.call(argument) === "[object Array]";
     }
 
     // 7.2.3 IsCallable(argument)
@@ -1832,7 +1841,9 @@ namespace Reflect {
 
     // 7.4.5 IteratorStep(iterator)
     // https://tc39.github.io/ecma262/#sec-iteratorstep
-    function IteratorStep<T>(iterator: Iterator<T>): IteratorResult<T> | false {
+    function IteratorStep<T>(iterator: Iterator<T>): IteratorResult<T>
+      | false
+    {
       const result = iterator.next();
       return result.done ? false : result;
     }
@@ -1866,8 +1877,9 @@ namespace Reflect {
       // If the super prototype is Object.prototype, null, or undefined, then we cannot determine the heritage.
       const prototype = O.prototype;
       const prototypeProto = prototype && Object.getPrototypeOf(prototype);
-      if (prototypeProto == null || prototypeProto === Object.prototype)
+      if (prototypeProto == null || prototypeProto === Object.prototype) {
         return proto;
+      }
 
       // If the constructor was not a function, then we cannot determine the heritage.
       const constructor = prototypeProto.constructor;
@@ -1894,7 +1906,11 @@ namespace Reflect {
         private _values: V[];
         private _index = 0;
         private _selector: (key: K, value: V) => R;
-        constructor(keys: K[], values: V[], selector: (key: K, value: V) => R) {
+        constructor(
+          keys: K[],
+          values: V[],
+          selector: (key: K, value: V) => R
+        ) {
           this._keys = keys;
           this._values = values;
           this._selector = selector;
@@ -1921,7 +1937,7 @@ namespace Reflect {
             }
             return { value: result, done: false };
           }
-          return { value: <never>undefined, done: true };
+          return { value: <never> undefined, done: true };
         }
         throw(error: any): IteratorResult<R> {
           if (this._index >= 0) {
@@ -1937,7 +1953,7 @@ namespace Reflect {
             this._keys = arraySentinel;
             this._values = arraySentinel;
           }
-          return { value: <never>value, done: true };
+          return { value: <never> value, done: true };
         }
       }
 
@@ -2097,8 +2113,7 @@ namespace Reflect {
 
       function CreateUniqueKey(): string {
         let key: string;
-        do key = "@@WeakMap@@" + CreateUUID();
-        while (HashMap.has(keys, key));
+        do key = "@@WeakMap@@" + CreateUUID(); while (HashMap.has(keys, key));
         keys[key] = true;
         return key;
       }
@@ -2118,7 +2133,7 @@ namespace Reflect {
             value: HashMap.create<any>()
           });
         }
-        return (<any>target)[rootKey];
+        return (<any> target)[rootKey];
       }
 
       function FillRandomBytes(buffer: BufferLike, size: number): BufferLike {
@@ -2128,10 +2143,14 @@ namespace Reflect {
 
       function GenRandomBytes(size: number): BufferLike {
         if (typeof Uint8Array === "function") {
-          if (typeof crypto !== "undefined")
+          if (typeof crypto !== "undefined") {
             return crypto.getRandomValues(new Uint8Array(size)) as Uint8Array;
-          if (typeof msCrypto !== "undefined")
-            return msCrypto.getRandomValues(new Uint8Array(size)) as Uint8Array;
+          }
+          if (typeof msCrypto !== "undefined") {
+            return msCrypto.getRandomValues(
+              new Uint8Array(size)
+            ) as Uint8Array;
+          }
           return FillRandomBytes(new Uint8Array(size), size);
         }
         return FillRandomBytes(new Array(size), size);
@@ -2155,8 +2174,8 @@ namespace Reflect {
 
     // uses a heuristic used by v8 and chakra to force an object into dictionary mode.
     function MakeDictionary<T>(obj: T): T {
-      (<any>obj).__ = undefined;
-      delete (<any>obj).__;
+      (<any> obj).__ = undefined;
+      delete (<any> obj).__;
       return obj;
     }
   });

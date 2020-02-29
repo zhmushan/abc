@@ -1,11 +1,12 @@
-import { test, assertEquals, assertNotEquals, runIfMain } from "./dev_deps.ts";
+import { assertEquals, assertNotEquals, runIfMain } from "./dev_deps.ts";
 import { countParams, Node, NodeType } from "./router.ts";
+const { test } = Deno;
 
 interface TestRequest {
   path: string;
   isMatch: boolean;
   route: string;
-  params: Array<{ key: string; value: string }>;
+  params?: Array<{ key: string; value: string }>;
 }
 
 interface TestRoute {
@@ -28,7 +29,7 @@ function checkPriorities(n: Node): number {
     prio += checkPriorities(c);
   }
 
-  if (n.handle) {
+  if (n.handle != undefined) {
     ++prio;
   }
 
@@ -61,7 +62,7 @@ function checkRequests(n: Node, requests: TestRequest[]): void {
       assertEquals(r.isMatch, false);
     } else {
       assertEquals(r.isMatch, true);
-      assertEquals(h(undefined), r.route);
+      assertEquals(h(undefined!), r.route);
     }
     assertEquals(ps, r.params);
   }
@@ -70,7 +71,7 @@ function checkRequests(n: Node, requests: TestRequest[]): void {
 function checkRoutes(routes: TestRoute[]): void {
   const n = new Node();
   for (const r of routes) {
-    const err = getErr((): void => n.addRoute(r.path, null));
+    const err = getErr((): void => n.addRoute(r.path, undefined!));
     if (err) {
       assertEquals(r.conflict, true);
     } else {
@@ -311,7 +312,7 @@ test(function EmptyWildcardName(): void {
   const n = new Node();
   const routes = ["/user:", "/user:/", "/cmd/:/", "/src/*"];
   for (const r of routes) {
-    const err = getErr((): void => n.addRoute(r, null));
+    const err = getErr((): void => n.addRoute(r, undefined!));
     assertNotEquals(err, null);
   }
 });
@@ -336,8 +337,8 @@ test(function DoubleWildcard(): void {
   const routes = ["/:foo:bar", "/:foo:bar/", "/:foo*bar"];
   for (const r of routes) {
     const n = new Node();
-    const err = getErr((): void => n.addRoute(r, null));
-    assertEquals(err.message.startsWith(errMsg), true);
+    const err = getErr((): void => n.addRoute(r, undefined!));
+    assertEquals(err!.message.startsWith(errMsg), true);
   }
 });
 
@@ -422,7 +423,7 @@ test(function InvalidNodeType(): void {
   const err = getErr((): void => {
     n.getValue("/test");
   });
-  assertEquals(err.message, errMsg);
+  assertEquals(err!.message, errMsg);
 });
 
 test(function WildcardConflictEx(): void {
@@ -466,7 +467,7 @@ test(function WildcardConflictEx(): void {
     }
     const err = getErr((): void => n.addRoute(c.route, (): string => c.route));
     assertEquals(
-      err.message,
+      err!.message,
       `'${c.segPath}' in new path '${c.route}' conflicts with existing wildcard '${c.existSegPath}' in existing prefix '${c.existPath}'`
     );
   }

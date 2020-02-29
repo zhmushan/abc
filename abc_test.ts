@@ -1,4 +1,4 @@
-import { test, assertEquals, runIfMain } from "./dev_deps.ts";
+import { assertEquals, runIfMain } from "./dev_deps.ts";
 import { Status } from "./deps.ts";
 import { abc, NotFoundHandler, HandlerFunc } from "./abc.ts";
 import {
@@ -6,7 +6,7 @@ import {
   NotFoundException
 } from "./http_exception.ts";
 import { Context } from "./context.ts";
-const { readFile } = Deno;
+const { readFile, test } = Deno;
 
 const decoder = new TextDecoder();
 
@@ -17,10 +17,9 @@ enum HttpMethods {
   Put = "PUT"
 }
 
-const addr = "127.0.0.1:8081";
-const host = `http://${addr}`;
-
 test(async function AbcStatic(): Promise<void> {
+  const addr = "127.0.0.1:8081";
+  const host = `http://${addr}`;
   const app = abc();
   app.static("/examples", "./examples/02_template");
   app.start(addr);
@@ -49,6 +48,8 @@ test(async function AbcStatic(): Promise<void> {
 });
 
 test(async function AbcFile(): Promise<void> {
+  const addr = "127.0.0.1:8082";
+  const host = `http://${addr}`;
   const app = abc();
   app.file("ci", "./.github/workflows/ci.yml");
   app.file("fileempty", "./fileempty");
@@ -71,6 +72,8 @@ test(async function AbcFile(): Promise<void> {
 });
 
 test(async function AbcMiddleware(): Promise<void> {
+  const addr = "127.0.0.1:8083";
+  const host = `http://${addr}`;
   const app = abc();
   let str = "";
   app
@@ -111,6 +114,8 @@ test(async function AbcMiddleware(): Promise<void> {
 });
 
 test(async function AbcMiddlewareError(): Promise<void> {
+  const addr = "127.0.0.1:8084";
+  const host = `http://${addr}`;
   const app = abc();
   const errMsg = "err";
   app.get("/middlewareerror", NotFoundHandler, function(): HandlerFunc {
@@ -130,6 +135,8 @@ test(async function AbcMiddlewareError(): Promise<void> {
 });
 
 test(async function AbcHandler(): Promise<void> {
+  const addr = "127.0.0.1:8085";
+  const host = `http://${addr}`;
   const app = abc();
   app.get("/ok", (): string => "ok");
   app.start(addr);
@@ -141,6 +148,8 @@ test(async function AbcHandler(): Promise<void> {
 });
 
 test(async function AbcHttpMethods(): Promise<void> {
+  const addr = "127.0.0.1:8086";
+  const host = `http://${addr}`;
   const app = abc();
   app
     .delete("/delete", (): string => "delete")
@@ -168,10 +177,11 @@ test(async function AbcHttpMethods(): Promise<void> {
   assertEquals(await res.text(), "put");
 
   for (const key in HttpMethods) {
+    // @ts-ignore
     res = await fetch(`${host}/any`, { method: HttpMethods[key] });
     assertEquals(res.status, Status.OK);
     assertEquals(await res.text(), "any");
-
+    // @ts-ignore
     res = await fetch(`${host}/match`, { method: HttpMethods[key] });
     assertEquals(res.status, Status.OK);
     assertEquals(await res.text(), "match");
@@ -180,6 +190,8 @@ test(async function AbcHttpMethods(): Promise<void> {
 });
 
 test(async function NotFound(): Promise<void> {
+  const addr = "127.0.0.1:8087";
+  const host = `http://${addr}`;
   const app = abc();
   app.get("/not_found_handler", NotFoundHandler);
   app.start(addr);

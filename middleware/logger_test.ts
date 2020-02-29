@@ -1,6 +1,7 @@
-import { test, assertEquals, assert, runIfMain } from "../dev_deps.ts";
+import { assertEquals, assert, runIfMain } from "../dev_deps.ts";
 import { DefaultFormatter, logger } from "./logger.ts";
 import { Context } from "../context.ts";
+const { test } = Deno;
 
 const dt = new Date();
 const ctx = {
@@ -13,7 +14,7 @@ const ctx = {
 const decoder = new TextDecoder();
 
 class Writer implements Deno.Writer {
-  out: null | string;
+  out = "";
   async write(p: Uint8Array): Promise<number> {
     this.out = decoder.decode(p);
     return 0;
