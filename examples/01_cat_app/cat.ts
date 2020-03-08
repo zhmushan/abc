@@ -1,7 +1,20 @@
-import { Binder } from "../../binder.ts";
+let catId = 1;
+function genCatId(): number {
+  return catId++;
+}
 
-@Binder()
 export class Cat {
   id: number;
-  constructor(public name: string, public age: number) {}
+  name: string;
+  age: number;
+  constructor(cat: CatDTO) {
+    this.id = genCatId();
+    this.name = cat.name;
+    this.age = cat.age;
+  }
+}
+
+export interface CatDTO {
+  name: string;
+  age: number;
 }

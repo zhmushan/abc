@@ -1,6 +1,6 @@
 import { assertEquals, assert, runIfMain } from "../dev_deps.ts";
 import { DefaultFormatter, logger } from "./logger.ts";
-import { Context } from "../context.ts";
+import { IContext } from "../types.ts";
 const { test } = Deno;
 
 const dt = new Date();
@@ -10,7 +10,7 @@ const ctx = {
     url: "",
     proto: "HTTP/1.1"
   }
-} as Context;
+} as IContext;
 const decoder = new TextDecoder();
 
 class Writer implements Deno.Writer {
@@ -25,7 +25,7 @@ test(function MiddlewareLogger(): void {
   const w = new Writer();
   logger({
     output: w
-  })((c: Context): Context => c)(ctx);
+  })(c => c)(ctx);
   assert(w.out.endsWith(" GET / HTTP/1.1\n"));
   assert(new Date(w.out.split(" ")[0]).getTime() >= dt.getTime());
 });
@@ -42,7 +42,7 @@ test(function MiddlewareLoggerCustomFormatter(): void {
   logger({
     output: w,
     formatter: (): string => info
-  })((c: Context): Context => c)(ctx);
+  })(c => c)(ctx);
   assertEquals(w.out, info);
 });
 

@@ -3,9 +3,9 @@
 Create `server.ts`
 
 ```ts
-import { abc } from "https://deno.land/x/abc/mod.ts";
+import { Application } from "https://deno.land/x/abc/mod.ts";
 
-const app = abc();
+const app = new Application();
 
 app
   .get("/hello", c => {
@@ -36,11 +36,11 @@ app
 
 ```ts
 // app.get("/users/:id", findOne)
-function findOne(c: Context) {
+const findOne: HandlerFunc = c => {
   // User ID from path `users/:id`
   const { id } = c.params;
   return id;
-}
+};
 ```
 
 Browse to http://localhost:8080/users/zhmushan and you should see "zhmushan" on the page.
@@ -51,11 +51,11 @@ Browse to http://localhost:8080/users/zhmushan and you should see "zhmushan" on 
 
 ```ts
 // app.get("/list", paging)
-function paging(c: Context) {
+const paging: HandlerFunc = c => {
   // Get page and size from the query string
   const { page, size } = c.queryParams;
   return `page: ${page}, size: ${size}`;
-}
+};
 ```
 
 Browse to http://localhost:8080/list?page=0&size=5 and you should see "page: 0, size: 5" on the page.
@@ -71,11 +71,10 @@ app.static("/sample", "./folder/sample");
 ## Middleware
 
 ```ts
-function track(next: HandlerFunc) {
-  return function(c: Context) {
-    console.log(`request to ${c.path}`);
-  };
-}
+const track: MiddlewareFunc = next => c => {
+  console.log(`request to ${c.path}`);
+  next(c);
+};
 
 // Root middleware
 app.use(logger());

@@ -11,21 +11,7 @@ jobs:
       - uses: denolib/setup-deno@master
         with:
           deno-version: 0.35.0
-      - uses: actions/setup-node@master
-        with:
-          node-version: 12
 
-      - name: Install deps
-        run: npm i -g tslint typescript
-
-      - name: Print deno version
-        run: deno --version
-
-      - name: Check format
-        run: deno fmt --check
-
-      - name: Lint
-        run: npx tslint **/*.ts
-
-      - name: Run tests
-        run: deno test -A -c tsconfig.json
+      - run: deno --version
+      - run: deno fmt --check
+      - run: deno test -A

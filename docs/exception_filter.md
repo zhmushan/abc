@@ -5,7 +5,8 @@ Abc comes with a built-in `exceptions layer` that handles all unhandled exceptio
 ### Usage
 
 ```ts
-abc().post("/admin", c => {
+const app = new Application();
+app.post("/admin", c => {
   throw new HttpException("Forbidden", Status.Forbidden);
 });
 ```
@@ -22,7 +23,8 @@ When the client calls this endpoint, the response looks like this:
 You can also customize the content of the response body.
 
 ```ts
-abc().post("/admin", c => {
+const app = new Application();
+app.post("/admin", c => {
   throw new HttpException(
     {
       status: Status.Forbidden,
@@ -53,7 +55,8 @@ export class ForbiddenException extends HttpException {
   }
 }
 
-abc().post("/admin", c => {
+const app = new Application();
+app.post("/admin", c => {
   throw new ForbiddenException();
 });
 ```

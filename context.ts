@@ -1,77 +1,31 @@
 import { ServerRequest, Response, Status, path } from "./deps.ts";
-import { Abc, NotFoundHandler } from "./abc.ts";
-import { bind } from "./binder.ts";
-import { Type } from "./type.ts";
+import { NotFoundHandler } from "./app.ts";
 import { Header, MIME } from "./constants.ts";
+import { IContext, IApplication } from "./types.ts";
 const { cwd, lstat, readFile, readAll } = Deno;
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
-export class Context {
-  private _request!: ServerRequest;
-  set request(r: ServerRequest) {
-    this._request = r;
-  }
-  get request(): ServerRequest {
-    return this._request;
+export default class implements IContext {
+  app: IApplication;
+  request: ServerRequest;
+
+  response: Response = { headers: new Headers() };
+  params: Record<string, string> = {};
+  queryParams = new URLSearchParams();
+
+  get path() {
+    return this.request.url;
   }
 
-  private _response!: Response;
-  set response(r: Response) {
-    this._response = r;
-  }
-  get response(): Response {
-    return this._response;
-  }
-
-  get path(): string {
-    return this.url.pathname;
-  }
-
-  get method(): string {
+  get method() {
     return this.request.method;
   }
 
-  get queryParams(): Record<string, string> {
-    const params: Record<string, string> = {};
-    for (const key of this.url.searchParams.keys()) {
-      params[key] = this.url.searchParams.get(key)!;
-    }
-    return params;
-  }
-
-  private _url!: URL;
-  set url(u: URL) {
-    this._url = u;
-  }
-  get url(): URL {
-    return this._url;
-  }
-
-  private _params!: Record<string, string>;
-  set params(p: Record<string, string>) {
-    this._params = p;
-  }
-  get params(): Record<string, string> {
-    return this._params;
-  }
-
-  private _abc!: Abc;
-  set abc(abc: Abc) {
-    this._abc = abc;
-  }
-  get abc(): Abc {
-    return this._abc;
-  }
-
-  constructor(options: ContextOptions) {
-    this.request = options.r || ({} as ServerRequest);
-    this.url = options.url || new URL("http://0.0.0.0:8080");
-    this.abc = options.abc || ({} as Abc);
-
-    this.response = { headers: new Headers() };
-    this.params = {};
+  constructor(opts: { app: IApplication; r: ServerRequest }) {
+    this.app = opts.app;
+    this.request = opts.r;
   }
 
   private writeContentType(v: string): void {
@@ -101,14 +55,12 @@ export class Context {
     );
   }
 
-  /** Sends an HTTP response with status code. */
   html(v: string, code: Status = Status.OK): void {
     this.writeContentType(MIME.TextHTML);
     this.response.status = code;
     this.response.body = encoder.encode(v);
   }
 
-  /** Sends an HTTP blob response with status code. */
   htmlBlob(b: Uint8Array | Deno.Reader, code: Status = Status.OK): void {
     this.blob(b, MIME.TextHTML, code);
   }
@@ -122,10 +74,10 @@ export class Context {
     data: T = {} as T,
     code: Status = Status.OK
   ): Promise<void> {
-    if (!this.abc.renderer) {
+    if (!this.app.renderer) {
       throw new Error();
     }
-    const r = await this.abc.renderer.render(name, data);
+    const r = await this.app.renderer.render(name, data);
     this.htmlBlob(r, code);
   }
 
@@ -155,19 +107,4 @@ export class Context {
       NotFoundHandler();
     }
   }
-
-  bind<T>(cls: Type<T>): Promise<T> {
-    return bind(cls, this);
-  }
-}
-
-export interface ContextOptions {
-  r?: ServerRequest;
-  url?: URL;
-  abc?: Abc;
-}
-
-export function context(options: ContextOptions = {}): Context {
-  const c = new Context(options);
-  return c;
 }
