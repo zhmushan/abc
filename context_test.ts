@@ -1,6 +1,8 @@
-import { assertEquals, runIfMain } from "./dev_deps.ts";
-import { context } from "./context.ts";
+import { assertEquals, runIfMain, createMockRequest } from "./dev_deps.ts";
+import Context from "./context.ts";
 const { test } = Deno;
+
+const options = { app: undefined!, r: createMockRequest() };
 
 test(function StringResponse(): void {
   const results = [
@@ -14,7 +16,7 @@ test(function StringResponse(): void {
     `true`,
     ``
   ];
-  const c = context();
+  const c = new Context(options);
   for (const r of results) {
     c.string(r);
     assertEquals(c.response.status, 200);
@@ -25,7 +27,7 @@ test(function StringResponse(): void {
 
 test(function JSONResponse(): void {
   const results = [{ foo: "bar" }, `{foo: "bar"}`, [1, 2], {}, [], `[]`];
-  const c = context();
+  const c = new Context(options);
   for (const r of results) {
     c.json(r);
     assertEquals(c.response.status, 200);
@@ -49,7 +51,7 @@ test(function HTMLResponse(): void {
     `true`,
     ``
   ];
-  const c = context();
+  const c = new Context(options);
   for (const r of results) {
     c.html(r);
     assertEquals(c.response.status, 200);

@@ -1,12 +1,11 @@
-import { MiddlewareFunc, HandlerFunc } from "../abc.ts";
-import { Context } from "../context.ts";
 import { Skipper, DefaultSkipper } from "./skipper.ts";
+import { IContext, MiddlewareFunc } from "../types.ts";
 
-export type Formatter = (c: Context) => string;
+export type Formatter = (c: IContext) => string;
 
 const encoder = new TextEncoder();
 
-export const DefaultFormatter: Formatter = (c: Context): string => {
+export const DefaultFormatter: Formatter = c => {
   const req = c.request;
 
   const time = new Date().toISOString();
@@ -35,15 +34,14 @@ export function logger(
   if (config.output == null) {
     config.output = Deno.stdout;
   }
-  return function(next: HandlerFunc): HandlerFunc {
-    return function(c: Context): unknown {
+  return next =>
+    c => {
       if (config.skipper!(c)) {
         return next(c);
       }
       config.output!.write(encoder.encode(config.formatter!(c)));
       return next(c);
     };
-  };
 }
 
 export interface LoggerConfig {

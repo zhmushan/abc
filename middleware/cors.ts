@@ -1,8 +1,7 @@
 import { Skipper, DefaultSkipper } from "./skipper.ts";
-import { MiddlewareFunc, HandlerFunc } from "../abc.ts";
-import { Context } from "../context.ts";
 import { HttpMethod, Header } from "../constants.ts";
 import { Status } from "../deps.ts";
+import { MiddlewareFunc, HandlerFunc } from "../types.ts";
 
 export const DefaultCORSConfig: CORSConfig = {
   skipper: DefaultSkipper,
@@ -29,7 +28,7 @@ export function cors(config: CORSConfig = DefaultCORSConfig): MiddlewareFunc {
   }
 
   return function(next: HandlerFunc): HandlerFunc {
-    return function(c: Context): unknown {
+    return c => {
       if (config.skipper!(c)) {
         return next(c);
       }

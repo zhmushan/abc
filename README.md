@@ -11,14 +11,13 @@
 
 - [Guides](https://deno.land/x/abc/docs/table_of_contents.md)
 - [Examples](https://deno.land/x/abc/examples/README.md)
-- [Benchmarks](benchmarks/RESULT)
 
 ## Hello World
 
 ```ts
-import { abc } from "https://deno.land/x/abc/mod.ts";
+import { Application } from "https://deno.land/x/abc/mod.ts";
 
-const app = abc();
+const app = new Application();
 
 app
   .get("/hello", c => {

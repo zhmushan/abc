@@ -1,40 +1,26 @@
 import { assertEquals, runIfMain } from "./dev_deps.ts";
 import { Status } from "./deps.ts";
-import { abc, MiddlewareFunc, HandlerFunc } from "./abc.ts";
-import { Context } from "./context.ts";
+import App from "./app.ts";
+import { MiddlewareFunc, HandlerFunc } from "./types.ts";
 const { test } = Deno;
 
 test(async function GroupMiddleware(): Promise<void> {
-  const app = abc();
+  const app = new App();
   const g = app.group("group");
   const h: HandlerFunc = function(): void {
     return;
   };
-  const m1: MiddlewareFunc = function(next: HandlerFunc): HandlerFunc {
-    return function(c: Context): unknown {
-      return next(c);
-    };
-  };
-  const m2: MiddlewareFunc = function(next: HandlerFunc): HandlerFunc {
-    return function(c: Context): unknown {
-      return next(c);
-    };
-  };
-  const m3: MiddlewareFunc = function(next: HandlerFunc): HandlerFunc {
-    return function(c: Context): unknown {
-      return next(c);
-    };
-  };
-  const m4: MiddlewareFunc = function(): HandlerFunc {
-    return function(c: Context): void {
+  const m1: MiddlewareFunc = next => c => next(c);
+  const m2: MiddlewareFunc = next => c => next(c);
+  const m3: MiddlewareFunc = next => c => next(c);
+  const m4: MiddlewareFunc = () =>
+    c => {
       c.response.status = 404;
     };
-  };
-  const m5: MiddlewareFunc = function(): HandlerFunc {
-    return function(c: Context): void {
+  const m5: MiddlewareFunc = () =>
+    c => {
       c.response.status = 405;
     };
-  };
 
   g.use(m1, m2, m3);
   g.get("/404", h, m4);

@@ -41,7 +41,7 @@ export class HttpException extends Error {
 export class BadGatewayException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error: string = "Bad Gateway"
+    error = "Bad Gateway"
   ) {
     super(
       createHttpExceptionBody(message, error, Status.BadGateway),
@@ -53,7 +53,7 @@ export class BadGatewayException extends HttpException {
 export class BadRequestException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error: string = "Bad Request"
+    error = "Bad Request"
   ) {
     super(
       createHttpExceptionBody(message, error, Status.BadRequest),
@@ -65,7 +65,7 @@ export class BadRequestException extends HttpException {
 export class ConflictException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error: string = "Conflict"
+    error = "Conflict"
   ) {
     super(
       createHttpExceptionBody(message, error, Status.Conflict),
@@ -77,7 +77,7 @@ export class ConflictException extends HttpException {
 export class ForbiddenException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error: string = "Forbidden"
+    error = "Forbidden"
   ) {
     super(
       createHttpExceptionBody(message, error, Status.Forbidden),
@@ -89,7 +89,7 @@ export class ForbiddenException extends HttpException {
 export class GatewayTimeoutException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error: string = "Gateway Timeout"
+    error = "Gateway Timeout"
   ) {
     super(
       createHttpExceptionBody(message, error, Status.GatewayTimeout),
@@ -99,19 +99,13 @@ export class GatewayTimeoutException extends HttpException {
 }
 
 export class GoneException extends HttpException {
-  constructor(
-    message?: string | Record<string, any> | any,
-    error: string = "Gone"
-  ) {
+  constructor(message?: string | Record<string, any> | any, error = "Gone") {
     super(createHttpExceptionBody(message, error, Status.Gone), Status.Gone);
   }
 }
 
 export class TeapotException extends HttpException {
-  constructor(
-    message?: string | Record<string, any> | any,
-    error: string = "Teapot"
-  ) {
+  constructor(message?: string | Record<string, any> | any, error = "Teapot") {
     super(
       createHttpExceptionBody(message, error, Status.Teapot),
       Status.Teapot
@@ -122,7 +116,7 @@ export class TeapotException extends HttpException {
 export class MethodNotAllowedException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error: string = "Method Not Allowed"
+    error = "Method Not Allowed"
   ) {
     super(
       createHttpExceptionBody(message, error, Status.MethodNotAllowed),
@@ -134,7 +128,7 @@ export class MethodNotAllowedException extends HttpException {
 export class NotAcceptableException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error: string = "Not Acceptable"
+    error = "Not Acceptable"
   ) {
     super(
       createHttpExceptionBody(message, error, Status.NotAcceptable),
@@ -146,7 +140,7 @@ export class NotAcceptableException extends HttpException {
 export class NotFoundException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error: string = "Not Found"
+    error = "Not Found"
   ) {
     super(
       createHttpExceptionBody(message, error, Status.NotFound),
@@ -158,7 +152,7 @@ export class NotFoundException extends HttpException {
 export class NotImplementedException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error: string = "Not Implemented"
+    error = "Not Implemented"
   ) {
     super(
       createHttpExceptionBody(message, error, Status.NotImplemented),
@@ -170,7 +164,7 @@ export class NotImplementedException extends HttpException {
 export class RequestEntityTooLargeException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error: string = "Request Entity Too Large"
+    error = "Request Entity Too Large"
   ) {
     super(
       createHttpExceptionBody(message, error, Status.RequestEntityTooLarge),
@@ -182,7 +176,7 @@ export class RequestEntityTooLargeException extends HttpException {
 export class RequestTimeoutException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error: string = "Request Timeout"
+    error = "Request Timeout"
   ) {
     super(
       createHttpExceptionBody(message, error, Status.RequestTimeout),
@@ -194,7 +188,7 @@ export class RequestTimeoutException extends HttpException {
 export class ServiceUnavailableException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error: string = "Service Unavailable"
+    error = "Service Unavailable"
   ) {
     super(
       createHttpExceptionBody(message, error, Status.ServiceUnavailable),
@@ -206,7 +200,7 @@ export class ServiceUnavailableException extends HttpException {
 export class UnauthorizedException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error: string = "Unauthorized"
+    error = "Unauthorized"
   ) {
     super(
       createHttpExceptionBody(message, error, Status.Unauthorized),
@@ -218,7 +212,7 @@ export class UnauthorizedException extends HttpException {
 export class UnprocessableEntityException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error: string = "Unprocessable Entity"
+    error = "Unprocessable Entity"
   ) {
     super(
       createHttpExceptionBody(message, error, Status.UnprocessableEntity),
@@ -230,7 +224,7 @@ export class UnprocessableEntityException extends HttpException {
 export class InternalServerErrorException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error: string = "Internal Server Error"
+    error = "Internal Server Error"
   ) {
     super(
       createHttpExceptionBody(message, error, Status.InternalServerError),
@@ -242,7 +236,7 @@ export class InternalServerErrorException extends HttpException {
 export class UnsupportedMediaTypeException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error: string = "Unsupported Media Type"
+    error = "Unsupported Media Type"
   ) {
     super(
       createHttpExceptionBody(message, error, Status.UnsupportedMediaType),
