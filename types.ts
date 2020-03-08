@@ -84,8 +84,9 @@ export interface IContext {
   request: ServerRequest;
   response: Response;
   path: string;
+  url: URL;
   method: string;
-  queryParams: URLSearchParams;
+  queryParams: Record<string, string>;
   params: Record<string, string>;
   body(): Promise<Record<string, unknown>>;
   string(v: string, code?: Status): void;

@@ -10,22 +10,32 @@ const decoder = new TextDecoder();
 export default class implements IContext {
   app: IApplication;
   request: ServerRequest;
+  url: URL;
 
   response: Response = { headers: new Headers() };
   params: Record<string, string> = {};
-  queryParams = new URLSearchParams();
 
-  get path() {
-    return this.request.url;
+  get path(): string {
+    return this.url.pathname;
   }
 
-  get method() {
+  get method(): string {
     return this.request.method;
+  }
+
+  get queryParams(): Record<string, string> {
+    const params: Record<string, string> = {};
+    for (const [k, v] of this.url.searchParams) {
+      params[k] = v;
+    }
+    return params;
   }
 
   constructor(opts: { app: IApplication; r: ServerRequest }) {
     this.app = opts.app;
     this.request = opts.r;
+
+    this.url = new URL(this.request.url, `http://0.0.0.0`);
   }
 
   private writeContentType(v: string): void {

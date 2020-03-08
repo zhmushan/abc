@@ -77,28 +77,23 @@ test(async function AppMiddleware(): Promise<void> {
   const app = new App();
   let str = "";
   app
-    .pre(next =>
-      c => {
-        str += "0";
+    .pre(next => c => {
+      str += "0";
+      return next(c);
+    })
+    .use(
+      next => c => {
+        str += "1";
+        return next(c);
+      },
+      next => c => {
+        str += "2";
+        return next(c);
+      },
+      next => c => {
+        str += "3";
         return next(c);
       }
-    )
-    .use(
-      next =>
-        c => {
-          str += "1";
-          return next(c);
-        },
-      next =>
-        c => {
-          str += "2";
-          return next(c);
-        },
-      next =>
-        c => {
-          str += "3";
-          return next(c);
-        }
     )
     .get("/middleware", () => str);
   app.start(options);
@@ -187,7 +182,7 @@ test(async function AppHttpMethods(): Promise<void> {
   app.close();
 });
 
-test(async function NotFound(): Promise<void> {
+test(async function AppNotFound(): Promise<void> {
   ++options.port;
   const addr = getaddr();
 
@@ -201,6 +196,18 @@ test(async function NotFound(): Promise<void> {
     await res.text(),
     JSON.stringify(new NotFoundException().response)
   );
+  app.close();
+});
+
+test(async function AppQS(): Promise<void> {
+  ++options.port;
+  const addr = getaddr();
+
+  const app = new App();
+  app.get("/qs", c => c.queryParams).start(options);
+  const res = await fetch(`${addr}/qs?foo=bar`);
+  assertEquals(res.status, Status.OK);
+  assertEquals(await res.json(), { foo: "bar" });
   app.close();
 });
 
