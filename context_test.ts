@@ -1,8 +1,8 @@
-import { assertEquals, runIfMain } from "./dev_deps.ts";
+import { assertEquals, runIfMain, createMockRequest } from "./dev_deps.ts";
 import Context from "./context.ts";
 const { test } = Deno;
 
-const options = { app: undefined!, r: undefined! };
+const options = { app: undefined!, r: createMockRequest() };
 
 test(function StringResponse(): void {
   const results = [
