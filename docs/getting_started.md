@@ -35,12 +35,12 @@ app
 ## Path Parameters
 
 ```ts
-// app.get("/users/:id", findOne)
 const findOne: HandlerFunc = c => {
   // User ID from path `users/:id`
   const { id } = c.params;
   return id;
 };
+// app.get("/users/:id", findOne);
 ```
 
 Browse to http://localhost:8080/users/zhmushan and you should see "zhmushan" on the page.
@@ -50,12 +50,12 @@ Browse to http://localhost:8080/users/zhmushan and you should see "zhmushan" on 
 `/list?page=0&size=5`
 
 ```ts
-// app.get("/list", paging)
 const paging: HandlerFunc = c => {
   // Get page and size from the query string
   const { page, size } = c.queryParams;
   return `page: ${page}, size: ${size}`;
 };
+// app.get("/list", paging);
 ```
 
 Browse to http://localhost:8080/list?page=0&size=5 and you should see "page: 0, size: 5" on the page.
