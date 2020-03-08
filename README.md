@@ -11,7 +11,6 @@
 
 - [Guides](https://deno.land/x/abc/docs/table_of_contents.md)
 - [Examples](https://deno.land/x/abc/examples/README.md)
-- [Benchmarks](benchmarks/RESULT)
 
 ## Hello World
 
