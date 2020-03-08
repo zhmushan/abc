@@ -65,10 +65,6 @@ export default class implements IContext {
     this.blob(b, MIME.TextHTML, code);
   }
 
-  /**
-   * Renders a template with data and sends a text/html response with status code.
-   * Abc.renderer must be registered first.
-   */
   async render<T>(
     name: string,
     data: T = {} as T,
@@ -81,7 +77,6 @@ export default class implements IContext {
     this.htmlBlob(r, code);
   }
 
-  /** Sends a blob response with content type and status code. */
   blob(
     b: Uint8Array | Deno.Reader,
     contentType: string,
