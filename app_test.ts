@@ -77,23 +77,28 @@ test(async function AppMiddleware(): Promise<void> {
   const app = new App();
   let str = "";
   app
-    .pre(next => c => {
-      str += "0";
-      return next(c);
-    })
-    .use(
-      next => c => {
-        str += "1";
-        return next(c);
-      },
-      next => c => {
-        str += "2";
-        return next(c);
-      },
-      next => c => {
-        str += "3";
+    .pre(next =>
+      c => {
+        str += "0";
         return next(c);
       }
+    )
+    .use(
+      next =>
+        c => {
+          str += "1";
+          return next(c);
+        },
+      next =>
+        c => {
+          str += "2";
+          return next(c);
+        },
+      next =>
+        c => {
+          str += "3";
+          return next(c);
+        }
     )
     .get("/middleware", () => str);
   app.start(options);
