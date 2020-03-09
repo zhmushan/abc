@@ -1,5 +1,5 @@
 import { Cat } from "./cat.ts";
-import { HandlerFunc } from "../../mod.ts";
+import type { HandlerFunc } from "../../mod.ts";
 
 const cats: Cat[] = [];
 

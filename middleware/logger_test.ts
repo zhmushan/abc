@@ -1,6 +1,7 @@
+import type { Context } from "../context.ts";
+
 import { assertEquals, assert, runIfMain } from "../dev_deps.ts";
 import { DefaultFormatter, logger } from "./logger.ts";
-import { IContext } from "../types.ts";
 const { test } = Deno;
 
 const dt = new Date();
@@ -10,7 +11,7 @@ const ctx = {
     url: "",
     proto: "HTTP/1.1"
   }
-} as IContext;
+} as Context;
 const decoder = new TextDecoder();
 
 class Writer implements Deno.Writer {

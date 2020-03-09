@@ -1,6 +1,6 @@
-import { IContext } from "../types.ts";
+import type { Context } from "../context.ts";
 
-export type Skipper = (c?: IContext) => boolean;
+export type Skipper = (c?: Context) => boolean;
 
 export const DefaultSkipper: Skipper = function(): boolean {
   return false;

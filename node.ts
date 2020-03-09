@@ -1,4 +1,4 @@
-import { HandlerFunc, INode, Params } from "./types.ts";
+import type { HandlerFunc, Params } from "./types.ts";
 
 export enum NodeType {
   Static,
@@ -21,9 +21,9 @@ export function countParams(path: string): number {
   return n;
 }
 
-export default class Node implements INode {
+export class Node {
   priority = 0;
-  children: INode[] = [];
+  children: Node[] = [];
   path = "";
   wildChild = false;
   nType = NodeType.Static;
@@ -32,7 +32,7 @@ export default class Node implements INode {
   maxParams = 0;
 
   addRoute(path: string, handle: HandlerFunc): void {
-    let node: INode = this;
+    let node: Node = this;
     const fullPath = path;
     ++node.priority;
     let numParams = countParams(path);
@@ -203,7 +203,7 @@ export default class Node implements INode {
     fullPath: string,
     handle: HandlerFunc
   ): void {
-    let node: INode = this;
+    let node: Node = this;
     let offset = 0; // already handled bytes of the path
 
     // find prefix until first wildcard (beginning with ':'' or '*'')
@@ -335,7 +335,7 @@ export default class Node implements INode {
   getValue(
     path: string
   ): [HandlerFunc | undefined, Params | undefined, boolean] {
-    let node: INode = this;
+    let node: Node = this;
     let handle: HandlerFunc | undefined, p: Params | undefined, tsr = false;
     // outer loop for walking the tree
     walk:

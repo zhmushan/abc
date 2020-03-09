@@ -1,23 +1,21 @@
-import { serve, path, Server, HTTPOptions, HTTPSOptions } from "./deps.ts";
-import Context from "./context.ts";
-import Router from "./router.ts";
-import Group from "./group.ts";
+import {
+  MiddlewareFunc,
+  Renderer,
+  HandlerFunc
+} from "./types.ts";
+import type { Server, HTTPOptions, HTTPSOptions } from "./deps.ts";
+
+import { serve, serveTLS, path } from "./deps.ts";
+import { Context } from "./context.ts";
+import { Router } from "./router.ts";
+import { Group } from "./group.ts";
 import {
   InternalServerErrorException,
   HttpException,
   NotFoundException,
   createHttpExceptionBody
 } from "./http_exception.ts";
-import {
-  MiddlewareFunc,
-  Renderer,
-  HandlerFunc,
-  IContext,
-  IApplication,
-  IRouter,
-  IGroup
-} from "./types.ts";
-import { serveTLS } from "https://deno.land/std@v0.35.0/http/server.ts";
+
 export function NotFoundHandler(): never {
   throw new NotFoundException();
 }
@@ -26,10 +24,10 @@ export function NotImplemented(): Error {
   return new Error("Not Implemented");
 }
 
-export default class implements IApplication {
+export class Application {
   server: Server | undefined;
   renderer: Renderer | undefined;
-  router: IRouter = new Router();
+  router = new Router();
   middleware: MiddlewareFunc[] = [];
   premiddleware: MiddlewareFunc[] = [];
 
@@ -54,11 +52,13 @@ export default class implements IApplication {
     }
   };
 
+  /** `start` starts an HTTP server. */
   start(sc: HTTPOptions): void {
     this.server = serve(sc);
     this.#start();
   }
 
+  /** `start` starts an HTTPS server. */
   startTLS(sc: HTTPSOptions): void {
     this.server = serveTLS(sc);
     this.#start();
@@ -69,44 +69,45 @@ export default class implements IApplication {
       this.server.close();
     }
   }
-
-  pre(...m: MiddlewareFunc[]): IApplication {
+  /** `pre` adds middleware which is run before router. */
+  pre(...m: MiddlewareFunc[]): Application {
     this.premiddleware.push(...m);
     return this;
   }
 
-  use(...m: MiddlewareFunc[]): IApplication {
+  /** `use` adds middleware which is run after router. */
+  use(...m: MiddlewareFunc[]): Application {
     this.middleware.push(...m);
     return this;
   }
-  connect(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): IApplication {
+  connect(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Application {
     return this.add("CONNECT", path, h, ...m);
   }
-  delete(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): IApplication {
+  delete(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Application {
     return this.add("DELETE", path, h, ...m);
   }
-  get(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): IApplication {
+  get(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Application {
     return this.add("GET", path, h, ...m);
   }
-  head(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): IApplication {
+  head(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Application {
     return this.add("HEAD", path, h, ...m);
   }
-  options(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): IApplication {
+  options(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Application {
     return this.add("OPTIONS", path, h, ...m);
   }
-  patch(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): IApplication {
+  patch(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Application {
     return this.add("PATCH", path, h, ...m);
   }
-  post(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): IApplication {
+  post(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Application {
     return this.add("POST", path, h, ...m);
   }
-  put(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): IApplication {
+  put(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Application {
     return this.add("PUT", path, h, ...m);
   }
-  trace(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): IApplication {
+  trace(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Application {
     return this.add("TRACE", path, h, ...m);
   }
-  any(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): IApplication {
+  any(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Application {
     const methods = [
       "CONNECT",
       "DELETE",
@@ -128,7 +129,7 @@ export default class implements IApplication {
     path: string,
     h: HandlerFunc,
     ...m: MiddlewareFunc[]
-  ): IApplication {
+  ): Application {
     for (const method of methods) {
       this.add(method, path, h, ...m);
     }
@@ -139,8 +140,8 @@ export default class implements IApplication {
     path: string,
     handler: HandlerFunc,
     ...middleware: MiddlewareFunc[]
-  ): IApplication {
-    this.router.add(method, path, (c: IContext): unknown => {
+  ): Application {
+    this.router.add(method, path, (c: Context): unknown => {
       let h = handler;
       for (const m of middleware) {
         h = m(h);
@@ -151,14 +152,14 @@ export default class implements IApplication {
   }
 
   /** `group` creates a new router group with prefix and optional group level middleware. */
-  group(prefix: string, ...m: MiddlewareFunc[]): IGroup {
+  group(prefix: string, ...m: MiddlewareFunc[]): Group {
     const g = new Group({ app: this, prefix });
     g.use(...m);
     return g;
   }
 
   /** `static` registers a new route with path prefix to serve static files from the provided root directory. */
-  static(prefix: string, root: string): IApplication {
+  static(prefix: string, root: string): Application {
     const h: HandlerFunc = c => {
       const filepath: string = c.params.filepath;
       return c.file(path.join(root, filepath));
@@ -170,11 +171,11 @@ export default class implements IApplication {
   }
 
   /** `file` registers a new route with path to serve a static file with optional route-level middleware. */
-  file(path: string, filepath: string, ...m: MiddlewareFunc[]): IApplication {
+  file(path: string, filepath: string, ...m: MiddlewareFunc[]): Application {
     return this.get(path, c => c.file(filepath), ...m);
   }
 
-  private async transformResult(c: IContext, h: HandlerFunc): Promise<void> {
+  private async transformResult(c: Context, h: HandlerFunc): Promise<void> {
     let result: unknown;
     try {
       result = await h(c);
