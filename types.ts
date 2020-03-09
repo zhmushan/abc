@@ -3,7 +3,8 @@ import {
   Response,
   Status,
   Server,
-  HTTPOptions
+  HTTPOptions,
+  HTTPSOptions
 } from "./deps.ts";
 import { NodeType } from "./node.ts";
 
@@ -14,7 +15,9 @@ export interface IApplication {
   renderer: Renderer | undefined;
   server: Server | undefined;
   /** `start` starts an HTTP server. */
-  start(sc: HTTPOptions): Promise<void>;
+  start(sc: HTTPOptions): void;
+  /** `start` starts an HTTPS server. */
+  startTLS(sc: HTTPSOptions): void;
   close(): void;
   /** `pre` adds middleware which is run before router. */
   pre(...m: MiddlewareFunc[]): IApplication;

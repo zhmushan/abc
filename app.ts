@@ -1,4 +1,4 @@
-import { serve, path, Server, HTTPOptions } from "./deps.ts";
+import { serve, path, Server, HTTPOptions, HTTPSOptions } from "./deps.ts";
 import Context from "./context.ts";
 import Router from "./router.ts";
 import Group from "./group.ts";
@@ -17,6 +17,7 @@ import {
   IRouter,
   IGroup
 } from "./types.ts";
+import { serveTLS } from "https://deno.land/std@v0.35.0/http/server.ts";
 export function NotFoundHandler(): never {
   throw new NotFoundException();
 }
@@ -32,13 +33,8 @@ export default class implements IApplication {
   middleware: MiddlewareFunc[] = [];
   premiddleware: MiddlewareFunc[] = [];
 
-  async start(sc: HTTPOptions): Promise<void> {
-    let s = this.server;
-    if (!s) {
-      this.server = s = serve(sc);
-    }
-
-    for await (const req of s) {
+  #start = async (): Promise<void> => {
+    for await (const req of this.server!) {
       const c = new Context({
         r: req,
         app: this
@@ -56,11 +52,21 @@ export default class implements IApplication {
         req.respond(c.response);
       });
     }
+  };
+
+  start(sc: HTTPOptions): void {
+    this.server = serve(sc);
+    this.#start();
+  }
+
+  startTLS(sc: HTTPSOptions): void {
+    this.server = serveTLS(sc);
+    this.#start();
   }
 
   close(): void {
     if (this.server) {
-      this.server!.close();
+      this.server.close();
     }
   }
 
