@@ -1,5 +1,8 @@
-import type { HandlerFunc } from "./types.ts";
-import type { HTTPOptions } from "./deps.ts";
+// TODO: waiting for denoland/deno#4297
+// import type { HandlerFunc } from "./types.ts";
+// import type { HTTPOptions } from "./deps.ts";
+import { HandlerFunc } from "./types.ts";
+import { HTTPOptions } from "./deps.ts";
 
 import { assertEquals, runIfMain } from "./dev_deps.ts";
 import { Status } from "./deps.ts";

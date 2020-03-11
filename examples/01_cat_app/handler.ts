@@ -1,5 +1,9 @@
+// TODO: waiting for denoland/deno#4297
+// import type { HandlerFunc } from "../../mod.ts";
+
+import { HandlerFunc } from "../../mod.ts";
+
 import { Cat } from "./cat.ts";
-import type { HandlerFunc } from "../../mod.ts";
 
 const cats: Cat[] = [];
 

@@ -1,4 +1,7 @@
-import type { MiddlewareFunc, HandlerFunc } from "./types.ts";
+// TODO: waiting for denoland/deno#4297
+// import type { MiddlewareFunc, HandlerFunc } from "./types.ts";
+
+import { MiddlewareFunc, HandlerFunc } from "./types.ts";
 
 import { assertEquals, runIfMain } from "./dev_deps.ts";
 import { Status } from "./deps.ts";

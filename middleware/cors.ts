@@ -1,5 +1,9 @@
-import type { MiddlewareFunc, HandlerFunc } from "../types.ts";
-import type { Skipper } from "./skipper.ts";
+// TODO: waiting for denoland/deno#4297
+// import type { MiddlewareFunc, HandlerFunc } from "../types.ts";
+// import type { Skipper } from "./skipper.ts";
+
+import { MiddlewareFunc, HandlerFunc } from "../types.ts";
+import { Skipper } from "./skipper.ts";
 
 import { DefaultSkipper } from "./skipper.ts";
 import { HttpMethod, Header } from "../constants.ts";

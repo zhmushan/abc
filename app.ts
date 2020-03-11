@@ -1,9 +1,17 @@
+// TODO: waiting for denoland/deno#4297
+// import type {
+//   MiddlewareFunc,
+//   Renderer,
+//   HandlerFunc
+// } from "./types.ts";
+// import type { Server, HTTPOptions, HTTPSOptions } from "./deps.ts";
+
 import {
   MiddlewareFunc,
   Renderer,
   HandlerFunc
 } from "./types.ts";
-import type { Server, HTTPOptions, HTTPSOptions } from "./deps.ts";
+import { Server, HTTPOptions, HTTPSOptions } from "./deps.ts";
 
 import { serve, serveTLS, path } from "./deps.ts";
 import { Context } from "./context.ts";

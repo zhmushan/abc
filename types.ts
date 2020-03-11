@@ -1,4 +1,7 @@
-import type { Context } from "./context.ts";
+// TODO: waiting for denoland/deno#4297
+// import type { Context } from "./context.ts";
+
+import { Context } from "./context.ts";
 
 /** `Renderer` is the interface that wraps the `render` function.  */
 export type Renderer = {

@@ -1,6 +1,11 @@
-import type { MiddlewareFunc } from "../types.ts";
-import type { Context } from "../context.ts";
-import type { Skipper } from "./skipper.ts";
+// TODO: waiting for denoland/deno#4297
+// import type { MiddlewareFunc } from "../types.ts";
+// import type { Context } from "../context.ts";
+// import type { Skipper } from "./skipper.ts";
+
+import { MiddlewareFunc } from "../types.ts";
+import { Context } from "../context.ts";
+import { Skipper } from "./skipper.ts";
 
 import { DefaultSkipper } from "./skipper.ts";
 

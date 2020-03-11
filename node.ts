@@ -1,4 +1,7 @@
-import type { HandlerFunc, Params } from "./types.ts";
+// TODO: waiting for denoland/deno#4297
+// import type { HandlerFunc, Params } from "./types.ts";
+
+import { HandlerFunc, Params } from "./types.ts";
 
 export enum NodeType {
   Static,

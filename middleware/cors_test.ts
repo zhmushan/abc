@@ -1,4 +1,7 @@
-import type { Context } from "../context.ts";
+// TODO: waiting for denoland/deno#4297
+// import type { Context } from "../context.ts";
+
+import { Context } from "../context.ts";
 
 import { assertEquals, runIfMain } from "../dev_deps.ts";
 import { cors } from "./cors.ts";

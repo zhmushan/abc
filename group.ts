@@ -1,3 +1,7 @@
+// TODO: waiting for denoland/deno#4297
+// import type { MiddlewareFunc, HandlerFunc } from "./types.ts";
+// import type { Application } from "./app.ts";
+
 import type { MiddlewareFunc, HandlerFunc } from "./types.ts";
 import type { Application } from "./app.ts";
 
