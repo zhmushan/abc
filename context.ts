@@ -3,7 +3,7 @@
 // import type { ServerRequest, Response } from "./deps.ts";
 
 import { Application } from "./app.ts";
-import { ServerRequest, Response } from "./deps.ts";
+import { ServerRequest, Response, Cookies, getCookies } from "./deps.ts";
 
 import { Status, path } from "./deps.ts";
 import { NotFoundHandler } from "./app.ts";
@@ -20,6 +20,16 @@ export class Context {
 
   response: Response = { headers: new Headers() };
   params: Record<string, string> = {};
+
+  // TODO: wait for std/http/cookie.ts APIs
+  // /** return cookie from request */
+  // get cookie(name: string): Cookie {}
+  // /** append a `Set-Cookie` header to the response */
+  // set cookie(c: Cookie): void {}
+
+  get cookies(): Cookies {
+    return getCookies(this.request);
+  }
 
   get path(): string {
     return this.url.pathname;

@@ -14,6 +14,7 @@ export function createMockRequest(
 ): ServerRequest {
   return {
     url,
+    headers: new Headers(),
     async respond() {}
   } as any;
 }

@@ -13,4 +13,9 @@ export {
   Status,
   STATUS_TEXT
 } from "https://deno.land/std@v0.35.0/http/http_status.ts";
+export {
+  Cookie,
+  Cookies,
+  getCookies
+} from "https://deno.land/std@v0.35.0/http/cookie.ts";
 export const path = _path;
