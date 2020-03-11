@@ -1,7 +1,15 @@
-import { Skipper, DefaultSkipper } from "./skipper.ts";
-import { IContext, MiddlewareFunc } from "../types.ts";
+// TODO: waiting for denoland/deno#4297
+// import type { MiddlewareFunc } from "../types.ts";
+// import type { Context } from "../context.ts";
+// import type { Skipper } from "./skipper.ts";
 
-export type Formatter = (c: IContext) => string;
+import { MiddlewareFunc } from "../types.ts";
+import { Context } from "../context.ts";
+import { Skipper } from "./skipper.ts";
+
+import { DefaultSkipper } from "./skipper.ts";
+
+export type Formatter = (c: Context) => string;
 
 const encoder = new TextEncoder();
 

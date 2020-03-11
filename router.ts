@@ -1,7 +1,13 @@
-import { IContext, HandlerFunc, IRouter } from "./types.ts";
-import Node from "./node.ts";
+// TODO: waiting for denoland/deno#4297
+// import type { HandlerFunc } from "./types.ts";
+// import type { Context } from "./context.ts";
 
-export default class implements IRouter {
+import { HandlerFunc } from "./types.ts";
+import { Context } from "./context.ts";
+
+import { Node } from "./node.ts";
+
+export class Router {
   trees: Record<string, Node> = {};
 
   add(method: string, path: string, h: HandlerFunc): void {
@@ -18,7 +24,7 @@ export default class implements IRouter {
     root.addRoute(path, h);
   }
 
-  find(method: string, c: IContext): HandlerFunc | undefined {
+  find(method: string, c: Context): HandlerFunc | undefined {
     const node = this.trees[method];
     if (node) {
       const [handle, params, _] = node.getValue(c.path);

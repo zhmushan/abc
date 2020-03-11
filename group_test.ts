@@ -1,11 +1,15 @@
+// TODO: waiting for denoland/deno#4297
+// import type { MiddlewareFunc, HandlerFunc } from "./types.ts";
+
+import { MiddlewareFunc, HandlerFunc } from "./types.ts";
+
 import { assertEquals, runIfMain } from "./dev_deps.ts";
 import { Status } from "./deps.ts";
-import App from "./app.ts";
-import { MiddlewareFunc, HandlerFunc } from "./types.ts";
+import { Application } from "./app.ts";
 const { test } = Deno;
 
 test(async function GroupMiddleware(): Promise<void> {
-  const app = new App();
+  const app = new Application();
   const g = app.group("group");
   const h: HandlerFunc = function(): void {
     return;

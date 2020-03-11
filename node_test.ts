@@ -1,5 +1,5 @@
 import { assertEquals, assertNotEquals, runIfMain } from "./dev_deps.ts";
-import Node, { countParams, NodeType } from "./node.ts";
+import { Node, countParams, NodeType } from "./node.ts";
 const { test } = Deno;
 
 interface TestRequest {

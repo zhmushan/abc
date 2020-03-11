@@ -1,12 +1,17 @@
+// TODO: waiting for denoland/deno#4297
+// import type { HandlerFunc } from "./types.ts";
+// import type { HTTPOptions } from "./deps.ts";
+import { HandlerFunc } from "./types.ts";
+import { HTTPOptions } from "./deps.ts";
+
 import { assertEquals, runIfMain } from "./dev_deps.ts";
-import { Status, HTTPOptions } from "./deps.ts";
-import App, { NotFoundHandler } from "./app.ts";
+import { Status } from "./deps.ts";
+import { Application, NotFoundHandler } from "./app.ts";
 import {
   InternalServerErrorException,
   NotFoundException
 } from "./http_exception.ts";
 import { HttpMethod } from "./constants.ts";
-import { HandlerFunc } from "./types.ts";
 const { readFile, test } = Deno;
 
 const decoder = new TextDecoder();
@@ -18,7 +23,7 @@ test(async function AppStatic(): Promise<void> {
   ++options.port;
   const addr = getaddr();
 
-  const app = new App();
+  const app = new Application();
   app.static("/examples", "./examples/02_template");
   app.start(options);
 
@@ -49,7 +54,7 @@ test(async function AppFile(): Promise<void> {
   ++options.port;
   const addr = getaddr();
 
-  const app = new App();
+  const app = new Application();
   app.file("ci", "./.github/workflows/ci.yml");
   app.file("fileempty", "./fileempty");
   app.start(options);
@@ -74,7 +79,7 @@ test(async function AppMiddleware(): Promise<void> {
   ++options.port;
   const addr = getaddr();
 
-  const app = new App();
+  const app = new Application();
   let str = "";
   app
     .pre(next =>
@@ -114,7 +119,7 @@ test(async function AppMiddlewareError(): Promise<void> {
   ++options.port;
   const addr = getaddr();
 
-  const app = new App();
+  const app = new Application();
   const errMsg = "err";
   app.get("/middlewareerror", NotFoundHandler, function(): HandlerFunc {
     return function(): HandlerFunc {
@@ -136,7 +141,7 @@ test(async function AppHandler(): Promise<void> {
   ++options.port;
   const addr = getaddr();
 
-  const app = new App();
+  const app = new Application();
   app.get("/ok", (): string => "ok");
   app.start(options);
 
@@ -150,7 +155,7 @@ test(async function AppHttpMethods(): Promise<void> {
   ++options.port;
   const addr = getaddr();
 
-  const app = new App();
+  const app = new Application();
   app
     .delete("/delete", (): string => "delete")
     .get("/get", (): string => "get")
@@ -191,7 +196,7 @@ test(async function AppNotFound(): Promise<void> {
   ++options.port;
   const addr = getaddr();
 
-  const app = new App();
+  const app = new Application();
   app.get("/not_found_handler", NotFoundHandler);
   app.start(options);
 
@@ -208,7 +213,7 @@ test(async function AppQS(): Promise<void> {
   ++options.port;
   const addr = getaddr();
 
-  const app = new App();
+  const app = new Application();
   app.get("/qs", c => c.queryParams).start(options);
   const res = await fetch(`${addr}/qs?foo=bar`);
   assertEquals(res.status, Status.OK);

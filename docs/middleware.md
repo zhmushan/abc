@@ -21,7 +21,7 @@ const track: MiddlewareFunc = next => c => {
 
 ## Skipper
 
-There are cases when you would like to skip a middleware based on some conditions, for that each middleware has an option to define a function `skipper(c: IContext): boolean`.
+There are cases when you would like to skip a middleware based on some conditions, for that each middleware has an option to define a function `skipper(c: Context): boolean`.
 
 ```ts
 const app = new Application();

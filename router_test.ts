@@ -1,8 +1,9 @@
-import { assertEquals, runIfMain, createMockRequest } from "./dev_deps.ts";
-import Router from "./router.ts";
-import Context from "./context.ts";
-import { HttpMethod } from "./constants.ts";
 import { HandlerFunc } from "./types.ts";
+
+import { assertEquals, runIfMain, createMockRequest } from "./dev_deps.ts";
+import { Router } from "./router.ts";
+import { Context } from "./context.ts";
+import { HttpMethod } from "./constants.ts";
 const { test } = Deno;
 
 test(function RouterBasic(): void {

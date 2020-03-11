@@ -1,14 +1,20 @@
-import { ServerRequest, Response, Status, path } from "./deps.ts";
+// TODO: waiting for denoland/deno#4297
+// import type { Application } from "./app.ts";
+// import type { ServerRequest, Response } from "./deps.ts";
+
+import { Application } from "./app.ts";
+import { ServerRequest, Response } from "./deps.ts";
+
+import { Status, path } from "./deps.ts";
 import { NotFoundHandler } from "./app.ts";
 import { Header, MIME } from "./constants.ts";
-import { IContext, IApplication } from "./types.ts";
 const { cwd, lstat, readFile, readAll } = Deno;
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
-export default class implements IContext {
-  app: IApplication;
+export class Context {
+  app: Application;
   request: ServerRequest;
   url: URL;
 
@@ -31,7 +37,7 @@ export default class implements IContext {
     return params;
   }
 
-  constructor(opts: { app: IApplication; r: ServerRequest }) {
+  constructor(opts: { app: Application; r: ServerRequest }) {
     this.app = opts.app;
     this.request = opts.r;
 
@@ -65,16 +71,22 @@ export default class implements IContext {
     );
   }
 
+  /** Sends an HTTP response with status code. */
   html(v: string, code: Status = Status.OK): void {
     this.writeContentType(MIME.TextHTML);
     this.response.status = code;
     this.response.body = encoder.encode(v);
   }
 
+  /** Sends an HTTP blob response with status code. */
   htmlBlob(b: Uint8Array | Deno.Reader, code: Status = Status.OK): void {
     this.blob(b, MIME.TextHTML, code);
   }
 
+  /**
+   * Renders a template with data and sends a text/html response with status code.
+   * Abc.renderer must be registered first.
+   */
   async render<T>(
     name: string,
     data: T = {} as T,
@@ -87,6 +99,7 @@ export default class implements IContext {
     this.htmlBlob(r, code);
   }
 
+  /** Sends a blob response with content type and status code. */
   blob(
     b: Uint8Array | Deno.Reader,
     contentType: string,
