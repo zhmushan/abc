@@ -73,7 +73,7 @@ app.static("/sample", "./folder/sample");
 ```ts
 const track: MiddlewareFunc = next => c => {
   console.log(`request to ${c.path}`);
-  next(c);
+  return next(c);
 };
 
 // Root middleware

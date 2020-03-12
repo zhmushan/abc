@@ -7,7 +7,7 @@ Let's start by implementing a simple middleware feature.
 ```ts
 const track: MiddlewareFunc = next => c => {
   console.log(`request to ${c.path}`);
-  next(c);
+  return next(c);
 };
 ```
 
