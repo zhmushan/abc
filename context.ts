@@ -3,15 +3,18 @@
 // import type { ServerRequest, Response } from "./deps.ts";
 
 import { Application } from "./app.ts";
-import { ServerRequest, Response, Cookies, getCookies } from "./deps.ts";
+import { ServerRequest, Response } from "./deps.ts";
 
-import { Status, path } from "./deps.ts";
+import { Status, path, cookie } from "./deps.ts";
 import { NotFoundHandler } from "./app.ts";
 import { Header, MIME } from "./constants.ts";
 const { cwd, lstat, readFile, readAll } = Deno;
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
+
+type Cookie = cookie.Cookie;
+type Cookies = cookie.Cookies;
 
 export class Context {
   app: Application;
@@ -21,14 +24,8 @@ export class Context {
   response: Response = { headers: new Headers() };
   params: Record<string, string> = {};
 
-  // TODO: wait for std/http/cookie.ts APIs
-  // /** return cookie from request */
-  // get cookie(name: string): Cookie {}
-  // /** append a `Set-Cookie` header to the response */
-  // set cookie(c: Cookie): void {}
-
   get cookies(): Cookies {
-    return getCookies(this.request);
+    return cookie.getCookies(this.request);
   }
 
   get path(): string {
@@ -134,5 +131,10 @@ export class Context {
     } catch {
       NotFoundHandler();
     }
+  }
+
+  /** append a `Set-Cookie` header to the response */
+  setCookie(c: Cookie): void {
+    cookie.setCookie(this.response, c);
   }
 }

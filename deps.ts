@@ -1,5 +1,5 @@
-import * as _path from "https://deno.land/std@v0.36.0/path/mod.ts";
-
+export * as path from "https://deno.land/std@v0.36.0/path/mod.ts";
+export * as cookie from "https://deno.land/std@v0.36.0/http/cookie.ts";
 export {
   serve,
   serveTLS,
@@ -13,9 +13,3 @@ export {
   Status,
   STATUS_TEXT
 } from "https://deno.land/std@v0.36.0/http/http_status.ts";
-export {
-  Cookie,
-  Cookies,
-  getCookies
-} from "https://deno.land/std@v0.36.0/http/cookie.ts";
-export const path = _path;

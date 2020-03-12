@@ -68,6 +68,11 @@ test(function RequestWithCookies(): void {
     wide: "1",
     SID: "123"
   });
+  c.setCookie({
+    name: "hello",
+    value: "world"
+  });
+  assertEquals(c.response.headers?.get("Set-Cookie"), "hello=world");
 });
 
 runIfMain(import.meta);
