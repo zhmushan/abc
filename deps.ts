@@ -1,4 +1,4 @@
-import * as _path from "https://deno.land/std@v0.35.0/path/mod.ts";
+import * as _path from "https://deno.land/std@v0.36.0/path/mod.ts";
 
 export {
   serve,
@@ -8,14 +8,14 @@ export {
   Server,
   HTTPOptions,
   HTTPSOptions
-} from "https://deno.land/std@v0.35.0/http/server.ts";
+} from "https://deno.land/std@v0.36.0/http/server.ts";
 export {
   Status,
   STATUS_TEXT
-} from "https://deno.land/std@v0.35.0/http/http_status.ts";
+} from "https://deno.land/std@v0.36.0/http/http_status.ts";
 export {
   Cookie,
   Cookies,
   getCookies
-} from "https://deno.land/std@v0.35.0/http/cookie.ts";
+} from "https://deno.land/std@v0.36.0/http/cookie.ts";
 export const path = _path;
