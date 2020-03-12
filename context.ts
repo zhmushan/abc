@@ -92,7 +92,7 @@ export class Context {
 
   /**
    * Renders a template with data and sends a text/html response with status code.
-   * Abc.renderer must be registered first.
+   * renderer must be registered first.
    */
   async render<T>(
     name: string,
