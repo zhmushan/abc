@@ -1,3 +1,5 @@
+/// <reference path="https://deno.land/std/types/react.d.ts" />
+
 import React from "https://dev.jspm.io/react";
 import ReactDOMServer from "https://dev.jspm.io/react-dom/server";
 import { Application } from "../../mod.ts";

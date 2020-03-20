@@ -10,7 +10,7 @@
 #### Quick links
 
 - [Guides](https://deno.land/x/abc/docs/table_of_contents.md)
-- [Examples](https://deno.land/x/abc/examples/README.md)
+- [Examples](./examples)
 
 ## Hello World
 

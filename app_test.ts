@@ -24,21 +24,21 @@ test(async function AppStatic(): Promise<void> {
   const addr = getaddr();
 
   const app = new Application();
-  app.static("/examples", "./examples/02_template");
+  app.static("/examples", "./examples/template");
   app.start(options);
 
   let res = await fetch(`${addr}/examples/main.ts`);
   assertEquals(res.status, Status.OK);
   assertEquals(
     await res.text(),
-    decoder.decode(await readFile("./examples/02_template/main.ts"))
+    decoder.decode(await readFile("./examples/template/main.ts"))
   );
 
   res = await fetch(`${addr}/examples/`);
   assertEquals(res.status, Status.OK);
   assertEquals(
     await res.text(),
-    decoder.decode(await readFile("./examples/02_template/index.html"))
+    decoder.decode(await readFile("./examples/template/index.html"))
   );
 
   res = await fetch(`${addr}/examples/empty`);

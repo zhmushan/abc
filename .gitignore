@@ -1,6 +1,8 @@
 /types
 .DS_Store
-/.vscode
+/.vscode/*
 node_modules
 /package*.json
 /deno.d.ts
+
+!.vscode/settings.json
