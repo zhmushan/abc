@@ -1,4 +1,5 @@
-import { assertEquals, runIfMain, createMockRequest } from "./dev_deps.ts";
+import { assertEquals, runIfMain } from "./dev_deps.ts";
+import { createMockRequest } from "./test_util.ts";
 import { Context } from "./context.ts";
 const { test } = Deno;
 

@@ -1,6 +1,7 @@
 import { HandlerFunc } from "./types.ts";
 
-import { assertEquals, runIfMain, createMockRequest } from "./dev_deps.ts";
+import { assertEquals, runIfMain } from "./dev_deps.ts";
+import { createMockRequest } from "./test_util.ts";
 import { Router } from "./router.ts";
 import { Context } from "./context.ts";
 import { HttpMethod } from "./constants.ts";

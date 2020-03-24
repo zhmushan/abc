@@ -39,6 +39,8 @@ export class Application {
   middleware: MiddlewareFunc[] = [];
   premiddleware: MiddlewareFunc[] = [];
 
+  #process: Promise<void> | undefined;
+
   #start = async (): Promise<void> => {
     for await (const req of this.server!) {
       const c = new Context({
@@ -63,19 +65,20 @@ export class Application {
   /** `start` starts an HTTP server. */
   start(sc: HTTPOptions): void {
     this.server = serve(sc);
-    this.#start();
+    this.#process = this.#start();
   }
 
   /** `start` starts an HTTPS server. */
   startTLS(sc: HTTPSOptions): void {
     this.server = serveTLS(sc);
-    this.#start();
+    this.#process = this.#start();
   }
 
-  close(): void {
+  async close(): Promise<void> {
     if (this.server) {
       this.server.close();
     }
+    await this.#process;
   }
   /** `pre` adds middleware which is run before router. */
   pre(...m: MiddlewareFunc[]): Application {
