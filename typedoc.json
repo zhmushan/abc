@@ -1,0 +1,13 @@
+{
+  "name": "abc",
+  "inputFiles": ["."],
+  "mode": "file",
+  "out": "typedoc",
+  "theme": "minimal",
+  "ignoreCompilerErrors": true,
+  "exclude": ["examples", "**/*_test.ts"],
+  "excludeExternals": true,
+  "excludeNotExported": true,
+  "excludePrivate": true,
+  "excludeProtected": true
+}
