@@ -10,8 +10,8 @@
 #### Quick links
 
 - API Reference
-  - zhmushan.github.io/abc/
-  - abc-server.netlify.com/
+  - https://zhmushan.github.io/abc/
+  - https://abc-server.netlify.com/
 - [Guides](https://deno.land/x/abc/docs/table_of_contents.md)
 - [Examples](./examples)
 
