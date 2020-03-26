@@ -4,5 +4,6 @@
 node_modules
 /package*.json
 /deno.d.ts
+typedoc
 
 !.vscode/settings.json
