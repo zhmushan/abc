@@ -2,8 +2,8 @@
 // import type { MiddlewareFunc, HandlerFunc } from "./types.ts";
 // import type { Application } from "./app.ts";
 
-import type { MiddlewareFunc, HandlerFunc } from "./types.ts";
-import type { Application } from "./app.ts";
+import { MiddlewareFunc, HandlerFunc } from "./types.ts";
+import { Application } from "./app.ts";
 
 import { NotFoundHandler } from "./app.ts";
 import { path } from "./deps.ts";
