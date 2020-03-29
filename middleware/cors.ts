@@ -18,8 +18,8 @@ export const DefaultCORSConfig: CORSConfig = {
     HttpMethod.Head,
     HttpMethod.Patch,
     HttpMethod.Post,
-    HttpMethod.Put
-  ]
+    HttpMethod.Put,
+  ],
 };
 
 export function cors(config: CORSConfig = DefaultCORSConfig): MiddlewareFunc {
@@ -33,8 +33,8 @@ export function cors(config: CORSConfig = DefaultCORSConfig): MiddlewareFunc {
     config.allowMethods = DefaultCORSConfig.allowMethods;
   }
 
-  return function(next: HandlerFunc): HandlerFunc {
-    return c => {
+  return function (next: HandlerFunc): HandlerFunc {
+    return (c) => {
       if (config.skipper!(c)) {
         return next(c);
       }
@@ -69,7 +69,7 @@ export function cors(config: CORSConfig = DefaultCORSConfig): MiddlewareFunc {
         if (config.exposeHeaders && config.exposeHeaders.length != 0) {
           resp.headers.set(
             Header.AccessControlExposeHeaders,
-            config.exposeHeaders.join(",")
+            config.exposeHeaders.join(","),
           );
         }
 
@@ -80,12 +80,12 @@ export function cors(config: CORSConfig = DefaultCORSConfig): MiddlewareFunc {
       resp.headers.set(Header.AccessControlAllowOrigin, allowOrigin);
       resp.headers.set(
         Header.AccessControlAllowMethods,
-        config.allowMethods!.join(",")
+        config.allowMethods!.join(","),
       );
       if (config.allowHeaders && config.allowHeaders.length != 0) {
         resp.headers.set(
           Header.AccessControlRequestHeaders,
-          config.allowHeaders.join(",")
+          config.allowHeaders.join(","),
         );
       } else {
         const h = req.headers.get(Header.AccessControlRequestHeaders);

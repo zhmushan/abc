@@ -14,38 +14,37 @@ import { HttpMethod } from "./constants.ts";
 const { readFile, test } = Deno;
 
 const decoder = new TextDecoder();
+const addr = `http://localhost:8080`;
 
 test(async function AppStatic(): Promise<void> {
   const app = createApplication();
-  const addr = `http://localhost:${app.server!.listener.addr.port}`;
   app.static("/examples", "./examples/template");
 
   let res = await fetch(`${addr}/examples/main.ts`);
   assertEquals(res.status, Status.OK);
   assertEquals(
     await res.text(),
-    decoder.decode(await readFile("./examples/template/main.ts"))
+    decoder.decode(await readFile("./examples/template/main.ts")),
   );
 
   res = await fetch(`${addr}/examples/`);
   assertEquals(res.status, Status.OK);
   assertEquals(
     await res.text(),
-    decoder.decode(await readFile("./examples/template/index.html"))
+    decoder.decode(await readFile("./examples/template/index.html")),
   );
 
   res = await fetch(`${addr}/examples/empty`);
   assertEquals(res.status, Status.NotFound);
   assertEquals(
     await res.text(),
-    JSON.stringify(new NotFoundException().response)
+    JSON.stringify(new NotFoundException().response),
   );
   await app.close();
 });
 
 test(async function AppFile(): Promise<void> {
   const app = createApplication();
-  const addr = `http://localhost:${app.server!.listener.addr.port}`;
   app.file("ci", "./.github/workflows/ci.yml");
   app.file("fileempty", "./fileempty");
 
@@ -53,45 +52,44 @@ test(async function AppFile(): Promise<void> {
   assertEquals(res.status, Status.OK);
   assertEquals(
     await res.text(),
-    decoder.decode(await readFile("./.github/workflows/ci.yml"))
+    decoder.decode(await readFile("./.github/workflows/ci.yml")),
   );
 
   res = await fetch(`${addr}/fileempty`);
   assertEquals(res.status, Status.NotFound);
   assertEquals(
     await res.text(),
-    JSON.stringify(new NotFoundException().response)
+    JSON.stringify(new NotFoundException().response),
   );
   await app.close();
 });
 
 test(async function AppMiddleware(): Promise<void> {
   const app = createApplication();
-  const addr = `http://localhost:${app.server!.listener.addr.port}`;
   let str = "";
   app
-    .pre(next =>
-      c => {
+    .pre((next) =>
+      (c) => {
         str += "0";
         return next(c);
       }
     )
     .use(
-      next =>
-        c => {
+      (next) =>
+        (c) => {
           str += "1";
           return next(c);
         },
-      next =>
-        c => {
+      (next) =>
+        (c) => {
           str += "2";
           return next(c);
         },
-      next =>
-        c => {
+      (next) =>
+        (c) => {
           str += "3";
           return next(c);
-        }
+        },
     )
     .get("/middleware", () => str);
 
@@ -104,10 +102,9 @@ test(async function AppMiddleware(): Promise<void> {
 
 test(async function AppMiddlewareError(): Promise<void> {
   const app = createApplication();
-  const addr = `http://localhost:${app.server!.listener.addr.port}`;
   const errMsg = "err";
-  app.get("/middlewareerror", NotFoundHandler, function(): HandlerFunc {
-    return function(): HandlerFunc {
+  app.get("/middlewareerror", NotFoundHandler, function (): HandlerFunc {
+    return function (): HandlerFunc {
       throw new Error(errMsg);
     };
   });
@@ -116,14 +113,13 @@ test(async function AppMiddlewareError(): Promise<void> {
   assertEquals(res.status, Status.InternalServerError);
   assertEquals(
     await res.text(),
-    JSON.stringify(new InternalServerErrorException(errMsg).response)
+    JSON.stringify(new InternalServerErrorException(errMsg).response),
   );
   await app.close();
 });
 
 test(async function AppHandler(): Promise<void> {
   const app = createApplication();
-  const addr = `http://localhost:${app.server!.listener.addr.port}`;
   app.get("/ok", (): string => "ok");
 
   const res = await fetch(`${addr}/ok`);
@@ -134,7 +130,6 @@ test(async function AppHandler(): Promise<void> {
 
 test(async function AppHttpMethods(): Promise<void> {
   const app = createApplication();
-  const addr = `http://localhost:${app.server!.listener.addr.port}`;
   app
     .delete("/delete", (): string => "delete")
     .get("/get", (): string => "get")
@@ -172,22 +167,20 @@ test(async function AppHttpMethods(): Promise<void> {
 
 test(async function AppNotFound(): Promise<void> {
   const app = createApplication();
-  const addr = `http://localhost:${app.server!.listener.addr.port}`;
   app.get("/not_found_handler", NotFoundHandler);
 
   const res = await fetch(`${addr}/not_found_handler`);
   assertEquals(res.status, Status.NotFound);
   assertEquals(
     await res.text(),
-    JSON.stringify(new NotFoundException().response)
+    JSON.stringify(new NotFoundException().response),
   );
   await app.close();
 });
 
 test(async function AppQS(): Promise<void> {
   const app = createApplication();
-  const addr = `http://localhost:${app.server!.listener.addr.port}`;
-  app.get("/qs", c => c.queryParams);
+  app.get("/qs", (c) => c.queryParams);
   const res = await fetch(`${addr}/qs?foo=bar`);
   assertEquals(res.status, Status.OK);
   assertEquals(await res.json(), { foo: "bar" });

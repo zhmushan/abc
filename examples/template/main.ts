@@ -6,11 +6,11 @@ const app = new Application();
 app.renderer = {
   render<T>(name: string, data: T): Promise<Deno.Reader> {
     return renderFile(name, data);
-  }
+  },
 };
 
 app
-  .get("/", async c => {
+  .get("/", async (c) => {
     await c.render("./index.html", { name: "zhmushan" });
   })
   .start({ port: 8080 });

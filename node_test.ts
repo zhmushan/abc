@@ -98,7 +98,7 @@ test(function AddAndFind(): void {
     "/doc/go_faq.html",
     "/doc/go1.html",
     "/α",
-    "/β"
+    "/β",
   ];
   for (const r of routes) {
     n.addRoute(r, (): string => r);
@@ -114,7 +114,7 @@ test(function AddAndFind(): void {
     { path: "/no", isMatch: false, route: "", params: undefined }, // no matching child
     { path: "/ab", isMatch: true, route: "/ab", params: undefined },
     { path: "/α", isMatch: true, route: "/α", params: undefined },
-    { path: "/β", isMatch: true, route: "/β", params: undefined }
+    { path: "/β", isMatch: true, route: "/β", params: undefined },
   ]);
   checkPriorities(n);
   checkMaxParams(n);
@@ -136,7 +136,7 @@ test(function Wildcard(): void {
     "/doc/go_faq.html",
     "/doc/go1.html",
     "/info/:user/public",
-    "/info/:user/project/:project"
+    "/info/:user/project/:project",
   ];
 
   for (const r of routes) {
@@ -149,13 +149,13 @@ test(function Wildcard(): void {
       path: "/cmd/test/",
       isMatch: true,
       route: "/cmd/:tool/",
-      params: [{ key: "tool", value: "test" }]
+      params: [{ key: "tool", value: "test" }],
     },
     {
       path: "/cmd/test",
       isMatch: false,
       route: "",
-      params: [{ key: "tool", value: "test" }]
+      params: [{ key: "tool", value: "test" }],
     },
     {
       path: "/cmd/test/3",
@@ -163,45 +163,45 @@ test(function Wildcard(): void {
       route: "/cmd/:tool/:sub",
       params: [
         { key: "tool", value: "test" },
-        { key: "sub", value: "3" }
-      ]
+        { key: "sub", value: "3" },
+      ],
     },
     {
       path: "/src/",
       isMatch: true,
       route: "/src/*filepath",
-      params: [{ key: "filepath", value: "/" }]
+      params: [{ key: "filepath", value: "/" }],
     },
     {
       path: "/src/some/file.png",
       isMatch: true,
       route: "/src/*filepath",
-      params: [{ key: "filepath", value: "/some/file.png" }]
+      params: [{ key: "filepath", value: "/some/file.png" }],
     },
     { path: "/search/", isMatch: true, route: "/search/", params: undefined },
     {
       path: "/search/someth!ng+in+ünìcodé",
       isMatch: true,
       route: "/search/:query",
-      params: [{ key: "query", value: "someth!ng+in+ünìcodé" }]
+      params: [{ key: "query", value: "someth!ng+in+ünìcodé" }],
     },
     {
       path: "/search/someth!ng+in+ünìcodé/",
       isMatch: false,
       route: "",
-      params: [{ key: "query", value: "someth!ng+in+ünìcodé" }]
+      params: [{ key: "query", value: "someth!ng+in+ünìcodé" }],
     },
     {
       path: "/user_gopher",
       isMatch: true,
       route: "/user_:name",
-      params: [{ key: "name", value: "gopher" }]
+      params: [{ key: "name", value: "gopher" }],
     },
     {
       path: "/user_gopher/about",
       isMatch: true,
       route: "/user_:name/about",
-      params: [{ key: "name", value: "gopher" }]
+      params: [{ key: "name", value: "gopher" }],
     },
     {
       path: "/files/js/inc/framework.js",
@@ -209,14 +209,14 @@ test(function Wildcard(): void {
       route: "/files/:dir/*filepath",
       params: [
         { key: "dir", value: "js" },
-        { key: "filepath", value: "/inc/framework.js" }
-      ]
+        { key: "filepath", value: "/inc/framework.js" },
+      ],
     },
     {
       path: "/info/gordon/public",
       isMatch: true,
       route: "/info/:user/public",
-      params: [{ key: "user", value: "gordon" }]
+      params: [{ key: "user", value: "gordon" }],
     },
     {
       path: "/info/gordon/project/go",
@@ -224,9 +224,9 @@ test(function Wildcard(): void {
       route: "/info/:user/project/:project",
       params: [
         { key: "user", value: "gordon" },
-        { key: "project", value: "go" }
-      ]
-    }
+        { key: "project", value: "go" },
+      ],
+    },
   ]);
 
   checkPriorities(n);
@@ -249,7 +249,7 @@ test(function WildcardConflict(): void {
     { path: "/user_x", conflict: true },
     { path: "/user_:name", conflict: false },
     { path: "/id:id", conflict: false },
-    { path: "/id/:id", conflict: true }
+    { path: "/id/:id", conflict: true },
   ]);
 });
 
@@ -264,7 +264,7 @@ test(function ChildConflict(): void {
     { path: "/id/:id", conflict: false },
     { path: "/id:id", conflict: true },
     { path: "/:id", conflict: true },
-    { path: "/*filepath", conflict: true }
+    { path: "/*filepath", conflict: true },
   ]);
 });
 
@@ -275,7 +275,7 @@ test(function DupliatePath(): void {
     "/doc/",
     "/src/*filepath",
     "/search/:query",
-    "/user_:name"
+    "/user_:name",
   ];
   for (const r of routes) {
     let err = getErr((): void => n.addRoute(r, (): string => r));
@@ -291,20 +291,20 @@ test(function DupliatePath(): void {
       path: "/src/some/file.png",
       isMatch: true,
       route: "/src/*filepath",
-      params: [{ key: "filepath", value: "/some/file.png" }]
+      params: [{ key: "filepath", value: "/some/file.png" }],
     },
     {
       path: "/search/someth!ng+in+ünìcodé",
       isMatch: true,
       route: "/search/:query",
-      params: [{ key: "query", value: "someth!ng+in+ünìcodé" }]
+      params: [{ key: "query", value: "someth!ng+in+ünìcodé" }],
     },
     {
       path: "/user_gopher",
       isMatch: true,
       route: "/user_:name",
-      params: [{ key: "name", value: "gopher" }]
-    }
+      params: [{ key: "name", value: "gopher" }],
+    },
   ]);
 });
 
@@ -321,14 +321,14 @@ test(function CatchAllConflict(): void {
   checkRoutes([
     { path: "/src/*filepath/x", conflict: true },
     { path: "/src2/", conflict: false },
-    { path: "/src2/*filepath/x", conflict: true }
+    { path: "/src2/*filepath/x", conflict: true },
   ]);
 });
 
 test(function CatchAllConflictRoot(): void {
   checkRoutes([
     { path: "/", conflict: false },
-    { path: "/*filepath", conflict: true }
+    { path: "/*filepath", conflict: true },
   ]);
 });
 
@@ -368,7 +368,7 @@ test(function TrailingSlashRedirect(): void {
     "/doc/go1.html",
     "/no/a",
     "/no/b",
-    "/api/hello/:name"
+    "/api/hello/:name",
   ];
   for (const r of routes) {
     const err = getErr((): void => n.addRoute(r, (): string => r));
@@ -389,7 +389,7 @@ test(function TrailingSlashRedirect(): void {
     "/admin/",
     "/admin/config/",
     "/admin/config/permissions/",
-    "/doc/"
+    "/doc/",
   ];
   for (const r of tsrRoutes) {
     const [h] = n.getValue(r);
@@ -432,32 +432,32 @@ test(function WildcardConflictEx(): void {
       route: `/who/are/foo`,
       segPath: `/foo`,
       existPath: `/who/are/*you`,
-      existSegPath: `/*you`
+      existSegPath: `/*you`,
     },
     {
       route: `/who/are/foo/`,
       segPath: `/foo/`,
       existPath: `/who/are/\*you`,
-      existSegPath: `/\*you`
+      existSegPath: `/\*you`,
     },
     {
       route: `/who/are/foo/bar`,
       segPath: `/foo/bar`,
       existPath: `/who/are/\*you`,
-      existSegPath: `/\*you`
+      existSegPath: `/\*you`,
     },
     {
       route: `/conxxx`,
       segPath: `xxx`,
       existPath: `/con:tact`,
-      existSegPath: `:tact`
+      existSegPath: `:tact`,
     },
     {
       route: `/conooo/xxx`,
       segPath: `ooo`,
       existPath: `/con:tact`,
-      existSegPath: `:tact`
-    }
+      existSegPath: `:tact`,
+    },
   ];
   for (const c of conflicts) {
     const n = new Node();
@@ -468,7 +468,7 @@ test(function WildcardConflictEx(): void {
     const err = getErr((): void => n.addRoute(c.route, (): string => c.route));
     assertEquals(
       err!.message,
-      `'${c.segPath}' in new path '${c.route}' conflicts with existing wildcard '${c.existSegPath}' in existing prefix '${c.existPath}'`
+      `'${c.segPath}' in new path '${c.route}' conflicts with existing wildcard '${c.existSegPath}' in existing prefix '${c.existPath}'`,
     );
   }
 });

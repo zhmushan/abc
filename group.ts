@@ -65,7 +65,7 @@ export class Group {
       "PATCH",
       "POST",
       "PUT",
-      "TRACE"
+      "TRACE",
     ];
     for (const method of methods) {
       this.add(method, path, h, ...m);
@@ -94,7 +94,7 @@ export class Group {
       this.prefix + path,
       handler,
       ...this.middleware,
-      ...middleware
+      ...middleware,
     );
     return this;
   }

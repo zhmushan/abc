@@ -7,7 +7,7 @@ export enum NodeType {
   Static,
   Root,
   Param,
-  CatchAll
+  CatchAll,
 }
 
 export function countParams(path: string): number {
@@ -115,7 +115,7 @@ export class Node {
               const prefix = fullPath.slice(0, fullPath.indexOf(pathSeg)) +
                 node.path;
               throw new Error(
-                `'${pathSeg}' in new path '${fullPath}' conflicts with existing wildcard '${node.path}' in existing prefix '${prefix}'`
+                `'${pathSeg}' in new path '${fullPath}' conflicts with existing wildcard '${node.path}' in existing prefix '${prefix}'`,
               );
             }
           }
@@ -158,7 +158,7 @@ export class Node {
           // Make node a (in-path) leaf
           if (node.handle) {
             throw new Error(
-              `a handle is already registered for path '${fullPath}'`
+              `a handle is already registered for path '${fullPath}'`,
             );
           }
           node.handle = handle;
@@ -183,7 +183,7 @@ export class Node {
       // swap node positions
       [this.children[newPos - 1], this.children[newPos]] = [
         this.children[newPos],
-        this.children[newPos - 1]
+        this.children[newPos - 1],
       ];
 
       --newPos;
@@ -204,7 +204,7 @@ export class Node {
     numParams: number,
     path: string,
     fullPath: string,
-    handle: HandlerFunc
+    handle: HandlerFunc,
   ): void {
     let node: Node = this;
     let offset = 0; // already handled bytes of the path
@@ -226,8 +226,8 @@ export class Node {
             throw new Error(
               `only one wildcard per path segment is allowed, has: '${path
                 .slice(
-                  i
-                )}' in path '${fullPath}'`
+                  i,
+                )}' in path '${fullPath}'`,
             );
           default:
             ++end;
@@ -240,15 +240,15 @@ export class Node {
         throw new Error(
           `wildcard route '${path.slice(
             i,
-            end
-          )}' conflicts with existing children in path '${fullPath}'`
+            end,
+          )}' conflicts with existing children in path '${fullPath}'`,
         );
       }
 
       // check if the wildcard has a name
       if (end - i < 2) {
         throw new Error(
-          `wildcards must be named with a non-empty name in path '${fullPath}'`
+          `wildcards must be named with a non-empty name in path '${fullPath}'`,
         );
       }
 
@@ -287,13 +287,13 @@ export class Node {
         // catchAll
         if (end !== max || numParams > 1) {
           throw new Error(
-            `catch-all routes are only allowed at the end of the path in path '${fullPath}'`
+            `catch-all routes are only allowed at the end of the path in path '${fullPath}'`,
           );
         }
 
         if (node.path.length > 0 && node.path[node.path.length - 1] === "/") {
           throw new Error(
-            `catch-all conflicts with existing handle for the path segment root in path '${fullPath}'`
+            `catch-all conflicts with existing handle for the path segment root in path '${fullPath}'`,
           );
         }
 
@@ -336,7 +336,7 @@ export class Node {
   }
 
   getValue(
-    path: string
+    path: string,
   ): [HandlerFunc | undefined, Params | undefined, boolean] {
     let node: Node = this;
     let handle: HandlerFunc | undefined, p: Params | undefined, tsr = false;
@@ -383,7 +383,7 @@ export class Node {
               const i = p.length;
               p[i] = {
                 key: node.path.slice(1),
-                value: path.slice(0, end)
+                value: path.slice(0, end),
               };
 
               // we need to go deeper!
@@ -421,7 +421,7 @@ export class Node {
               const i = p.length;
               p[i] = {
                 key: node.path.slice(2),
-                value: path
+                value: path,
               };
 
               handle = node.handle;

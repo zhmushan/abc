@@ -15,7 +15,7 @@ test(function StringResponse(): void {
     `null`,
     `0`,
     `true`,
-    ``
+    ``,
   ];
   const c = new Context(options);
   for (const r of results) {
@@ -34,7 +34,7 @@ test(function JSONResponse(): void {
     assertEquals(c.response.status, 200);
     assertEquals(
       c.response.body,
-      new TextEncoder().encode(typeof r === "object" ? JSON.stringify(r) : r)
+      new TextEncoder().encode(typeof r === "object" ? JSON.stringify(r) : r),
     );
     assertEquals(c.response.headers!.get("Content-Type"), "application/json");
   }
@@ -50,7 +50,7 @@ test(function HTMLResponse(): void {
     `null`,
     `0`,
     `true`,
-    ``
+    ``,
   ];
   const c = new Context(options);
   for (const r of results) {
@@ -67,11 +67,11 @@ test(function RequestWithCookies(): void {
   assertEquals(c.cookies, {
     PREF: "al=en-GB&f1=123",
     wide: "1",
-    SID: "123"
+    SID: "123",
   });
   c.setCookie({
     name: "hello",
-    value: "world"
+    value: "world",
   });
   assertEquals(c.response.headers?.get("Set-Cookie"), "hello=world");
 });

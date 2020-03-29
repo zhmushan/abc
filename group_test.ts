@@ -10,20 +10,20 @@ const { test } = Deno;
 
 test(async function GroupMiddleware(): Promise<void> {
   const app = createApplication();
-  const addr = `http://localhost:${app.server!.listener.addr.port}`;
+  const addr = `http://localhost:8080`;
   const g = app.group("group");
-  const h: HandlerFunc = function(): void {
+  const h: HandlerFunc = function (): void {
     return;
   };
-  const m1: MiddlewareFunc = next => c => next(c);
-  const m2: MiddlewareFunc = next => c => next(c);
-  const m3: MiddlewareFunc = next => c => next(c);
+  const m1: MiddlewareFunc = (next) => (c) => next(c);
+  const m2: MiddlewareFunc = (next) => (c) => next(c);
+  const m3: MiddlewareFunc = (next) => (c) => next(c);
   const m4: MiddlewareFunc = () =>
-    c => {
+    (c) => {
       c.response.status = 404;
     };
   const m5: MiddlewareFunc = () =>
-    c => {
+    (c) => {
       c.response.status = 405;
     };
 

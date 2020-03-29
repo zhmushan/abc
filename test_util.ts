@@ -1,19 +1,18 @@
-import { randomPort } from "./dev_deps.ts";
 import { ServerRequest } from "./deps.ts";
 import { Application } from "./app.ts";
 
 export function createApplication(): Application {
   const app = new Application();
-  app.start({ port: randomPort() });
+  app.start({ port: 8080 });
   return app;
 }
 
 export function createMockRequest(
-  url = "https://example.com/"
+  url = "https://example.com/",
 ): ServerRequest {
   return {
     url,
     headers: new Headers(),
-    async respond() {}
+    async respond() {},
   } as any;
 }

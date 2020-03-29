@@ -6,8 +6,8 @@ import { Application } from "../../mod.ts";
 
 const app = new Application();
 
-app.use(next =>
-  c => {
+app.use((next) =>
+  (c) => {
     let e = next(c);
     if (React.isValidElement(e)) {
       e = ReactDOMServer.renderToString(e);

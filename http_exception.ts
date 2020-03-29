@@ -9,15 +9,15 @@ export interface HttpExceptionBody {
 export function createHttpExceptionBody(
   message: string,
   error?: string,
-  statusCode?: number
+  statusCode?: number,
 ): HttpExceptionBody;
 export function createHttpExceptionBody<T extends Record<string, any>>(
-  body: T
+  body: T,
 ): T;
 export function createHttpExceptionBody<T extends Record<string, any>>(
   msgOrBody: string | T,
   error?: string,
-  statusCode?: number
+  statusCode?: number,
 ): HttpExceptionBody | T {
   if (typeof msgOrBody === "object" && !Array.isArray(msgOrBody)) {
     return msgOrBody;
@@ -31,7 +31,7 @@ export class HttpException extends Error {
   readonly message: any;
   constructor(
     readonly response: string | Record<string, any>,
-    readonly status: number
+    readonly status: number,
   ) {
     super();
     this.message = response;
@@ -41,11 +41,11 @@ export class HttpException extends Error {
 export class BadGatewayException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error = "Bad Gateway"
+    error = "Bad Gateway",
   ) {
     super(
       createHttpExceptionBody(message, error, Status.BadGateway),
-      Status.BadGateway
+      Status.BadGateway,
     );
   }
 }
@@ -53,11 +53,11 @@ export class BadGatewayException extends HttpException {
 export class BadRequestException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error = "Bad Request"
+    error = "Bad Request",
   ) {
     super(
       createHttpExceptionBody(message, error, Status.BadRequest),
-      Status.BadRequest
+      Status.BadRequest,
     );
   }
 }
@@ -65,11 +65,11 @@ export class BadRequestException extends HttpException {
 export class ConflictException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error = "Conflict"
+    error = "Conflict",
   ) {
     super(
       createHttpExceptionBody(message, error, Status.Conflict),
-      Status.Conflict
+      Status.Conflict,
     );
   }
 }
@@ -77,11 +77,11 @@ export class ConflictException extends HttpException {
 export class ForbiddenException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error = "Forbidden"
+    error = "Forbidden",
   ) {
     super(
       createHttpExceptionBody(message, error, Status.Forbidden),
-      Status.Forbidden
+      Status.Forbidden,
     );
   }
 }
@@ -89,11 +89,11 @@ export class ForbiddenException extends HttpException {
 export class GatewayTimeoutException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error = "Gateway Timeout"
+    error = "Gateway Timeout",
   ) {
     super(
       createHttpExceptionBody(message, error, Status.GatewayTimeout),
-      Status.GatewayTimeout
+      Status.GatewayTimeout,
     );
   }
 }
@@ -108,7 +108,7 @@ export class TeapotException extends HttpException {
   constructor(message?: string | Record<string, any> | any, error = "Teapot") {
     super(
       createHttpExceptionBody(message, error, Status.Teapot),
-      Status.Teapot
+      Status.Teapot,
     );
   }
 }
@@ -116,11 +116,11 @@ export class TeapotException extends HttpException {
 export class MethodNotAllowedException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error = "Method Not Allowed"
+    error = "Method Not Allowed",
   ) {
     super(
       createHttpExceptionBody(message, error, Status.MethodNotAllowed),
-      Status.MethodNotAllowed
+      Status.MethodNotAllowed,
     );
   }
 }
@@ -128,11 +128,11 @@ export class MethodNotAllowedException extends HttpException {
 export class NotAcceptableException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error = "Not Acceptable"
+    error = "Not Acceptable",
   ) {
     super(
       createHttpExceptionBody(message, error, Status.NotAcceptable),
-      Status.NotAcceptable
+      Status.NotAcceptable,
     );
   }
 }
@@ -140,11 +140,11 @@ export class NotAcceptableException extends HttpException {
 export class NotFoundException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error = "Not Found"
+    error = "Not Found",
   ) {
     super(
       createHttpExceptionBody(message, error, Status.NotFound),
-      Status.NotFound
+      Status.NotFound,
     );
   }
 }
@@ -152,11 +152,11 @@ export class NotFoundException extends HttpException {
 export class NotImplementedException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error = "Not Implemented"
+    error = "Not Implemented",
   ) {
     super(
       createHttpExceptionBody(message, error, Status.NotImplemented),
-      Status.NotImplemented
+      Status.NotImplemented,
     );
   }
 }
@@ -164,11 +164,11 @@ export class NotImplementedException extends HttpException {
 export class RequestEntityTooLargeException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error = "Request Entity Too Large"
+    error = "Request Entity Too Large",
   ) {
     super(
       createHttpExceptionBody(message, error, Status.RequestEntityTooLarge),
-      Status.RequestEntityTooLarge
+      Status.RequestEntityTooLarge,
     );
   }
 }
@@ -176,11 +176,11 @@ export class RequestEntityTooLargeException extends HttpException {
 export class RequestTimeoutException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error = "Request Timeout"
+    error = "Request Timeout",
   ) {
     super(
       createHttpExceptionBody(message, error, Status.RequestTimeout),
-      Status.RequestTimeout
+      Status.RequestTimeout,
     );
   }
 }
@@ -188,11 +188,11 @@ export class RequestTimeoutException extends HttpException {
 export class ServiceUnavailableException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error = "Service Unavailable"
+    error = "Service Unavailable",
   ) {
     super(
       createHttpExceptionBody(message, error, Status.ServiceUnavailable),
-      Status.ServiceUnavailable
+      Status.ServiceUnavailable,
     );
   }
 }
@@ -200,11 +200,11 @@ export class ServiceUnavailableException extends HttpException {
 export class UnauthorizedException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error = "Unauthorized"
+    error = "Unauthorized",
   ) {
     super(
       createHttpExceptionBody(message, error, Status.Unauthorized),
-      Status.Unauthorized
+      Status.Unauthorized,
     );
   }
 }
@@ -212,11 +212,11 @@ export class UnauthorizedException extends HttpException {
 export class UnprocessableEntityException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error = "Unprocessable Entity"
+    error = "Unprocessable Entity",
   ) {
     super(
       createHttpExceptionBody(message, error, Status.UnprocessableEntity),
-      Status.UnprocessableEntity
+      Status.UnprocessableEntity,
     );
   }
 }
@@ -224,11 +224,11 @@ export class UnprocessableEntityException extends HttpException {
 export class InternalServerErrorException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error = "Internal Server Error"
+    error = "Internal Server Error",
   ) {
     super(
       createHttpExceptionBody(message, error, Status.InternalServerError),
-      Status.InternalServerError
+      Status.InternalServerError,
     );
   }
 }
@@ -236,11 +236,11 @@ export class InternalServerErrorException extends HttpException {
 export class UnsupportedMediaTypeException extends HttpException {
   constructor(
     message?: string | Record<string, any> | any,
-    error = "Unsupported Media Type"
+    error = "Unsupported Media Type",
   ) {
     super(
       createHttpExceptionBody(message, error, Status.UnsupportedMediaType),
-      Status.UnsupportedMediaType
+      Status.UnsupportedMediaType,
     );
   }
 }

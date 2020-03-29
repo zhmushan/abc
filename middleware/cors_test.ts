@@ -12,13 +12,13 @@ test(function MiddlewareCORS(): void {
   const headers = new Headers();
   const ctx = {
     request: {
-      headers
+      headers,
     },
     response: {
-      headers
-    }
+      headers,
+    },
   } as Context;
-  cors()(c => c)(ctx);
+  cors()((c) => c)(ctx);
   assertEquals(headers.get(Header.Vary), Header.Origin);
   assertEquals(headers.get(Header.AccessControlAllowOrigin), "*");
 });

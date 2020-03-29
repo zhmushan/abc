@@ -45,7 +45,7 @@ export class Application {
     for await (const req of this.server!) {
       const c = new Context({
         r: req,
-        app: this
+        app: this,
       });
       let h = this.router.find(req.method, c) || NotFoundHandler;
 
@@ -128,7 +128,7 @@ export class Application {
       "PATCH",
       "POST",
       "PUT",
-      "TRACE"
+      "TRACE",
     ];
     for (const method of methods) {
       this.add(method, path, h, ...m);
@@ -171,7 +171,7 @@ export class Application {
 
   /** `static` registers a new route with path prefix to serve static files from the provided root directory. */
   static(prefix: string, root: string): Application {
-    const h: HandlerFunc = c => {
+    const h: HandlerFunc = (c) => {
       const filepath: string = c.params.filepath;
       return c.file(path.join(root, filepath));
     };
@@ -183,7 +183,7 @@ export class Application {
 
   /** `file` registers a new route with path to serve a static file with optional route-level middleware. */
   file(path: string, filepath: string, ...m: MiddlewareFunc[]): Application {
-    return this.get(path, c => c.file(filepath), ...m);
+    return this.get(path, (c) => c.file(filepath), ...m);
   }
 
   private async transformResult(c: Context, h: HandlerFunc): Promise<void> {
@@ -196,13 +196,13 @@ export class Application {
           typeof e.response === "object"
             ? e.response
             : createHttpExceptionBody(e.response, undefined, e.status),
-          e.status
+          e.status,
         );
       } else {
         e = new InternalServerErrorException(e.message);
         result = c.json(
           (e as InternalServerErrorException).response,
-          (e as InternalServerErrorException).status
+          (e as InternalServerErrorException).status,
         );
       }
     }

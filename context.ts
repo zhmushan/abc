@@ -74,7 +74,7 @@ export class Context {
     this.writeContentType(MIME.ApplicationJSON);
     this.response.status = code;
     this.response.body = encoder.encode(
-      typeof v === "object" ? JSON.stringify(v) : v
+      typeof v === "object" ? JSON.stringify(v) : v,
     );
   }
 
@@ -97,7 +97,7 @@ export class Context {
   async render<T>(
     name: string,
     data: T = {} as T,
-    code: Status = Status.OK
+    code: Status = Status.OK,
   ): Promise<void> {
     if (!this.app.renderer) {
       throw new Error();
@@ -110,7 +110,7 @@ export class Context {
   blob(
     b: Uint8Array | Deno.Reader,
     contentType: string,
-    code: Status = Status.OK
+    code: Status = Status.OK,
   ): void {
     this.writeContentType(contentType);
     this.response.status = code;
