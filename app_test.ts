@@ -14,7 +14,7 @@ import { HttpMethod } from "./constants.ts";
 const { readFile, test } = Deno;
 
 const decoder = new TextDecoder();
-const addr = `http://localhost:8080`;
+const addr = `http://localhost:8081`;
 
 test(async function AppStatic(): Promise<void> {
   const app = createApplication();

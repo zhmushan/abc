@@ -3,7 +3,7 @@ import { Application } from "./app.ts";
 
 export function createApplication(): Application {
   const app = new Application();
-  app.start({ port: 8080 });
+  app.start({ port: 8081 });
   return app;
 }
 

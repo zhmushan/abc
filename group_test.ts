@@ -8,9 +8,10 @@ import { Status } from "./deps.ts";
 import { createApplication } from "./test_util.ts";
 const { test } = Deno;
 
+const addr = `http://localhost:8081`;
+
 test(async function GroupMiddleware(): Promise<void> {
   const app = createApplication();
-  const addr = `http://localhost:8080`;
   const g = app.group("group");
   const h: HandlerFunc = function (): void {
     return;
