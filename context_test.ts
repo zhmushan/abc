@@ -61,6 +61,15 @@ test(function HTMLResponse(): void {
   }
 });
 
+test(async function FileResponse(): Promise<void> {
+  const c = new Context(options);
+  await c.file("./mod.ts");
+  assertEquals(
+    c.response.headers!.get("Content-Type"),
+    "application/typescript",
+  );
+});
+
 test(function RequestWithCookies(): void {
   const c = new Context(options);
   c.request.headers.append("Cookie", "PREF=al=en-GB&f1=123; wide=1; SID=123");

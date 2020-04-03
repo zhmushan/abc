@@ -5,7 +5,7 @@
 import { Application } from "./app.ts";
 import { ServerRequest, Response } from "./deps.ts";
 
-import { Status, path, cookie } from "./deps.ts";
+import { Status, path, cookie, contentType } from "./deps.ts";
 import { NotFoundHandler } from "./app.ts";
 import { Header, MIME } from "./constants.ts";
 const { cwd, lstat, readFile, readAll } = Deno;
@@ -117,7 +117,7 @@ export class Context {
     this.response.body = b;
   }
 
-  async file(filepath: string): Promise<string> {
+  async file(filepath: string): Promise<void> {
     filepath = path.join(cwd(), filepath);
     try {
       const fileinfo = await lstat(filepath);
@@ -127,7 +127,10 @@ export class Context {
       ) {
         filepath = path.join(filepath, "index.html");
       }
-      return decoder.decode(await readFile(filepath));
+      this.blob(
+        await readFile(filepath),
+        contentType(path.extname(filepath)) || MIME.TextPlainCharsetUTF8,
+      );
     } catch {
       NotFoundHandler();
     }

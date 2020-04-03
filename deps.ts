@@ -13,3 +13,4 @@ export {
   Status,
   STATUS_TEXT
 } from "https://deno.land/std@v0.38.0/http/http_status.ts";
+export { contentType } from "https://deno.land/std/media_types/mod.ts";
