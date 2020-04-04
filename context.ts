@@ -5,9 +5,10 @@
 import { Application } from "./app.ts";
 import { ServerRequest, Response } from "./deps.ts";
 
-import { Status, path, cookie, contentType } from "./deps.ts";
+import { Status, path, cookie } from "./deps.ts";
 import { NotFoundHandler } from "./app.ts";
 import { Header, MIME } from "./constants.ts";
+import { contentType } from "./util.ts";
 const { cwd, lstat, readFile, readAll } = Deno;
 
 const encoder = new TextEncoder();
@@ -109,10 +110,12 @@ export class Context {
   /** Sends a blob response with content type and status code. */
   blob(
     b: Uint8Array | Deno.Reader,
-    contentType: string,
+    contentType?: string,
     code: Status = Status.OK,
   ): void {
-    this.writeContentType(contentType);
+    if (contentType) {
+      this.writeContentType(contentType);
+    }
     this.response.status = code;
     this.response.body = b;
   }
@@ -129,7 +132,7 @@ export class Context {
       }
       this.blob(
         await readFile(filepath),
-        contentType(path.extname(filepath)) || MIME.TextPlainCharsetUTF8,
+        contentType(filepath),
       );
     } catch {
       NotFoundHandler();

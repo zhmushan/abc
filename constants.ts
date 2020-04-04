@@ -59,13 +59,19 @@ export namespace Header {
 }
 
 export namespace MIME {
-  export const ApplicationJSON = "application/json",
+  export const ApplicationGZip = "application/gzip",
+    ApplicationJSON = "application/json",
     ApplicationJSONCharsetUTF8 = ApplicationJSON + "; " + charsetUTF8,
     ApplicationJavaScript = "application/javascript",
     ApplicationJavaScriptCharsetUTF8 = ApplicationJavaScript + "; " +
       charsetUTF8,
+    ApplicationTypeScript = "application/typescript",
+    ApplicationTypeScriptCharsetUTF8 = ApplicationJavaScript + "; " +
+      charsetUTF8,
     ApplicationXML = "application/xml",
     ApplicationXMLCharsetUTF8 = ApplicationXML + "; " + charsetUTF8,
+    TextMarkdown = "text/markdown",
+    TextMarkdownCharsetUTF8 = TextMarkdown + "; " + charsetUTF8,
     TextXML = "text/xml",
     TextXMLCharsetUTF8 = TextXML + "; " + charsetUTF8,
     ApplicationForm = "application/x-www-form-urlencoded",
@@ -77,4 +83,18 @@ export namespace MIME {
     TextPlainCharsetUTF8 = TextPlain + "; " + charsetUTF8,
     MultipartForm = "multipart/form-data",
     OctetStream = "application/octet-stream";
+
+  export const DB: Record<string, string | undefined> = {
+    ".md": TextMarkdown,
+    ".html": TextHTML,
+    ".htm": TextHTML,
+    ".json": ApplicationJSON,
+    ".map": ApplicationJSON,
+    ".txt": TextPlain,
+    ".ts": ApplicationTypeScript,
+    ".tsx": ApplicationTypeScript,
+    ".js": ApplicationJavaScript,
+    ".jsx": ApplicationJavaScript,
+    ".gz": ApplicationGZip,
+  };
 }
