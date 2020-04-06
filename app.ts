@@ -57,7 +57,7 @@ export class Application {
       }
 
       this.transformResult(c, h).then((): void => {
-        req.respond(c.response);
+        req.respond(c.response).catch(() => {});
       });
     }
   };
