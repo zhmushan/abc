@@ -65,9 +65,6 @@ export namespace MIME {
     ApplicationJavaScript = "application/javascript",
     ApplicationJavaScriptCharsetUTF8 = ApplicationJavaScript + "; " +
       charsetUTF8,
-    ApplicationTypeScript = "application/typescript",
-    ApplicationTypeScriptCharsetUTF8 = ApplicationJavaScript + "; " +
-      charsetUTF8,
     ApplicationXML = "application/xml",
     ApplicationXMLCharsetUTF8 = ApplicationXML + "; " + charsetUTF8,
     TextMarkdown = "text/markdown",
@@ -85,16 +82,16 @@ export namespace MIME {
     OctetStream = "application/octet-stream";
 
   export const DB: Record<string, string | undefined> = {
-    ".md": TextMarkdown,
-    ".html": TextHTML,
-    ".htm": TextHTML,
+    ".md": TextMarkdownCharsetUTF8,
+    ".html": TextHTMLCharsetUTF8,
+    ".htm": TextHTMLCharsetUTF8,
     ".json": ApplicationJSON,
     ".map": ApplicationJSON,
-    ".txt": TextPlain,
-    ".ts": ApplicationTypeScript,
-    ".tsx": ApplicationTypeScript,
-    ".js": ApplicationJavaScript,
-    ".jsx": ApplicationJavaScript,
+    ".txt": TextPlainCharsetUTF8,
+    ".ts": ApplicationJavaScriptCharsetUTF8,
+    ".tsx": ApplicationJavaScriptCharsetUTF8,
+    ".js": ApplicationJavaScriptCharsetUTF8,
+    ".jsx": ApplicationJavaScriptCharsetUTF8,
     ".gz": ApplicationGZip,
   };
 }

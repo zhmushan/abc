@@ -66,7 +66,7 @@ test(async function FileResponse(): Promise<void> {
   await c.file("./mod.ts");
   assertEquals(
     c.response.headers!.get("Content-Type"),
-    "application/typescript",
+    "application/javascript; charset=UTF-8",
   );
 });
 
