@@ -9,9 +9,7 @@
 
 #### Quick links
 
-- API Reference
-  - https://zhmushan.github.io/abc/
-  - https://abc-server.netlify.com/
+- [API Reference](https://doc.deno.land/https/deno.land/x/abc/mod.ts)
 - [Guides](https://deno.land/x/abc/docs/table_of_contents.md)
 - [Examples](./examples)
 
