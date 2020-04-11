@@ -130,10 +130,7 @@ export class Context {
       ) {
         filepath = path.join(filepath, "index.html");
       }
-      this.blob(
-        await readFile(filepath),
-        contentType(filepath),
-      );
+      this.blob(await readFile(filepath), contentType(filepath));
     } catch {
       NotFoundHandler();
     }
@@ -142,5 +139,15 @@ export class Context {
   /** append a `Set-Cookie` header to the response */
   setCookie(c: Cookie): void {
     cookie.setCookie(this.response, c);
+  }
+
+  /** Redirects a response to a specific URL. the `code` defaults to `302` if omitted */
+  redirect(url: string, code = Status.Found): void {
+    if (!this.response.headers) {
+      this.response.headers = new Headers();
+    }
+
+    this.response.headers.set(Header.Location, url);
+    this.response.status = code;
   }
 }

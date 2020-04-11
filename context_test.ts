@@ -1,6 +1,8 @@
 import { assertEquals, runIfMain } from "./dev_deps.ts";
+import { Status } from "./deps.ts";
 import { createMockRequest } from "./test_util.ts";
 import { Context } from "./context.ts";
+import { Header } from "./constants.ts";
 const { test } = Deno;
 
 const options = { app: undefined!, r: createMockRequest() };
@@ -83,6 +85,16 @@ test(function RequestWithCookies(): void {
     value: "world",
   });
   assertEquals(c.response.headers?.get("Set-Cookie"), "hello=world");
+});
+
+test(function Redirect(): void {
+  const c = new Context(options);
+  c.redirect("https://a.com");
+  assertEquals(c.response.headers?.get(Header.Location), "https://a.com");
+  assertEquals(c.response.status, Status.Found);
+  c.redirect("https://b.com", Status.UseProxy);
+  assertEquals(c.response.headers?.get(Header.Location), "https://b.com");
+  assertEquals(c.response.status, Status.UseProxy);
 });
 
 runIfMain(import.meta);
