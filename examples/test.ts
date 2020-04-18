@@ -3,7 +3,7 @@ import {
   assert,
   assertEquals,
   TextProtoReader,
-  BufReader
+  BufReader,
 } from "../dev_deps.ts";
 const { run, test, execPath } = Deno;
 

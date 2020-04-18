@@ -125,8 +125,8 @@ export class Context {
     try {
       const fileinfo = await lstat(filepath);
       if (
-        fileinfo.isDirectory() &&
-        (await lstat(filepath + "index.html")).isFile()
+        fileinfo.isDirectory &&
+        (await lstat(filepath + "index.html")).isFile
       ) {
         filepath = path.join(filepath, "index.html");
       }

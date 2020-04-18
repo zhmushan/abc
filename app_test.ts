@@ -8,7 +8,7 @@ import { createApplication } from "./test_util.ts";
 import { NotFoundHandler } from "./app.ts";
 import {
   InternalServerErrorException,
-  NotFoundException
+  NotFoundException,
 } from "./http_exception.ts";
 import { HttpMethod } from "./constants.ts";
 const { readFile, test } = Deno;

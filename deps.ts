@@ -1,5 +1,5 @@
-export * as path from "https://deno.land/std@v0.39.0/path/mod.ts";
-export * as cookie from "https://deno.land/std@v0.39.0/http/cookie.ts";
+export * as path from "https://deno.land/std@v0.41.0/path/mod.ts";
+export * as cookie from "https://deno.land/std@v0.41.0/http/cookie.ts";
 export {
   serve,
   serveTLS,
@@ -7,9 +7,9 @@ export {
   Response,
   Server,
   HTTPOptions,
-  HTTPSOptions
-} from "https://deno.land/std@v0.39.0/http/server.ts";
+  HTTPSOptions,
+} from "https://deno.land/std@v0.41.0/http/server.ts";
 export {
   Status,
-  STATUS_TEXT
-} from "https://deno.land/std@v0.39.0/http/http_status.ts";
+  STATUS_TEXT,
+} from "https://deno.land/std@v0.41.0/http/http_status.ts";

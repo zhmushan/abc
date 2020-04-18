@@ -9,7 +9,7 @@
 import {
   MiddlewareFunc,
   Renderer,
-  HandlerFunc
+  HandlerFunc,
 } from "./types.ts";
 import { Server, HTTPOptions, HTTPSOptions } from "./deps.ts";
 
@@ -21,7 +21,7 @@ import {
   InternalServerErrorException,
   HttpException,
   NotFoundException,
-  createHttpExceptionBody
+  createHttpExceptionBody,
 } from "./http_exception.ts";
 
 export function NotFoundHandler(): never {
