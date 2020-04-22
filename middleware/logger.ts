@@ -8,6 +8,7 @@ import { Context } from "../context.ts";
 import { Skipper } from "./skipper.ts";
 
 import { DefaultSkipper } from "./skipper.ts";
+const { writeSync, stdout } = Deno;
 
 export type Formatter = (c: Context) => string;
 
@@ -27,7 +28,7 @@ export const DefaultFormatter: Formatter = (c) => {
 export const DefaultLoggerConfig: LoggerConfig = {
   skipper: DefaultSkipper,
   formatter: DefaultFormatter,
-  output: Deno.stdout,
+  output: stdout,
 };
 
 export function logger(
@@ -40,14 +41,14 @@ export function logger(
     config.skipper = DefaultLoggerConfig.skipper;
   }
   if (config.output == null) {
-    config.output = Deno.stdout;
+    config.output = stdout;
   }
   return (next) =>
     (c) => {
       if (config.skipper!(c)) {
         return next(c);
       }
-      config.output!.write(encoder.encode(config.formatter!(c)));
+      writeSync(config.output!.rid, encoder.encode(config.formatter!(c)));
       return next(c);
     };
 }
@@ -57,5 +58,5 @@ export interface LoggerConfig {
   formatter?: Formatter;
 
   // Default is Deno.stdout.
-  output?: Deno.Writer;
+  output?: Deno.File;
 }

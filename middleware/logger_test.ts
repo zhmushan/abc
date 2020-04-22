@@ -5,7 +5,7 @@ import { Context } from "../context.ts";
 
 import { assertEquals, assert, runIfMain } from "../dev_deps.ts";
 import { DefaultFormatter, logger } from "./logger.ts";
-const { test } = Deno;
+const { test, makeTempFileSync, readFileSync, openSync, removeSync } = Deno;
 
 const dt = new Date();
 const ctx = {
@@ -17,21 +17,17 @@ const ctx = {
 } as Context;
 const decoder = new TextDecoder();
 
-class Writer implements Deno.Writer {
-  out = "";
-  async write(p: Uint8Array): Promise<number> {
-    this.out = decoder.decode(p);
-    return 0;
-  }
-}
-
 test(function MiddlewareLogger(): void {
-  const w = new Writer();
+  const fpath = makeTempFileSync();
+  const f = openSync(fpath, { write: true });
   logger({
-    output: w,
+    output: f,
   })((c) => c)(ctx);
-  assert(w.out.endsWith(" GET / HTTP/1.1\n"));
-  assert(new Date(w.out.split(" ")[0]).getTime() >= dt.getTime());
+  const out = decoder.decode(readFileSync(fpath));
+  assert(out.includes(" GET / HTTP/1.1\n"));
+  assert(new Date(out.split(" ")[0]).getTime() >= dt.getTime());
+  f.close();
+  removeSync(fpath);
 });
 
 test(function MiddlewareLoggerDefaultFormatter(): void {
@@ -41,13 +37,17 @@ test(function MiddlewareLoggerDefaultFormatter(): void {
 });
 
 test(function MiddlewareLoggerCustomFormatter(): void {
+  const fpath = makeTempFileSync();
+  const f = openSync(fpath, { write: true });
   const info = "Hello, 你好！";
-  const w = new Writer();
   logger({
-    output: w,
+    output: f,
     formatter: (): string => info,
   })((c) => c)(ctx);
-  assertEquals(w.out, info);
+  const out = decoder.decode(readFileSync(fpath));
+  assertEquals(out, info);
+  f.close();
+  removeSync(fpath);
 });
 
 runIfMain(import.meta);
