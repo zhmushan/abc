@@ -7,7 +7,7 @@ const { test } = Deno;
 
 const options = { app: undefined!, r: createMockRequest() };
 
-test(function StringResponse(): void {
+test("context string resp", function (): void {
   const results = [
     `{foo: "bar"}`,
     `<h1>Title</h1>`,
@@ -28,7 +28,7 @@ test(function StringResponse(): void {
   }
 });
 
-test(function JSONResponse(): void {
+test("context json resp", function (): void {
   const results = [{ foo: "bar" }, `{foo: "bar"}`, [1, 2], {}, [], `[]`];
   const c = new Context(options);
   for (const r of results) {
@@ -42,7 +42,7 @@ test(function JSONResponse(): void {
   }
 });
 
-test(function HTMLResponse(): void {
+test("context html resp", function (): void {
   const results = [
     `{foo: "bar"}`,
     `<h1>Title</h1>`,
@@ -63,7 +63,7 @@ test(function HTMLResponse(): void {
   }
 });
 
-test(async function FileResponse(): Promise<void> {
+test("context file resp", async function (): Promise<void> {
   const c = new Context(options);
   await c.file("./mod.ts");
   assertEquals(
@@ -72,7 +72,7 @@ test(async function FileResponse(): Promise<void> {
   );
 });
 
-test(function RequestWithCookies(): void {
+test("context req with cookies", function RequestWithCookies(): void {
   const c = new Context(options);
   c.request.headers.append("Cookie", "PREF=al=en-GB&f1=123; wide=1; SID=123");
   assertEquals(c.cookies, {
@@ -87,7 +87,7 @@ test(function RequestWithCookies(): void {
   assertEquals(c.response.headers?.get("Set-Cookie"), "hello=world");
 });
 
-test(function Redirect(): void {
+test("context redirect", function (): void {
   const c = new Context(options);
   c.redirect("https://a.com");
   assertEquals(c.response.headers?.get(Header.Location), "https://a.com");

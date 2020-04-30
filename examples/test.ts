@@ -19,7 +19,7 @@ async function startServer(fpath: string): Promise<void> {
   assert(server.stdout != null);
   const r = new TextProtoReader(new BufReader(server.stdout));
   const s = await r.readLine();
-  assert(s !== Deno.EOF && s.includes("server listening"));
+  assert(s !== null && s.includes("server listening"));
 }
 
 function killServer(): void {
@@ -27,7 +27,7 @@ function killServer(): void {
   server.stdout?.close();
 }
 
-test(async function ExmaplesCatApp() {
+test("exmaples cat app", async function () {
   await startServer(path.join(dir, "./cat_app/main.ts"));
   try {
     const cat = { name: "zhmushan", age: 18 };
@@ -46,7 +46,7 @@ test(async function ExmaplesCatApp() {
   }
 });
 
-test(async function ExmaplesJSX() {
+test("exmaples jsx", async function () {
   await startServer(path.join(dir, "./jsx/main.tsx"));
   try {
     const text = await fetch(addr).then((resp) => resp.text());
@@ -56,12 +56,12 @@ test(async function ExmaplesJSX() {
   }
 });
 
-test(async function ExmaplesTemplate() {
-  await startServer(path.join(dir, "./template/main.ts"));
-  try {
-    const text = await fetch(addr).then((resp) => resp.text());
-    // assert(text.includes("hello, zhmushan!"));
-  } finally {
-    killServer();
-  }
-});
+// test("exmaples template", async function () {
+//   await startServer(path.join(dir, "./template/main.ts"));
+//   try {
+//     const text = await fetch(addr).then((resp) => resp.text());
+//     assert(text.includes("hello, zhmushan!"));
+//   } finally {
+//     killServer();
+//   }
+// });

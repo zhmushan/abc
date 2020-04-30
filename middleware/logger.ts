@@ -58,5 +58,5 @@ export interface LoggerConfig {
   formatter?: Formatter;
 
   // Default is Deno.stdout.
-  output?: Deno.File;
+  output?: { rid: number };
 }

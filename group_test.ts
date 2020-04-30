@@ -10,7 +10,7 @@ const { test } = Deno;
 
 const addr = `http://localhost:8081`;
 
-test(async function GroupMiddleware(): Promise<void> {
+test("group middleware", async function (): Promise<void> {
   const app = createApplication();
   const g = app.group("group");
   const h: HandlerFunc = function (): void {

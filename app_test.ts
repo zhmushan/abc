@@ -16,7 +16,7 @@ const { readFile, test } = Deno;
 const decoder = new TextDecoder();
 const addr = `http://localhost:8081`;
 
-test(async function AppStatic(): Promise<void> {
+test("app static", async function (): Promise<void> {
   const app = createApplication();
   app.static("/examples", "./examples/template");
 
@@ -43,7 +43,7 @@ test(async function AppStatic(): Promise<void> {
   await app.close();
 });
 
-test(async function AppFile(): Promise<void> {
+test("app file", async function (): Promise<void> {
   const app = createApplication();
   app.file("ci", "./.github/workflows/ci.yml");
   app.file("fileempty", "./fileempty");
@@ -64,7 +64,7 @@ test(async function AppFile(): Promise<void> {
   await app.close();
 });
 
-test(async function AppMiddleware(): Promise<void> {
+test("app middleware", async function (): Promise<void> {
   const app = createApplication();
   let str = "";
   app
@@ -100,7 +100,7 @@ test(async function AppMiddleware(): Promise<void> {
   await app.close();
 });
 
-test(async function AppMiddlewareError(): Promise<void> {
+test("app middleware error", async function (): Promise<void> {
   const app = createApplication();
   const errMsg = "err";
   app.get("/middlewareerror", NotFoundHandler, function (): HandlerFunc {
@@ -118,7 +118,7 @@ test(async function AppMiddlewareError(): Promise<void> {
   await app.close();
 });
 
-test(async function AppHandler(): Promise<void> {
+test("app handler", async function (): Promise<void> {
   const app = createApplication();
   app.get("/ok", (): string => "ok");
 
@@ -128,7 +128,7 @@ test(async function AppHandler(): Promise<void> {
   await app.close();
 });
 
-test(async function AppHttpMethods(): Promise<void> {
+test("app http methods", async function (): Promise<void> {
   const app = createApplication();
   app
     .delete("/delete", (): string => "delete")
@@ -165,7 +165,7 @@ test(async function AppHttpMethods(): Promise<void> {
   await app.close();
 });
 
-test(async function AppNotFound(): Promise<void> {
+test("app not found", async function (): Promise<void> {
   const app = createApplication();
   app.get("/not_found_handler", NotFoundHandler);
 
@@ -178,7 +178,7 @@ test(async function AppNotFound(): Promise<void> {
   await app.close();
 });
 
-test(async function AppQS(): Promise<void> {
+test("app query string", async function (): Promise<void> {
   const app = createApplication();
   app.get("/qs", (c) => c.queryParams);
   const res = await fetch(`${addr}/qs?foo=bar`);

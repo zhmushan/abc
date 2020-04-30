@@ -224,10 +224,12 @@ export class Node {
           case ":":
           case "*":
             throw new Error(
-              `only one wildcard per path segment is allowed, has: '${path
-                .slice(
-                  i,
-                )}' in path '${fullPath}'`,
+              `only one wildcard per path segment is allowed, has: '${
+                path
+                  .slice(
+                    i,
+                  )
+              }' in path '${fullPath}'`,
             );
           default:
             ++end;
@@ -238,10 +240,12 @@ export class Node {
       // unreachable if we insert the wildcard here
       if (node.children.length > 0) {
         throw new Error(
-          `wildcard route '${path.slice(
-            i,
-            end,
-          )}' conflicts with existing children in path '${fullPath}'`,
+          `wildcard route '${
+            path.slice(
+              i,
+              end,
+            )
+          }' conflicts with existing children in path '${fullPath}'`,
         );
       }
 

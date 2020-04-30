@@ -3,7 +3,7 @@ import { contentType } from "./util.ts";
 import { MIME } from "./constants.ts";
 const { test } = Deno;
 
-test(function UtilContentType(): void {
+test("util content type", function (): void {
   assertEquals(contentType("/path/to/file"), undefined);
   assertEquals(contentType("/path/to/file.md"), MIME.TextMarkdownCharsetUTF8);
   assertEquals(contentType("/path/to/file.html"), MIME.TextHTMLCharsetUTF8);

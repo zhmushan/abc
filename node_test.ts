@@ -80,12 +80,12 @@ function checkRoutes(routes: TestRoute[]): void {
   }
 }
 
-test(function CountParams(): void {
+test("node count params", function (): void {
   assertEquals(countParams("/path/:param1/static/*catch-all"), 2);
   assertEquals(countParams("/:param".repeat(256)), 255);
 });
 
-test(function AddAndFind(): void {
+test("node add and find", function (): void {
   const n = new Node();
   const routes = [
     "/hi",
@@ -120,7 +120,7 @@ test(function AddAndFind(): void {
   checkMaxParams(n);
 });
 
-test(function Wildcard(): void {
+test("node wildcard", function (): void {
   const n = new Node();
   const routes = [
     "/",
@@ -233,7 +233,7 @@ test(function Wildcard(): void {
   checkMaxParams(n);
 });
 
-test(function WildcardConflict(): void {
+test("node wildcard conflict", function (): void {
   checkRoutes([
     { path: "/cmd/:tool/:sub", conflict: false },
     { path: "/cmd/vet", conflict: true },
@@ -253,7 +253,7 @@ test(function WildcardConflict(): void {
   ]);
 });
 
-test(function ChildConflict(): void {
+test("node child conflict", function (): void {
   checkRoutes([
     { path: "/cmd/vet", conflict: false },
     { path: "/cmd/:tool/:sub", conflict: true },
@@ -268,7 +268,7 @@ test(function ChildConflict(): void {
   ]);
 });
 
-test(function DupliatePath(): void {
+test("node dupliate path", function (): void {
   const n = new Node();
   const routes = [
     "/",
@@ -308,7 +308,7 @@ test(function DupliatePath(): void {
   ]);
 });
 
-test(function EmptyWildcardName(): void {
+test("node empty wildcard name", function (): void {
   const n = new Node();
   const routes = ["/user:", "/user:/", "/cmd/:/", "/src/*"];
   for (const r of routes) {
@@ -317,7 +317,7 @@ test(function EmptyWildcardName(): void {
   }
 });
 
-test(function CatchAllConflict(): void {
+test("node catch all conflict", function (): void {
   checkRoutes([
     { path: "/src/*filepath/x", conflict: true },
     { path: "/src2/", conflict: false },
@@ -325,14 +325,14 @@ test(function CatchAllConflict(): void {
   ]);
 });
 
-test(function CatchAllConflictRoot(): void {
+test("node catch all conflict root", function (): void {
   checkRoutes([
     { path: "/", conflict: false },
     { path: "/*filepath", conflict: true },
   ]);
 });
 
-test(function DoubleWildcard(): void {
+test("node double wildcard", function (): void {
   const errMsg = "only one wildcard per path segment is allowed";
   const routes = ["/:foo:bar", "/:foo:bar/", "/:foo*bar"];
   for (const r of routes) {
@@ -342,7 +342,7 @@ test(function DoubleWildcard(): void {
   }
 });
 
-test(function TrailingSlashRedirect(): void {
+test("node trailing slash redirect", function (): void {
   const n = new Node();
   const routes = [
     "/hi",
@@ -403,7 +403,7 @@ test(function TrailingSlashRedirect(): void {
   }
 });
 
-test(function RootTrailingSlashRedirect(): void {
+test("node root trailing slash redirect", function (): void {
   const n = new Node();
   const err = getErr((): void => n.addRoute("/:test", (): string => "/:test"));
   assertEquals(err, null);
@@ -412,7 +412,7 @@ test(function RootTrailingSlashRedirect(): void {
   assertEquals(h == null, true);
 });
 
-test(function InvalidNodeType(): void {
+test("node invalid node type", function (): void {
   const errMsg = "invalid node type";
   const n = new Node();
   n.addRoute("/", (): string => "/");
@@ -426,7 +426,7 @@ test(function InvalidNodeType(): void {
   assertEquals(err!.message, errMsg);
 });
 
-test(function WildcardConflictEx(): void {
+test("node wildcard conflict ex", function (): void {
   const conflicts = [
     {
       route: `/who/are/foo`,

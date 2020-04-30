@@ -17,7 +17,7 @@ const ctx = {
 } as Context;
 const decoder = new TextDecoder();
 
-test(function MiddlewareLogger(): void {
+test("middleware logger", function (): void {
   const fpath = makeTempFileSync();
   const f = openSync(fpath, { write: true });
   logger({
@@ -30,13 +30,13 @@ test(function MiddlewareLogger(): void {
   removeSync(fpath);
 });
 
-test(function MiddlewareLoggerDefaultFormatter(): void {
+test("middleware logger default formatter", function (): void {
   const logInfo = DefaultFormatter(ctx);
   assert(logInfo.endsWith(" GET / HTTP/1.1\n"));
   assert(new Date(logInfo.split(" ")[0]).getTime() >= dt.getTime());
 });
 
-test(function MiddlewareLoggerCustomFormatter(): void {
+test("middleware logger custom formatter", function (): void {
   const fpath = makeTempFileSync();
   const f = openSync(fpath, { write: true });
   const info = "Hello, 你好！";
