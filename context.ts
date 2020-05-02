@@ -22,7 +22,7 @@ export class Context {
   request: ServerRequest;
   url: URL;
 
-  response: Response = { headers: new Headers() };
+  response: Response & { headers: Headers } = { headers: new Headers() };
   params: Record<string, string> = {};
 
   get cookies(): Cookies {
