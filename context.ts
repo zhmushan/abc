@@ -53,9 +53,6 @@ export class Context {
   }
 
   private writeContentType(v: string): void {
-    if (!this.response.headers) {
-      this.response.headers = new Headers();
-    }
     if (!this.response.headers.has(Header.ContentType)) {
       this.response.headers.set(Header.ContentType, v);
     }
@@ -143,10 +140,6 @@ export class Context {
 
   /** Redirects a response to a specific URL. the `code` defaults to `302` if omitted */
   redirect(url: string, code = Status.Found): void {
-    if (!this.response.headers) {
-      this.response.headers = new Headers();
-    }
-
     this.response.headers.set(Header.Location, url);
     this.response.status = code;
   }
