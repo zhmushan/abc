@@ -16,14 +16,14 @@
     uri += "//" + loc.host;
     uri += loc.pathname + "ws";
 
-    ws = new WebSocket(uri);
+    const ws = new WebSocket(uri);
 
     ws.onopen = function () {
       console.log("Connected");
     }
 
     ws.onmessage = function (evt) {
-      const out = document.getElementById("output");
+      let out = document.getElementById("output");
       out.innerHTML += evt.data + "<br>";
     }
 

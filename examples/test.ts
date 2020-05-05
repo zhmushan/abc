@@ -13,7 +13,7 @@ let server: Deno.Process;
 
 async function startServer(fpath: string): Promise<void> {
   server = run({
-    cmd: [execPath(), "--allow-net", "--allow-read", fpath],
+    cmd: [execPath(), "run", "--allow-net", "--allow-read", fpath],
     stdout: "piped",
   });
   assert(server.stdout != null);
