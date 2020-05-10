@@ -1,6 +1,6 @@
 import { Application } from "../../mod.ts";
 import { HandlerFunc } from "../../types.ts";
-import { acceptWebSocket } from "https://deno.land/std@v1.0.0-rc1/ws/mod.ts";
+import { acceptWebSocket } from "https://deno.land/std@v0.50.0/ws/mod.ts";
 
 const app = new Application();
 
