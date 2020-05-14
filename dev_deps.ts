@@ -1,4 +1,7 @@
-export { runIfMain, bench } from "https://deno.land/std@0.50.0/testing/bench.ts";
+export {
+  runIfMain,
+  bench,
+} from "https://deno.land/std@0.50.0/testing/bench.ts";
 export {
   assertEquals,
   assertNotEquals,

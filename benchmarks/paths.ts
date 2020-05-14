@@ -12,5 +12,5 @@ export default [
   "/doc/go_faq.html",
   "/doc/go1.html",
   "/info/:user/public",
-  "/info/:user/project/:project"
-]
+  "/info/:user/project/:project",
+];
