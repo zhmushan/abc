@@ -1,13 +1,11 @@
-export { runIfMain } from "https://deno.land/std@v0.50.0/testing/bench.ts";
+export { runIfMain } from "https://deno.land/std@0.50.0/testing/bench.ts";
 export {
   assertEquals,
   assertNotEquals,
   assertThrowsAsync,
   assertThrows,
   assert,
-} from "https://deno.land/std@v0.50.0/testing/asserts.ts";
+} from "https://deno.land/std@0.50.0/testing/asserts.ts";
 
-export { BufReader } from "https://deno.land/std@v0.50.0/io/bufio.ts";
-export {
-  TextProtoReader,
-} from "https://deno.land/std@v0.50.0/textproto/mod.ts";
+export { BufReader } from "https://deno.land/std@0.50.0/io/bufio.ts";
+export { TextProtoReader } from "https://deno.land/std@0.50.0/textproto/mod.ts";
