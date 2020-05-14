@@ -1,9 +1,5 @@
-// TODO: waiting for denoland/deno#4297
-// import type { Application } from "./app.ts";
-// import type { ServerRequest, Response } from "./deps.ts";
-
-import { Application } from "./app.ts";
-import { ServerRequest, Response } from "./deps.ts";
+import type { Application } from "./app.ts";
+import type { ServerRequest, Response } from "./deps.ts";
 
 import { Status, path, cookie } from "./deps.ts";
 import { NotFoundHandler } from "./app.ts";

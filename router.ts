@@ -1,9 +1,5 @@
-// TODO: waiting for denoland/deno#4297
-// import type { HandlerFunc } from "./types.ts";
-// import type { Context } from "./context.ts";
-
-import { HandlerFunc } from "./types.ts";
-import { Context } from "./context.ts";
+import type { HandlerFunc } from "./types.ts";
+import type { Context } from "./context.ts";
 
 import { Node } from "./node.ts";
 
