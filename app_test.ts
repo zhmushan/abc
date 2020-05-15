@@ -206,7 +206,7 @@ test("app use after router", async function (): Promise<void> {
     }
   );
 
-  await fetch(`${addr}/zhmushan`).then(resp => resp.text());
+  await fetch(`${addr}/zhmushan`).then((resp) => resp.text());
   assertEquals(preUname, undefined);
   assertEquals(useUname, "zhmushan");
   assertEquals(handlerUname, "zhmushan");
