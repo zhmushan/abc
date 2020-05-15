@@ -145,7 +145,7 @@ export class Application {
       for (const m of middleware) {
         h = m(h);
       }
-      return h(c);
+      return h(c) || handler(c);
     });
     return this;
   }
@@ -158,15 +158,13 @@ export class Application {
   }
 
   /** `static` registers a new route with path prefix to serve static files from the provided root directory. */
-  static(prefix: string, root: string): Application {
+  static(prefix: string, root: string, ...m: MiddlewareFunc[]): Application {
     const h: HandlerFunc = (c) => {
       const filepath: string = c.params.filepath;
       return c.file(path.join(root, filepath));
     };
-    if (prefix === "/") {
-      return this.get(`${prefix}*filepath`, h);
-    }
-    return this.get(`${prefix}/*filepath`, h);
+    prefix = prefix.replace(/(\/)$/, "");
+    return this.get(`${prefix}/*filepath`, h, ...m);
   }
 
   /** `file` registers a new route with path to serve a static file with optional route-level middleware. */
