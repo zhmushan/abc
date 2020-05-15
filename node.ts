@@ -29,10 +29,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// TODO: waiting for denoland/deno#4297
-// import type { HandlerFunc, Params } from "./types.ts";
-
-import { HandlerFunc, Params } from "./types.ts";
+import type { HandlerFunc, Params } from "./types.ts";
 
 export enum NodeType {
   Static,
@@ -256,10 +253,9 @@ export class Node {
           case "*":
             throw new Error(
               `only one wildcard per path segment is allowed, has: '${
-                path
-                  .slice(
-                    i,
-                  )
+                path.slice(
+                  i,
+                )
               }' in path '${fullPath}'`,
             );
           default:
@@ -374,7 +370,9 @@ export class Node {
     path: string,
   ): [HandlerFunc | undefined, Params | undefined, boolean] {
     let node: Node = this;
-    let handle: HandlerFunc | undefined, p: Params | undefined, tsr = false;
+    let handle: HandlerFunc | undefined,
+      p: Params | undefined,
+      tsr = false;
     // outer loop for walking the tree
     walk:
     while (true) {
