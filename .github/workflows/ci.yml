@@ -16,6 +16,9 @@ jobs:
       - run: deno fmt --check
       - run: deno test -A
 
+      - name: Benchmarks
+        run: deno run --allow-net ./benchmarks/app.ts
+
       - name: Release
         if: startsWith(github.ref, 'refs/tags/v') && github.repository == 'zhmushan/abc'
         uses: actions/create-release@latest
