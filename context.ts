@@ -9,6 +9,9 @@ import { Status, path, cookie } from "./deps.ts";
 import { NotFoundHandler } from "./app.ts";
 import { Header, MIME } from "./constants.ts";
 import { contentType } from "./util.ts";
+import { MultipartReader, scanUntilBoundary, FormFile } from "https://deno.land/std@v0.50.0/mime/multipart.ts";
+import { BufReader, ReadLineResult } from "https://deno.land/std@v0.50.0/io/bufio.ts";
+
 const { cwd, lstat, readFile, readAll } = Deno;
 
 const encoder = new TextEncoder();
@@ -16,6 +19,11 @@ const decoder = new TextDecoder();
 
 type Cookie = cookie.Cookie;
 type Cookies = cookie.Cookies;
+
+interface FieldChunkOffset {
+  start?: number;
+  end?: number;
+}
 
 export class Context {
   app: Application;
@@ -58,8 +66,96 @@ export class Context {
     }
   }
 
+
+  private parseFormData = async (reader: MultipartReader, array: Uint8Array) => {
+    const bufReader = new BufReader(new Deno.Buffer(array));
+
+    const dashBoundary = reader.dashBoundary;
+    const dashBoundaryString = decoder.decode(dashBoundary);
+
+    const dashBoundaryDash = reader.dashBoundaryDash;
+    const dashBoundaryDashString = decoder.decode(dashBoundaryDash);
+
+    let i: Uint8Array[] = [];
+    let valArray: Uint8Array[] = [];
+
+    while(true) {
+      const lr: ReadLineResult | null = await bufReader.readLine();
+
+      if (lr === null) {
+        break;
+      }
+
+      const line: string = decoder.decode(lr.line);
+
+      if (line !== dashBoundaryString && line !== dashBoundaryDashString) {
+        i = i.concat(lr.line);
+      } else {
+        const s = i.reduce((p, c) => p + c.byteLength, 0);
+
+        if (s !== 0) {
+          const t = i.reduce((p, c) => {
+            const n = new Uint8Array(p.length + c.length);
+            n.set(p);
+            n.set(c, p.length);
+            return n;
+          }, new Uint8Array(0));
+
+          valArray = valArray.concat(t);
+          i = [];
+        }
+      }
+    }
+
+    return valArray;
+  }
+
+  private parseToJson = (p: Uint8Array[]) => {
+    const r = /(?<=form-data\;\sname=").+/;
+    const t = p.reduce((p, c) => {
+      const line = decoder.decode(c);
+      const k = r.exec(line)?.[0];
+      const v = k?.split("\"");
+
+      if (!v) return p;
+
+      return {
+        ...p,
+        [v[0]]: v[1],
+      };
+    }, {});
+
+    return t;
+  }
+
+  private splitContentType = (c: string | null) => {
+    if (!c) return null
+    
+    const s = c.split('; boundary=');
+
+    return {
+      enc: s[0],
+      boundary: s[1]
+    }
+  };
+
   async body(): Promise<Record<string, unknown>> {
-    return JSON.parse(decoder.decode(await readAll(this.request.body)));
+    const ct = this.request.headers.get("content-type");    
+    const r = await readAll(this.request.body);
+    const d = decoder.decode(r);
+    const s = this.splitContentType(ct)
+
+    console.log(d)
+
+    if (!s) {
+      return JSON.parse(d);
+    } else {
+      const re = new RegExp(s.boundary);
+      const m = new MultipartReader(this.request.body, re.exec(d)?.[0] ?? "");
+      const result = await this.parseFormData(m, r);
+      const j = this.parseToJson(result);
+      return j;
+    }
   }
 
   string(v: string, code: Status = Status.OK): void {
