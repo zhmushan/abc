@@ -145,7 +145,7 @@ export class Application {
       for (const m of middleware) {
         h = m(h);
       }
-      return h(c) || handler(c);
+      return h(c);
     });
     return this;
   }
