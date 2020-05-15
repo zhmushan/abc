@@ -1,6 +1,4 @@
-// TODO: waiting for denoland/deno#4297
-// import type { HandlerFunc } from "./types.ts";
-import { HandlerFunc } from "./types.ts";
+import type { HandlerFunc } from "./types.ts";
 
 import { assertEquals, runIfMain } from "./dev_deps.ts";
 import { Status } from "./deps.ts";

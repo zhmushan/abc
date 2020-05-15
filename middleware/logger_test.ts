@@ -1,7 +1,4 @@
-// TODO: waiting for denoland/deno#4297
-// import type { Context } from "../context.ts";
-
-import { Context } from "../context.ts";
+import type { Context } from "../context.ts";
 
 import { assertEquals, assert, runIfMain } from "../dev_deps.ts";
 import { DefaultFormatter, logger } from "./logger.ts";
