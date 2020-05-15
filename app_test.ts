@@ -3,7 +3,7 @@ import type { HandlerFunc } from "./types.ts";
 import { assertEquals, runIfMain } from "./dev_deps.ts";
 import { Status } from "./deps.ts";
 import { createApplication } from "./test_util.ts";
-import { NotFoundHandler } from "./app.ts";
+import { NotFoundHandler } from "./util.ts";
 import {
   InternalServerErrorException,
   NotFoundException,
@@ -182,6 +182,34 @@ test("app query string", async function (): Promise<void> {
   const res = await fetch(`${addr}/qs?foo=bar`);
   assertEquals(res.status, Status.OK);
   assertEquals(await res.json(), { foo: "bar" });
+  await app.close();
+});
+
+test("app use after router", async function (): Promise<void> {
+  const app = createApplication();
+  let preUname: string | undefined,
+    useUname: string | undefined,
+    handlerUname: string | undefined;
+  app.get("/:uname", (c) => {
+    handlerUname = c.params.uname;
+  });
+  app.pre((next) =>
+    (c) => {
+      preUname = c.params.uname;
+      return next(c);
+    }
+  );
+  app.use((next) =>
+    (c) => {
+      useUname = c.params.uname;
+      return next(c);
+    }
+  );
+
+  await fetch(`${addr}/zhmushan`).then(resp => resp.text());
+  assertEquals(preUname, undefined);
+  assertEquals(useUname, "zhmushan");
+  assertEquals(handlerUname, "zhmushan");
   await app.close();
 });
 

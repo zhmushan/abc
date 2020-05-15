@@ -2,9 +2,8 @@ import type { Application } from "./app.ts";
 import type { ServerRequest, Response } from "./deps.ts";
 
 import { Status, path, cookie, MultipartReader } from "./deps.ts";
-import { NotFoundHandler } from "./app.ts";
 import { Header, MIME } from "./constants.ts";
-import { contentType } from "./util.ts";
+import { contentType, NotFoundHandler } from "./util.ts";
 
 const { cwd, lstat, readFile, readAll } = Deno;
 

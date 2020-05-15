@@ -8,13 +8,8 @@ import { Group } from "./group.ts";
 import {
   InternalServerErrorException,
   HttpException,
-  NotFoundException,
   createHttpExceptionBody,
 } from "./http_exception.ts";
-
-export function NotFoundHandler(): never {
-  throw new NotFoundException();
-}
 
 export function NotImplemented(): Error {
   return new Error("Not Implemented");
@@ -35,19 +30,32 @@ export class Application {
         r: req,
         app: this,
       });
-      let h = this.router.find(req.method, c) || NotFoundHandler;
+      let h: HandlerFunc;
 
-      for (let i = this.middleware.length - 1; i >= 0; --i) {
-        h = this.middleware[i](h);
-      }
-      for (let i = this.premiddleware.length - 1; i >= 0; --i) {
-        h = this.premiddleware[i](h);
+      if (this.premiddleware.length === 0) {
+        h = this.router.find(req.method, c);
+        h = this.#applyMiddleware(h, ...this.middleware);
+      } else {
+        h = (c) => {
+          h = this.router.find(req.method, c);
+          h = this.#applyMiddleware(h, ...this.middleware);
+          return h(c);
+        };
+        h = this.#applyMiddleware(h, ...this.premiddleware);
       }
 
       this.transformResult(c, h).then((): void => {
         req.respond(c.response).catch(() => {});
       });
     }
+  };
+
+  #applyMiddleware = (h: HandlerFunc, ...m: MiddlewareFunc[]): HandlerFunc => {
+    for (let i = m.length - 1; i >= 0; --i) {
+      h = m[i](h);
+    }
+
+    return h;
   };
 
   /** `start` starts an HTTP server. */

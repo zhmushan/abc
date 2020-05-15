@@ -2,6 +2,7 @@ import type { HandlerFunc } from "./types.ts";
 import type { Context } from "./context.ts";
 
 import { Node } from "./node.ts";
+import { NotFoundHandler } from "./util.ts";
 
 export class Router {
   trees: Record<string, Node> = {};
@@ -20,8 +21,9 @@ export class Router {
     root.addRoute(path, h);
   }
 
-  find(method: string, c: Context): HandlerFunc | undefined {
+  find(method: string, c: Context): HandlerFunc {
     const node = this.trees[method];
+    let h: HandlerFunc | undefined;
     if (node) {
       const [handle, params, _] = node.getValue(c.path);
       if (params) {
@@ -30,7 +32,11 @@ export class Router {
         }
       }
 
-      return handle;
+      if (handle) {
+        h = handle;
+      }
     }
+
+    return h ?? NotFoundHandler;
   }
 }

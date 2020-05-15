@@ -1,7 +1,7 @@
 import type { MiddlewareFunc, HandlerFunc } from "./types.ts";
 import type { Application } from "./app.ts";
 
-import { NotFoundHandler } from "./app.ts";
+import { NotFoundHandler } from "./util.ts";
 import { path } from "./deps.ts";
 
 export class Group {
