@@ -10,7 +10,10 @@ import { NotFoundHandler } from "./app.ts";
 import { Header, MIME } from "./constants.ts";
 import { contentType } from "./util.ts";
 import { MultipartReader } from "https://deno.land/std@v0.50.0/mime/multipart.ts";
-import { BufReader, ReadLineResult } from "https://deno.land/std@v0.50.0/io/bufio.ts";
+import {
+  BufReader,
+  ReadLineResult,
+} from "https://deno.land/std@v0.50.0/io/bufio.ts";
 
 const { cwd, lstat, readFile, readAll } = Deno;
 
@@ -61,8 +64,10 @@ export class Context {
     }
   }
 
-
-  private parseFormData = async (reader: MultipartReader, array: Uint8Array) => {
+  private parseFormData = async (
+    reader: MultipartReader,
+    array: Uint8Array,
+  ) => {
     const bufReader = new BufReader(new Deno.Buffer(array));
 
     const dashBoundary = reader.dashBoundary;
@@ -74,7 +79,7 @@ export class Context {
     let i: Uint8Array[] = [];
     let valArray: Uint8Array[] = [];
 
-    while(true) {
+    while (true) {
       const lr: ReadLineResult | null = await bufReader.readLine();
 
       if (lr === null) {
@@ -103,7 +108,7 @@ export class Context {
     }
 
     return valArray;
-  }
+  };
 
   private parseToJson = (p: Uint8Array[]) => {
     const r = /(?<=form-data\;\sname=").+/;
@@ -121,21 +126,21 @@ export class Context {
     }, {});
 
     return t;
-  }
+  };
 
   private splitContentType = (c: string | null) => {
-    if (!c) return undefined
-    
-    const s = c.split('; boundary=');
+    if (!c) return undefined;
+
+    const s = c.split("; boundary=");
 
     return {
       enc: s[0],
-      boundary: s[1]
-    }
+      boundary: s[1],
+    };
   };
 
   async body(): Promise<Record<string, unknown>> {
-    const ct = this.request.headers.get('content-type');
+    const ct = this.request.headers.get("content-type");
     const r = await readAll(this.request.body);
     const d = decoder.decode(r);
     const s = this.splitContentType(ct);
@@ -144,7 +149,7 @@ export class Context {
       return JSON.parse(d);
     } else {
       const re = new RegExp(s.boundary);
-      const m = new MultipartReader(this.request.body, re.exec(d)?.[0] ?? '');
+      const m = new MultipartReader(this.request.body, re.exec(d)?.[0] ?? "");
       const result = await this.parseFormData(m, r);
       const j = this.parseToJson(result);
       return j;
