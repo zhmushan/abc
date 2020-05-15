@@ -1,15 +1,10 @@
 import type { Application } from "./app.ts";
 import type { ServerRequest, Response } from "./deps.ts";
 
-import { Status, path, cookie } from "./deps.ts";
+import { Status, path, cookie, MultipartReader } from "./deps.ts";
 import { NotFoundHandler } from "./app.ts";
 import { Header, MIME } from "./constants.ts";
 import { contentType } from "./util.ts";
-import { MultipartReader } from "https://deno.land/std@v0.50.0/mime/multipart.ts";
-import {
-  BufReader,
-  ReadLineResult,
-} from "https://deno.land/std@v0.50.0/io/bufio.ts";
 
 const { cwd, lstat, readFile, readAll } = Deno;
 

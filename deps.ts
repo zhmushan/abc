@@ -17,3 +17,6 @@ export {
   encode,
   decode,
 } from "https://deno.land/std@v0.50.0/encoding/utf8.ts";
+export {
+  MultipartReader,
+} from "https://deno.land/std@v0.50.0/mime/multipart.ts";
