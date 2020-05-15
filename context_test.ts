@@ -1,8 +1,8 @@
 import { assertEquals, runIfMain } from "./dev_deps.ts";
 import { Status } from "./deps.ts";
-import { createMockRequest } from "./test_util.ts";
+import { createMockRequest, createMockBodyReader } from "./test_util.ts";
 import { Context } from "./context.ts";
-import { Header } from "./constants.ts";
+import { Header, MIME } from "./constants.ts";
 const { test } = Deno;
 
 const options = { app: undefined!, r: createMockRequest() };
@@ -42,18 +42,27 @@ test("context json resp", function (): void {
   }
 });
 
-test("context form-data resp", function (): void {
-  const multipartBody =
-    `------WebKitFormBoundary4HgCv3WldXbH8Iob\r\nContent-Disposition: form-data; name="foo"\r\n\r\nbar\r\n------WebKitFormBoundary4HgCv3WldXbH8Iob\r\nContent-Disposition: form-data; name="foo1"\r\n\r\nbar1\r\n------WebKitFormBoundarydhjlUACPFfTN8Fay\r\nContent-Disposition: form-data; name="foo2"\r\n\r\nbar2\r\n------WebKitFormBoundary4HgCv3WldXbH8Iob--`;
+test("context form-data resp", async function (): Promise<void> {
+  const options = {
+    app: undefined!,
+    r: createMockRequest({
+      body: createMockBodyReader(
+        `------WebKitFormBoundary4HgCv3WldXbH8Iob\r\nContent-Disposition: form-data; name="foo"\r\n\r\nbar\r\n------WebKitFormBoundary4HgCv3WldXbH8Iob\r\nContent-Disposition: form-data; name="foo1"\r\n\r\nbar1\r\n------WebKitFormBoundarydhjlUACPFfTN8Fay\r\nContent-Disposition: form-data; name="foo2"\r\n\r\nbar2\r\n------WebKitFormBoundary4HgCv3WldXbH8Iob--`,
+      ),
+      headers: new Headers({
+        [Header.ContentType]: MIME.MultipartForm +
+          "; boundary=----WebKitFormBoundary4HgCv3WldXbH8Iob",
+      }),
+    }),
+  };
   const c = new Context(options);
+  const body = await c.body();
 
-  c.json(multipartBody);
-  assertEquals(c.response.status, 200);
-  assertEquals(
-    c.response.body,
-    new TextEncoder().encode(multipartBody),
-  );
-  assertEquals(c.response.headers!.get("Content-Type"), "application/json");
+  assertEquals(body, {
+    foo: "bar",
+    foo1: "bar1",
+    foo2: "bar2",
+  });
 });
 
 test("context html resp", function (): void {
