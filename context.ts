@@ -115,7 +115,7 @@ export class Context {
     const t = p.reduce((p, c) => {
       const line = decoder.decode(c);
       const k = r.exec(line)?.[0];
-      const v = k?.split("\"");
+      const v = k?.split('\"');
 
       if (!v) return p;
 
@@ -140,18 +140,16 @@ export class Context {
   };
 
   async body(): Promise<Record<string, unknown>> {
-    const ct = this.request.headers.get("content-type");    
+    const ct = this.request.headers.get('content-type');
     const r = await readAll(this.request.body);
     const d = decoder.decode(r);
-    const s = this.splitContentType(ct)
+    const s = this.splitContentType(ct);
 
-    console.log(d)
-
-    if (!s) {
+    if (!s?.boundary) {
       return JSON.parse(d);
     } else {
       const re = new RegExp(s.boundary);
-      const m = new MultipartReader(this.request.body, re.exec(d)?.[0] ?? "");
+      const m = new MultipartReader(this.request.body, re.exec(d)?.[0] ?? '');
       const result = await this.parseFormData(m, r);
       const j = this.parseToJson(result);
       return j;

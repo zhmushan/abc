@@ -6,7 +6,7 @@ app.get("/hello", c => {
     return "Hello, abc!";
 })
 
-app.post("/hello2", async c =>  {
+app.post("/hello2", async c => {
     return await c.body()
 })
 
