@@ -34,6 +34,9 @@ test("exmaples cat app", async function () {
     const createdCat = await fetch(addr, {
       method: "POST",
       body: JSON.stringify(cat),
+      headers: {
+        "content-type": "application/json",
+      },
     }).then((resp) => resp.json());
     const foundCats = await fetch(addr).then((resp) => resp.json());
     const foundCat = await fetch(`${addr}/1`).then((resp) => resp.json());
