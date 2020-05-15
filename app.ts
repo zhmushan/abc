@@ -144,8 +144,11 @@ export class Application {
       let h = handler;
       for (const m of middleware) {
         h = m(h);
+        if (h(c) === void 0) {
+          h = handler;
+        }
       }
-      return h(c) || handler(c);
+      return h(c);
     });
     return this;
   }
