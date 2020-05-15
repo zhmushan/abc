@@ -129,7 +129,7 @@ export class Context {
   }
 
   private splitContentType = (c: string | null) => {
-    if (!c) return null
+    if (!c) return undefined
     
     const s = c.split('; boundary=');
 
