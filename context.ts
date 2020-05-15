@@ -1,10 +1,11 @@
 import type { Application } from "./app.ts";
 import type { ServerRequest, Response } from "./deps.ts";
 
-import { Status, path, cookie } from "./deps.ts";
+import { Status, path, cookie, MultipartReader } from "./deps.ts";
 import { NotFoundHandler } from "./app.ts";
 import { Header, MIME } from "./constants.ts";
 import { contentType } from "./util.ts";
+
 const { cwd, lstat, readFile, readAll } = Deno;
 
 const encoder = new TextEncoder();
@@ -55,7 +56,34 @@ export class Context {
   }
 
   async body(): Promise<Record<string, unknown>> {
-    return JSON.parse(decoder.decode(await readAll(this.request.body)));
+    let data: Record<string, unknown> = {};
+    const contentType = this.request.headers.get(Header.ContentType);
+
+    if (contentType) {
+      if (contentType.includes(MIME.ApplicationJSON)) {
+        data = JSON.parse(decoder.decode(await readAll(this.request.body)));
+      } else if (contentType.includes(MIME.ApplicationForm)) {
+        for (
+          const [k, v] of new URLSearchParams(
+            decoder.decode(await readAll(this.request.body)),
+          )
+        ) {
+          data[k] = v;
+        }
+      } else if (contentType.includes(MIME.MultipartForm)) {
+        const match = contentType.match(/boundary=([^\s]+)/);
+        const boundary = match ? match[1] : undefined;
+        if (boundary) {
+          const mr = new MultipartReader(this.request.body, boundary);
+          const form = await mr.readForm();
+          for (const [k, v] of form.entries()) {
+            data[k] = v;
+          }
+        }
+      }
+    }
+
+    return data;
   }
 
   string(v: string, code: Status = Status.OK): void {
