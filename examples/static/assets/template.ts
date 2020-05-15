@@ -1,1 +1,1 @@
-export const template="abc"
+export const template = "abc";
