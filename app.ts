@@ -44,7 +44,7 @@ export class Application {
         h = this.#applyMiddleware(h, ...this.premiddleware);
       }
 
-      this.transformResult(c, h).then((): void => {
+      this.#transformResult(c, h).then((): void => {
         req.respond(c.response).catch(() => {});
       });
     }
@@ -180,7 +180,7 @@ export class Application {
     return this.get(path, (c) => c.file(filepath), ...m);
   }
 
-  private async transformResult(c: Context, h: HandlerFunc): Promise<void> {
+  #transformResult = async (c: Context, h: HandlerFunc): Promise<void> => {
     let result: unknown;
     try {
       result = await h(c);
@@ -212,5 +212,5 @@ export class Application {
           c.string(String(result));
       }
     }
-  }
+  };
 }

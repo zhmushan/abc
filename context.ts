@@ -48,11 +48,11 @@ export class Context {
     this.url = new URL(this.request.url, `http://0.0.0.0`);
   }
 
-  private writeContentType(v: string): void {
+  #writeContentType = (v: string): void => {
     if (!this.response.headers.has(Header.ContentType)) {
       this.response.headers.set(Header.ContentType, v);
     }
-  }
+  };
 
   async body(): Promise<Record<string, unknown>> {
     let data: Record<string, unknown> = {};
@@ -86,13 +86,13 @@ export class Context {
   }
 
   string(v: string, code: Status = Status.OK): void {
-    this.writeContentType(MIME.TextPlain);
+    this.#writeContentType(MIME.TextPlain);
     this.response.status = code;
     this.response.body = encoder.encode(v);
   }
 
   json(v: Record<string, any> | string, code: Status = Status.OK): void {
-    this.writeContentType(MIME.ApplicationJSON);
+    this.#writeContentType(MIME.ApplicationJSON);
     this.response.status = code;
     this.response.body = encoder.encode(
       typeof v === "object" ? JSON.stringify(v) : v,
@@ -101,7 +101,7 @@ export class Context {
 
   /** Sends an HTTP response with status code. */
   html(v: string, code: Status = Status.OK): void {
-    this.writeContentType(MIME.TextHTML);
+    this.#writeContentType(MIME.TextHTML);
     this.response.status = code;
     this.response.body = encoder.encode(v);
   }
@@ -134,7 +134,7 @@ export class Context {
     code: Status = Status.OK,
   ): void {
     if (contentType) {
-      this.writeContentType(contentType);
+      this.#writeContentType(contentType);
     }
     this.response.status = code;
     this.response.body = b;
