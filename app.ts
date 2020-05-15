@@ -159,6 +159,7 @@ export class Application {
 
   /** `static` registers a new route with path prefix to serve static files from the provided root directory. */
   static(prefix: string, root: string): Application {
+    //@ts-ignore
     const h: HandlerFunc = (c) => {
       const filepath: string = c.params.filepath;
       return c.file(path.join(root, filepath));
@@ -171,6 +172,7 @@ export class Application {
 
   /** `file` registers a new route with path to serve a static file with optional route-level middleware. */
   file(path: string, filepath: string, ...m: MiddlewareFunc[]): Application {
+    //@ts-ignore
     return this.get(path, (c) => c.file(filepath), ...m);
   }
 
