@@ -60,96 +60,35 @@ export class Context {
     }
   }
 
-  private parseFormData = async (
-    reader: MultipartReader,
-    array: Uint8Array,
-  ) => {
-    const bufReader = new BufReader(new Deno.Buffer(array));
+  async body(): Promise<Record<string, unknown>> {
+    let data: Record<string, unknown> = {};
+    const contentType = this.request.headers.get(Header.ContentType);
 
-    const dashBoundary = reader.dashBoundary;
-    const dashBoundaryString = decoder.decode(dashBoundary);
-
-    const dashBoundaryDash = reader.dashBoundaryDash;
-    const dashBoundaryDashString = decoder.decode(dashBoundaryDash);
-
-    let i: Uint8Array[] = [];
-    let valArray: Uint8Array[] = [];
-
-    while (true) {
-      const lr: ReadLineResult | null = await bufReader.readLine();
-
-      if (lr === null) {
-        break;
-      }
-
-      const line: string = decoder.decode(lr.line);
-
-      if (line !== dashBoundaryString && line !== dashBoundaryDashString) {
-        i = i.concat(lr.line);
-      } else {
-        const s = i.reduce((p, c) => p + c.byteLength, 0);
-
-        if (s !== 0) {
-          const t = i.reduce((p, c) => {
-            const n = new Uint8Array(p.length + c.length);
-            n.set(p);
-            n.set(c, p.length);
-            return n;
-          }, new Uint8Array(0));
-
-          valArray = valArray.concat(t);
-          i = [];
+    if (contentType) {
+      if (contentType.includes(MIME.ApplicationJSON)) {
+        data = JSON.parse(decoder.decode(await readAll(this.request.body)));
+      } else if (contentType.includes(MIME.ApplicationForm)) {
+        for (
+          const [k, v] of new URLSearchParams(
+            decoder.decode(await readAll(this.request.body)),
+          )
+        ) {
+          data[k] = v;
+        }
+      } else if (contentType.includes(MIME.MultipartForm)) {
+        const match = contentType.match(/boundary=([^\s]+)/);
+        const boundary = match ? match[1] : undefined;
+        if (boundary) {
+          const mr = new MultipartReader(this.request.body, boundary);
+          const form = await mr.readForm();
+          for (const [k, v] of form.entries()) {
+            data[k] = v;
+          }
         }
       }
     }
 
-    return valArray;
-  };
-
-  private parseToJson = (p: Uint8Array[]) => {
-    const r = /(?<=form-data\;\sname=").+/;
-    const t = p.reduce((p, c) => {
-      const line = decoder.decode(c);
-      const k = r.exec(line)?.[0];
-      const v = k?.split('\"');
-
-      if (!v) return p;
-
-      return {
-        ...p,
-        [v[0]]: v[1],
-      };
-    }, {});
-
-    return t;
-  };
-
-  private splitContentType = (c: string | null) => {
-    if (!c) return undefined;
-
-    const s = c.split("; boundary=");
-
-    return {
-      enc: s[0],
-      boundary: s[1],
-    };
-  };
-
-  async body(): Promise<Record<string, unknown>> {
-    const ct = this.request.headers.get("content-type");
-    const r = await readAll(this.request.body);
-    const d = decoder.decode(r);
-    const s = this.splitContentType(ct);
-
-    if (!s?.boundary) {
-      return JSON.parse(d);
-    } else {
-      const re = new RegExp(s.boundary);
-      const m = new MultipartReader(this.request.body, re.exec(d)?.[0] ?? "");
-      const result = await this.parseFormData(m, r);
-      const j = this.parseToJson(result);
-      return j;
-    }
+    return data;
   }
 
   string(v: string, code: Status = Status.OK): void {
