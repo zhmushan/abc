@@ -342,6 +342,9 @@ export class Node {
         child.nType = NodeType.CatchAll;
         child.maxParams = 1;
 
+        if (node.maxParams < 1) {
+          node.maxParams = 1;
+        }
         node.children = [child];
         node.indices = path[i];
         node = child;

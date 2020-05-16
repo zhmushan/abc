@@ -332,6 +332,13 @@ test("node catch all conflict root", function (): void {
   ]);
 });
 
+test("node catch all max params", function (): void {
+  const n = new Node();
+  n.addRoute("/*filename", undefined!);
+
+  checkMaxParams(n);
+});
+
 test("node double wildcard", function (): void {
   const errMsg = "only one wildcard per path segment is allowed";
   const routes = ["/:foo:bar", "/:foo:bar/", "/:foo*bar"];
