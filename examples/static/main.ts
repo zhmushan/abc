@@ -3,8 +3,8 @@ import { cors } from "../../middleware/cors.ts";
 
 const app = new Application();
 const port = 8080;
-const wrapper = (data: any,type:string|undefined): Uint8Array => {
-  let string = "Wrapper Function changes this data";
+const wrapper = (data: any, type: string | undefined): Uint8Array => {
+  let string = "Wrapper Function has changed data";
   console.log(type);
   return new TextEncoder().encode(string);
 };
