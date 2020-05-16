@@ -322,6 +322,8 @@ test("node catch all conflict", function (): void {
     { path: "/src/*filepath/x", conflict: true },
     { path: "/src2/", conflict: false },
     { path: "/src2/*filepath/x", conflict: true },
+    { path: "/src3/*filepath", conflict: false },
+    { path: "/src3/*filepath/x", conflict: true },
   ]);
 });
 

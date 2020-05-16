@@ -41,10 +41,11 @@ export enum NodeType {
 export function countParams(path: string): number {
   let n = 0;
   for (let i = 0; i < path.length; ++i) {
-    if (path[i] !== ":" && path[i] !== "*") {
-      continue;
+    switch (path[i]) {
+      case ":":
+      case "*":
+        n++;
     }
-    ++n;
   }
   if (n >= 255) {
     return 255;
@@ -127,6 +128,7 @@ export class Node {
             if (
               path.length >= node.path.length &&
               node.path === path.slice(0, node.path.length) &&
+              node.nType != NodeType.CatchAll &&
               // Check for longer wildcard, e.g. :name and :names
               (node.path.length >= path.length ||
                 path[node.path.length] === "/")
@@ -134,11 +136,9 @@ export class Node {
               continue walk;
             } else {
               // Wildcard conflict
-              let pathSeg = "";
-              if (node.nType === NodeType.CatchAll) {
-                pathSeg = path;
-              } else {
-                pathSeg = path.split("/", 1)[0];
+              let pathSeg = path;
+              if (node.nType !== NodeType.CatchAll) {
+                pathSeg = pathSeg.split("/", 1)[0];
               }
               const prefix = fullPath.slice(0, fullPath.indexOf(pathSeg)) +
                 node.path;
@@ -182,15 +182,13 @@ export class Node {
           }
           node.insertChild(numParams, path, fullPath, handle);
           return;
-        } else if (i === path.length) {
-          // Make node a (in-path) leaf
-          if (node.handle) {
-            throw new Error(
-              `a handle is already registered for path '${fullPath}'`,
-            );
-          }
-          node.handle = handle;
         }
+        if (node.handle) {
+          throw new Error(
+            `a handle is already registered for path '${fullPath}'`,
+          );
+        }
+        node.handle = handle;
         return;
       }
     } else {
@@ -202,19 +200,15 @@ export class Node {
 
   // increments priority of the given child and reorders if necessary
   incrementChildPrio(pos: number): number {
-    ++this.children[pos].priority;
-    const prio = this.children[pos].priority;
+    const cs = this.children;
+    ++cs[pos].priority;
+    const prio = cs[pos].priority;
 
     // adjust position (move to front)
     let newPos = pos;
-    while (newPos > 0 && this.children[newPos - 1].priority < prio) {
+    for (; newPos > 0 && cs[newPos - 1].priority < prio; --newPos) {
       // swap node positions
-      [this.children[newPos - 1], this.children[newPos]] = [
-        this.children[newPos],
-        this.children[newPos - 1],
-      ];
-
-      --newPos;
+      [cs[newPos - 1], cs[newPos]] = [cs[newPos], cs[newPos - 1]];
     }
 
     // build new index char string
