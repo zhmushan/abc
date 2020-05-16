@@ -203,7 +203,11 @@ export class Application {
     if (c.response.status == undefined) {
       switch (typeof result) {
         case "object":
-          c.json(result as Record<string, unknown>);
+          if (result instanceof Uint8Array) {
+            c.blob(result);
+          } else {
+            c.json(result as Record<string, unknown>);
+          }
           break;
         case "string":
           /^\s*</.test(result) ? c.html(result) : c.string(result);
