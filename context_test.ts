@@ -141,7 +141,7 @@ test("context application/x-www-form-urlencoded req", async function (): Promise
   assertEquals(body, { foo: "bar" });
 });
 
-test("context application/json", async function (): Promise<void> {
+test("context application/json req", async function (): Promise<void> {
   const options = {
     app: undefined!,
     r: createMockRequest({
@@ -154,6 +154,21 @@ test("context application/json", async function (): Promise<void> {
   const body = await c.body();
 
   assertEquals(body, { foo: "bar" });
+});
+
+test("context text/plain req", async function (): Promise<void> {
+  const options = {
+    app: undefined!,
+    r: createMockRequest({
+      body: createMockBodyReader(`{"foo":"bar"}`),
+      headers: new Headers({ [Header.ContentType]: MIME.TextPlain }),
+    }),
+  };
+
+  const c = new Context(options);
+  const body = await c.body();
+
+  assertEquals(body, `{"foo":"bar"}`);
 });
 
 runIfMain(import.meta);

@@ -1,6 +1,6 @@
 import type { HandlerFunc } from "../../mod.ts";
 
-import { Cat } from "./cat.ts";
+import { Cat, CatDTO } from "./cat.ts";
 
 const cats: Cat[] = [];
 
@@ -10,10 +10,7 @@ export const findOne: HandlerFunc = (c) => {
   return cats.find((cat) => cat.id.toString() === id);
 };
 export const create: HandlerFunc = async (c) => {
-  const { name, age } = (await c.body()) as {
-    name: string;
-    age: number;
-  };
+  const { name, age } = await c.body<CatDTO>();
   const cat = new Cat({ name, age });
   cats.push(cat);
   return cat;

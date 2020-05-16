@@ -1,14 +1,18 @@
 import type { Application } from "./app.ts";
 import type { ServerRequest, Response } from "./deps.ts";
 
-import { Status, path, cookie, MultipartReader } from "./deps.ts";
+import {
+  Status,
+  path,
+  cookie,
+  MultipartReader,
+  encode,
+  decode,
+} from "./deps.ts";
 import { Header, MIME } from "./constants.ts";
 import { contentType, NotFoundHandler } from "./util.ts";
 
 const { cwd, lstat, readFile, readAll } = Deno;
-
-const encoder = new TextEncoder();
-const decoder = new TextDecoder();
 
 type Cookie = cookie.Cookie;
 type Cookies = cookie.Cookies;
@@ -54,56 +58,61 @@ export class Context {
     }
   };
 
-  async body(): Promise<Record<string, unknown>> {
-    let data: Record<string, unknown> = {};
+  async body<T extends unknown>(): Promise<T> {
     const contentType = this.request.headers.get(Header.ContentType);
-
-    if (contentType) {
-      if (contentType.includes(MIME.ApplicationJSON)) {
-        data = JSON.parse(decoder.decode(await readAll(this.request.body)));
-      } else if (contentType.includes(MIME.ApplicationForm)) {
-        for (
-          const [k, v] of new URLSearchParams(
-            decoder.decode(await readAll(this.request.body)),
-          )
-        ) {
-          data[k] = v;
-        }
-      } else if (contentType.includes(MIME.MultipartForm)) {
-        const match = contentType.match(/boundary=([^\s]+)/);
-        const boundary = match ? match[1] : undefined;
-        if (boundary) {
-          const mr = new MultipartReader(this.request.body, boundary);
-          const form = await mr.readForm();
-          for (const [k, v] of form.entries()) {
+    walk: {
+      let data: Record<string, unknown> = {};
+      if (contentType) {
+        if (contentType.includes(MIME.ApplicationJSON)) {
+          data = JSON.parse(decode(await readAll(this.request.body)));
+        } else if (contentType.includes(MIME.ApplicationForm)) {
+          for (
+            const [k, v] of new URLSearchParams(
+              decode(await readAll(this.request.body)),
+            )
+          ) {
             data[k] = v;
           }
+        } else if (contentType.includes(MIME.MultipartForm)) {
+          const match = contentType.match(/boundary=([^\s]+)/);
+          const boundary = match ? match[1] : undefined;
+          if (boundary) {
+            const mr = new MultipartReader(this.request.body, boundary);
+            const form = await mr.readForm();
+            for (const [k, v] of form.entries()) {
+              data[k] = v;
+            }
+          }
+        } else {
+          break walk;
         }
+      } else {
+        break walk;
       }
+
+      return data as T;
     }
 
-    return data;
+    return decode(await readAll(this.request.body)) as T;
   }
 
   string(v: string, code: Status = Status.OK): void {
     this.#writeContentType(MIME.TextPlain);
     this.response.status = code;
-    this.response.body = encoder.encode(v);
+    this.response.body = encode(v);
   }
 
   json(v: Record<string, any> | string, code: Status = Status.OK): void {
     this.#writeContentType(MIME.ApplicationJSON);
     this.response.status = code;
-    this.response.body = encoder.encode(
-      typeof v === "object" ? JSON.stringify(v) : v,
-    );
+    this.response.body = encode(typeof v === "object" ? JSON.stringify(v) : v);
   }
 
   /** Sends an HTTP response with status code. */
   html(v: string, code: Status = Status.OK): void {
     this.#writeContentType(MIME.TextHTML);
     this.response.status = code;
-    this.response.body = encoder.encode(v);
+    this.response.body = encode(v);
   }
 
   /** Sends an HTTP blob response with status code. */
