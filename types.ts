@@ -12,7 +12,7 @@ export type Renderer = {
 export type HandlerFunc = (c: Context) => Promise<unknown> | unknown;
 
 /* `MiddlewareFunc` defines a function to process middleware. */
-export type MiddlewareFunc = (h: HandlerFunc) => HandlerFunc;
+export type MiddlewareFunc = (next: HandlerFunc) => HandlerFunc;
 
 export type Param = {
   key: string;
