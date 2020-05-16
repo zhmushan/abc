@@ -171,4 +171,22 @@ test("context text/plain req", async function (): Promise<void> {
   assertEquals(body, `{"foo":"bar"}`);
 });
 
+test("context custom", function (): void {
+  class CustomContext extends Context {
+    constructor(c: Context) {
+      super(c);
+    }
+
+    hello(): string {
+      return "hello";
+    }
+  }
+
+  const options = { app: undefined!, r: createMockRequest() };
+  const c: Context = new CustomContext(new Context(options));
+  const cc = c.customContext;
+
+  assertEquals(cc.hello(), "hello");
+});
+
 runIfMain(import.meta);

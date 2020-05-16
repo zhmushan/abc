@@ -1,6 +1,7 @@
 ## Getting Started
 
 - [Getting Started](./getting_started.md)
+- [Context](./context.md)
 - [Router](./router.md)
 - [Middleware](./middleware.md)
 - [Static Files](./static_files.md)

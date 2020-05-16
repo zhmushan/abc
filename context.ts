@@ -1,5 +1,6 @@
 import type { Application } from "./app.ts";
 import type { ServerRequest, Response } from "./deps.ts";
+import type { ContextOptions } from "./types.ts";
 
 import {
   Status,
@@ -18,12 +19,13 @@ type Cookie = cookie.Cookie;
 type Cookies = cookie.Cookies;
 
 export class Context {
-  app: Application;
-  request: ServerRequest;
-  url: URL;
+  app!: Application;
+  request!: ServerRequest;
+  url!: URL;
 
   response: Response & { headers: Headers } = { headers: new Headers() };
   params: Record<string, string> = {};
+  customContext: any;
 
   get cookies(): Cookies {
     return cookie.getCookies(this.request);
@@ -45,7 +47,16 @@ export class Context {
     return params;
   }
 
-  constructor(opts: { app: Application; r: ServerRequest }) {
+  constructor(opts: ContextOptions);
+  constructor(c: Context);
+  constructor(optionsOrContext: ContextOptions | Context) {
+    if (optionsOrContext instanceof Context) {
+      Object.assign(this, optionsOrContext);
+      this.customContext = this;
+      return;
+    }
+
+    const opts = optionsOrContext;
     this.app = opts.app;
     this.request = opts.r;
 

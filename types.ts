@@ -1,4 +1,6 @@
 import type { Context } from "./context.ts";
+import type { Application } from "./app.ts";
+import type { ServerRequest } from "./deps.ts";
 
 /** `Renderer` is the interface that wraps the `render` function.  */
 export type Renderer = {
@@ -18,3 +20,5 @@ export type Param = {
 };
 
 export type Params = Param[];
+
+export type ContextOptions = { app: Application; r: ServerRequest };
