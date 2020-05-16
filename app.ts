@@ -1,4 +1,9 @@
-import type { MiddlewareFunc, Renderer, HandlerFunc } from "./types.ts";
+import type {
+  MiddlewareFunc,
+  Renderer,
+  HandlerFunc,
+  Wrapper,
+} from "./types.ts";
 import type { Server, HTTPOptions, HTTPSOptions } from "./deps.ts";
 
 import { serve, serveTLS, path } from "./deps.ts";
@@ -166,18 +171,28 @@ export class Application {
   }
 
   /** `static` registers a new route with path prefix to serve static files from the provided root directory. */
-  static(prefix: string, root: string, ...m: MiddlewareFunc[]): Application {
+  static(
+    prefix: string,
+    root: string,
+    wrapper?: Wrapper,
+    ...m: MiddlewareFunc[]
+  ): Application {
     const h: HandlerFunc = (c) => {
       const filepath: string = c.params.filepath;
-      return c.file(path.join(root, filepath));
+      return c.file(path.join(root, filepath), wrapper);
     };
     prefix = prefix.replace(/(\/)$/, "");
     return this.get(`${prefix}/*filepath`, h, ...m);
   }
 
   /** `file` registers a new route with path to serve a static file with optional route-level middleware. */
-  file(path: string, filepath: string, ...m: MiddlewareFunc[]): Application {
-    return this.get(path, (c) => c.file(filepath), ...m);
+  file(
+    path: string,
+    filepath: string,
+    wrapper?: Wrapper,
+    ...m: MiddlewareFunc[]
+  ): Application {
+    return this.get(path, (c) => c.file(filepath, wrapper), ...m);
   }
 
   #transformResult = async (c: Context, h: HandlerFunc): Promise<void> => {

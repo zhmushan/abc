@@ -3,6 +3,11 @@ import { cors } from "../../middleware/cors.ts";
 
 const app = new Application();
 const port = 8080;
-app.static("/", "./assets", cors()).start({ port });
+const wrapper = (data: any): Uint8Array => {
+  let string = "Wrapper Function changes this data";
+  return new TextEncoder().encode(string);
+};
+app.static("", "./assets", wrapper, cors()).start({ port });
+// app.file("read.txt","./assets/read.txt").start({port})
 
-console.log(`server listening on http://localhost:${port}`);
+console.log(`server listening on http://localhost:${port}/read.txt`);

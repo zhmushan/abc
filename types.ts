@@ -22,3 +22,7 @@ export type Param = {
 export type Params = Param[];
 
 export type ContextOptions = { app: Application; r: ServerRequest };
+
+export type Wrapper = (
+  data: Uint8Array | Deno.Reader,
+) => Uint8Array | Deno.Reader;

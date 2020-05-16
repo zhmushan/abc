@@ -1,4 +1,4 @@
-import type { MiddlewareFunc, HandlerFunc } from "./types.ts";
+import type { MiddlewareFunc, HandlerFunc, Wrapper } from "./types.ts";
 import type { Application } from "./app.ts";
 
 import { NotFoundHandler } from "./util.ts";
@@ -95,13 +95,18 @@ export class Group {
     return this;
   }
 
-  static(prefix: string, root: string): Group {
-    this.app.static(path.join(this.prefix, prefix), root);
+  static(prefix: string, root: string, wrapper?: Wrapper): Group {
+    this.app.static(path.join(this.prefix, prefix), root, wrapper);
     return this;
   }
 
-  file(p: string, filepath: string, ...m: MiddlewareFunc[]): Group {
-    this.app.file(path.join(this.prefix, p), filepath, ...m);
+  file(
+    p: string,
+    filepath: string,
+    wrapper?: Wrapper,
+    ...m: MiddlewareFunc[]
+  ): Group {
+    this.app.file(path.join(this.prefix, p), filepath, wrapper, ...m);
     return this;
   }
 

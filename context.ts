@@ -1,6 +1,6 @@
 import type { Application } from "./app.ts";
 import type { ServerRequest, Response } from "./deps.ts";
-import type { ContextOptions } from "./types.ts";
+import type { ContextOptions, Wrapper } from "./types.ts";
 
 import {
   Status,
@@ -160,7 +160,7 @@ export class Context {
     this.response.body = b;
   }
 
-  async file(filepath: string): Promise<void> {
+  async file(filepath: string, wrapper?: Wrapper): Promise<void> {
     filepath = path.join(cwd(), filepath);
     try {
       const fileinfo = await lstat(filepath);
@@ -170,7 +170,10 @@ export class Context {
       ) {
         filepath = path.join(filepath, "index.html");
       }
-      this.blob(await readFile(filepath), contentType(filepath));
+      let data;
+      if (wrapper === void 0) data = await readFile(filepath);
+      else data = wrapper(await readFile(filepath));
+      this.blob(data, contentType(filepath));
     } catch {
       NotFoundHandler();
     }

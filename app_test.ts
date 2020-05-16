@@ -17,6 +17,13 @@ const addr = `http://localhost:8081`;
 test("app static", async function (): Promise<void> {
   const app = createApplication();
   app.static("/examples", "./examples/template");
+  app.static(
+    "/static/assets",
+    "./examples/static/assets",
+    (data: any): Uint8Array => {
+      return new TextEncoder().encode(`wrapper`);
+    },
+  );
 
   let res = await fetch(`${addr}/examples/main.ts`);
   assertEquals(res.status, Status.OK);
@@ -38,6 +45,20 @@ test("app static", async function (): Promise<void> {
     await res.text(),
     JSON.stringify(new NotFoundException().response),
   );
+
+  res = await fetch(`${addr}/static/assets/read.txt`);
+  assertEquals(res.status, Status.OK);
+  assertEquals(
+    await res.text(),
+    `wrapper`,
+  );
+
+  res = await fetch(`${addr}/static/assets/template.ts`);
+  assertEquals(res.status, Status.OK);
+  assertEquals(
+    await res.text(),
+    `wrapper`,
+  );
   await app.close();
 });
 
@@ -45,6 +66,9 @@ test("app file", async function (): Promise<void> {
   const app = createApplication();
   app.file("ci", "./.github/workflows/ci.yml");
   app.file("fileempty", "./fileempty");
+  app.file("wrapper", "./.github/workflows/ci.yml", (data: any): Uint8Array => {
+    return new TextEncoder().encode(`wrapper`);
+  });
 
   let res = await fetch(`${addr}/ci`);
   assertEquals(res.status, Status.OK);
@@ -58,6 +82,13 @@ test("app file", async function (): Promise<void> {
   assertEquals(
     await res.text(),
     JSON.stringify(new NotFoundException().response),
+  );
+
+  res = await fetch(`${addr}/wrapper`);
+  assertEquals(res.status, Status.OK);
+  assertEquals(
+    await res.text(),
+    `wrapper`,
   );
   await app.close();
 });
