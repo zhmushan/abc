@@ -14,11 +14,4 @@ export type HandlerFunc = (c: Context) => Promise<unknown> | unknown;
 /* `MiddlewareFunc` defines a function to process middleware. */
 export type MiddlewareFunc = (next: HandlerFunc) => HandlerFunc;
 
-export type Param = {
-  key: string;
-  value: string;
-};
-
-export type Params = Param[];
-
 export type ContextOptions = { app: Application; r: ServerRequest };

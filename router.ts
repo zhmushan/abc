@@ -1,7 +1,7 @@
 import type { HandlerFunc } from "./types.ts";
 import type { Context } from "./context.ts";
 
-import { Node } from "./node.ts";
+import { Node } from "./deps.ts";
 import { NotFoundHandler } from "./util.ts";
 
 export class Router {
@@ -33,7 +33,7 @@ export class Router {
       }
 
       if (handle) {
-        h = handle;
+        h = handle as HandlerFunc;
       }
     }
 
