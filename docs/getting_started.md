@@ -8,7 +8,7 @@ import { Application } from "https://deno.land/x/abc/mod.ts";
 const app = new Application();
 
 app
-  .get("/hello", c => {
+  .get("/hello", (c) => {
     return "Hello, Abc!";
   })
   .start({ port: 8080 });
@@ -35,7 +35,7 @@ app
 ## Path Parameters
 
 ```ts
-const findOne: HandlerFunc = c => {
+const findOne: HandlerFunc = (c) => {
   // User ID from path `users/:id`
   const { id } = c.params;
   return id;
@@ -50,7 +50,7 @@ Browse to http://localhost:8080/users/zhmushan and you should see "zhmushan" on 
 `/list?page=0&size=5`
 
 ```ts
-const paging: HandlerFunc = c => {
+const paging: HandlerFunc = (c) => {
   // Get page and size from the query string
   const { page, size } = c.queryParams;
   return `page: ${page}, size: ${size}`;
@@ -71,7 +71,7 @@ app.static("/sample", "./folder/sample");
 ## Middleware
 
 ```ts
-const track: MiddlewareFunc = next => c => {
+const track: MiddlewareFunc = (next) => (c) => {
   console.log(`request to ${c.path}`);
   return next(c);
 };
@@ -86,7 +86,7 @@ g.use(track);
 // Route level middleware
 app.get(
   "/users",
-  c => {
+  (c) => {
     return "/users";
   },
   track
