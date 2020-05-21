@@ -17,9 +17,9 @@
 ## Spanish Guides
 
 - [Inicio Rapido](./es/getting_started.md)
-- [Contexto](./es/context.md)
+- [Contextos](./es/context.md)
 - [Rutas](./es/router.md)
-- [Middleware](./es/middleware.md)
+- [Middlewares](./es/middleware.md)
 - [Archivos Estaticos](./es/static_files.md)
 - [Filtro de Excepciones](./es/exception_filter.md)
 

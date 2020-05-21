@@ -1,6 +1,6 @@
 ## Usando Contexto
 
-### crea contexto personalizado heredando de la clase *Context*
+### crea contextos personalizados heredando de la clase *Context*
 
 ```ts
 // Declara un nuevo *CustomContext*
