@@ -50,7 +50,7 @@ test("exmaples cat app", async function () {
 });
 
 test("exmaples jsx", async function () {
-  await startServer(path.join(dir, "./jsx/main.tsx"));
+  await startServer(path.join(dir, "./jsx/main.jsx"));
   try {
     const text = await fetch(addr).then((resp) => resp.text());
     assertEquals(text, `<h1 data-reactroot="">Hello</h1>`);

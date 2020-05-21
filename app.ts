@@ -185,7 +185,7 @@ export class Application {
     try {
       result = await h(c);
     } catch (e) {
-      console.error(e);
+      // console.log(e)
       if (e instanceof HttpException) {
         result = c.json(
           typeof e.response === "object"
@@ -194,6 +194,7 @@ export class Application {
           e.status,
         );
       } else {
+        console.log(e);
         e = new InternalServerErrorException(e.message);
         result = c.json(
           (e as InternalServerErrorException).response,
