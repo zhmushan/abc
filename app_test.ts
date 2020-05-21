@@ -4,10 +4,7 @@ import { assertEquals, runIfMain } from "./dev_deps.ts";
 import { Status } from "./deps.ts";
 import { createApplication } from "./test_util.ts";
 import { NotFoundHandler } from "./util.ts";
-import {
-  InternalServerErrorException,
-  NotFoundException,
-} from "./http_exception.ts";
+import { NotFoundException } from "./http_exception.ts";
 import { HttpMethod } from "./constants.ts";
 const { readFile, test } = Deno;
 
@@ -103,15 +100,15 @@ test("app middleware error", async function (): Promise<void> {
   const errMsg = "err";
   app.get("/middlewareerror", NotFoundHandler, function (): HandlerFunc {
     return function (): HandlerFunc {
-      throw new Error(errMsg);
+      throw new NotFoundException(errMsg);
     };
   });
 
   const res = await fetch(`${addr}/middlewareerror`);
-  assertEquals(res.status, Status.InternalServerError);
+  assertEquals(res.status, Status.NotFound);
   assertEquals(
     await res.text(),
-    JSON.stringify(new InternalServerErrorException(errMsg).response),
+    JSON.stringify(new NotFoundException(errMsg).response),
   );
   await app.close();
 });
