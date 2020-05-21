@@ -5,12 +5,15 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        deno: [1.0.0, 1.0.1]
 
     steps:
       - uses: actions/checkout@v2
       - uses: denolib/setup-deno@master
         with:
-          deno-version: 1.0.0
+          deno-version: ${{ matrix.deno }}
 
       - run: deno --version
       - run: deno fmt --check
