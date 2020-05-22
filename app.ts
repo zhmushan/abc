@@ -185,7 +185,6 @@ export class Application {
     try {
       result = await h(c);
     } catch (e) {
-      // console.log(e)
       if (e instanceof HttpException) {
         result = c.json(
           typeof e.response === "object"
