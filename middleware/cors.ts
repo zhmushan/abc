@@ -80,7 +80,7 @@ export function cors(config: CORSConfig = DefaultCORSConfig): MiddlewareFunc {
       );
       if (config.allowHeaders && config.allowHeaders.length != 0) {
         resp.headers.set(
-          Header.AccessControlRequestHeaders,
+          Header.AccessControlAllowHeaders,
           config.allowHeaders.join(","),
         );
       } else {
