@@ -17,7 +17,7 @@
 ## Hello World
 
 ```ts
-import { Application } from "https://deno.land/x/abc@v1.0.0-rc6/mod.ts";
+import { Application } from "https://deno.land/x/abc@v1.0.0-rc7/mod.ts";
 
 const app = new Application();
 
