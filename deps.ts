@@ -20,4 +20,4 @@ export {
 export {
   MultipartReader,
 } from "https://deno.land/std@0.53.0/mime/multipart.ts";
-export { Node } from "https://deno.land/x/router@v0.1.0/mod.ts";
+export { Node } from "https://deno.land/x/router@v1.0.0-rc1/mod.ts";

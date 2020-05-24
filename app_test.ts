@@ -23,6 +23,12 @@ test("app static", async function (): Promise<void> {
   );
 
   res = await fetch(`${addr}/examples/`);
+  assertEquals(res.status, Status.NotFound);
+  assertEquals(
+    await res.text(),
+    JSON.stringify(new NotFoundException().response),
+  );
+  res = await fetch(`${addr}/examples/index.html`);
   assertEquals(res.status, Status.OK);
   assertEquals(
     await res.text(),

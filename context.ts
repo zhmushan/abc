@@ -163,13 +163,6 @@ export class Context {
   async file(filepath: string): Promise<void> {
     filepath = path.join(cwd(), filepath);
     try {
-      const fileinfo = await lstat(filepath);
-      if (
-        fileinfo.isDirectory &&
-        (await lstat(filepath + "index.html")).isFile
-      ) {
-        filepath = path.join(filepath, "index.html");
-      }
       this.blob(await readFile(filepath), contentType(filepath));
     } catch {
       NotFoundHandler();

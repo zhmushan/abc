@@ -167,12 +167,14 @@ export class Application {
 
   /** `static` registers a new route with path prefix to serve static files from the provided root directory. */
   static(prefix: string, root: string, ...m: MiddlewareFunc[]): Application {
+    if (prefix[prefix.length - 1] === "/") {
+      prefix = prefix.slice(0, prefix.length - 1);
+    }
     const h: HandlerFunc = (c) => {
-      const filepath: string = c.params.filepath;
+      const filepath = c.path.substr(prefix.length);
       return c.file(path.join(root, filepath));
     };
-    prefix = prefix.replace(/(\/)$/, "");
-    return this.get(`${prefix}/*filepath`, h, ...m);
+    return this.get(`${prefix}/*`, h, ...m);
   }
 
   /** `file` registers a new route with path to serve a static file with optional route-level middleware. */

@@ -18,17 +18,17 @@ export class Router {
       this.trees[method] = root;
     }
 
-    root.addRoute(path, h);
+    root.add(path, h);
   }
 
   find(method: string, c: Context): HandlerFunc {
     const node = this.trees[method];
     let h: HandlerFunc | undefined;
     if (node) {
-      const [handle, params, _] = node.getValue(c.path);
+      const [handle, params] = node.find(c.path);
       if (params) {
-        for (const p of params) {
-          c.params[p.key] = p.value;
+        for (const [k, v] of params) {
+          c.params[k] = v;
         }
       }
 
