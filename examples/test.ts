@@ -5,7 +5,7 @@ import {
 } from "../vendor/https/deno.land/std/testing/asserts.ts";
 import { BufReader } from "../vendor/https/deno.land/std/io/bufio.ts";
 import { TextProtoReader } from "../vendor/https/deno.land/std/textproto/mod.ts";
-const { run, test, execPath, chdir } = Deno;
+const { run, test, execPath, chdir, cwd } = Deno;
 
 const dir = join(import.meta.url, "..");
 const addr = "http://localhost:8080";
@@ -60,7 +60,7 @@ test("exmaples jsx", async function () {
 });
 
 test("exmaples template", async function () {
-  chdir(join(dir, "./template").replace("file:\\", ""));
+  chdir(join(cwd(), "./examples/template"));
   await startServer(join(dir, "./template/main.ts"));
   try {
     const text = await fetch(addr).then((resp) => resp.text());
