@@ -1,4 +1,8 @@
-import { bench, runIfMain, assertEquals } from "../dev_deps.ts";
+import { assertEquals } from "../vendor/https/deno.land/std/testing/asserts.ts";
+import {
+  bench,
+  runBenchmarks,
+} from "../vendor/https/deno.land/std/testing/bench.ts";
 import { Application } from "../mod.ts";
 import paths from "./paths.ts";
 
@@ -27,6 +31,6 @@ bench({
   },
 });
 
-runIfMain(import.meta).finally(() => {
+runBenchmarks().finally(() => {
   app.close();
 });

@@ -1,6 +1,9 @@
 import type { Context } from "../context.ts";
 
-import { assertEquals, assert, runIfMain } from "../dev_deps.ts";
+import {
+  assertEquals,
+  assert,
+} from "../vendor/https/deno.land/std/testing/asserts.ts";
 import { DefaultFormatter, logger } from "./logger.ts";
 const { test, makeTempFileSync, readFileSync, openSync, removeSync } = Deno;
 
@@ -46,5 +49,3 @@ test("middleware logger custom formatter", function (): void {
   f.close();
   removeSync(fpath);
 });
-
-runIfMain(import.meta);

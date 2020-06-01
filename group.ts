@@ -1,8 +1,8 @@
 import type { MiddlewareFunc, HandlerFunc } from "./types.ts";
 import type { Application } from "./app.ts";
 
+import { join } from "./vendor/https/deno.land/std/path/mod.ts";
 import { NotFoundHandler } from "./util.ts";
-import { path } from "./deps.ts";
 
 export class Group {
   prefix: string;
@@ -96,12 +96,12 @@ export class Group {
   }
 
   static(prefix: string, root: string): Group {
-    this.app.static(path.join(this.prefix, prefix), root);
+    this.app.static(join(this.prefix, prefix), root);
     return this;
   }
 
   file(p: string, filepath: string, ...m: MiddlewareFunc[]): Group {
-    this.app.file(path.join(this.prefix, p), filepath, ...m);
+    this.app.file(join(this.prefix, p), filepath, ...m);
     return this;
   }
 

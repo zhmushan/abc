@@ -1,4 +1,4 @@
-import { Status } from "./deps.ts";
+import { Status } from "./vendor/https/deno.land/std/http/http_status.ts";
 
 export interface HttpExceptionBody {
   message?: string;

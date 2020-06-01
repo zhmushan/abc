@@ -1,22 +1,26 @@
+import type {
+  ServerRequest,
+  Response,
+} from "./vendor/https/deno.land/std/http/server.ts";
+import type {
+  Cookie,
+  Cookies,
+} from "./vendor/https/deno.land/std/http/cookie.ts";
 import type { Application } from "./app.ts";
-import type { ServerRequest, Response } from "./deps.ts";
 import type { ContextOptions } from "./types.ts";
 
+import { Status } from "./vendor/https/deno.land/std/http/http_status.ts";
+import { join } from "./vendor/https/deno.land/std/path/mod.ts";
 import {
-  Status,
-  path,
-  cookie,
-  MultipartReader,
-  encode,
-  decode,
-} from "./deps.ts";
+  setCookie,
+  getCookies,
+} from "./vendor/https/deno.land/std/http/cookie.ts";
+import { MultipartReader } from "./vendor/https/deno.land/std/mime/multipart.ts";
+import { encode, decode } from "./vendor/https/deno.land/std/encoding/utf8.ts";
 import { Header, MIME } from "./constants.ts";
 import { contentType, NotFoundHandler } from "./util.ts";
 
-const { cwd, lstat, readFile, readAll } = Deno;
-
-type Cookie = cookie.Cookie;
-type Cookies = cookie.Cookies;
+const { cwd, readFile, readAll } = Deno;
 
 export class Context {
   app!: Application;
@@ -28,7 +32,7 @@ export class Context {
   customContext: any;
 
   get cookies(): Cookies {
-    return cookie.getCookies(this.request);
+    return getCookies(this.request);
   }
 
   get path(): string {
@@ -161,7 +165,7 @@ export class Context {
   }
 
   async file(filepath: string): Promise<void> {
-    filepath = path.join(cwd(), filepath);
+    filepath = join(cwd(), filepath);
     try {
       this.blob(await readFile(filepath), contentType(filepath));
     } catch {
@@ -171,7 +175,7 @@ export class Context {
 
   /** append a `Set-Cookie` header to the response */
   setCookie(c: Cookie): void {
-    cookie.setCookie(this.response, c);
+    setCookie(this.response, c);
   }
 
   /** Redirects a response to a specific URL. the `code` defaults to `302` if omitted */

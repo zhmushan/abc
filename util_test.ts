@@ -1,4 +1,4 @@
-import { assertEquals } from "./dev_deps.ts";
+import { assertEquals } from "./vendor/https/deno.land/std/testing/asserts.ts";
 import { contentType } from "./util.ts";
 import { MIME } from "./constants.ts";
 const { test } = Deno;

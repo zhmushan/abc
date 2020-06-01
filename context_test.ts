@@ -1,5 +1,5 @@
-import { assertEquals, runIfMain } from "./dev_deps.ts";
-import { Status } from "./deps.ts";
+import { assertEquals } from "./vendor/https/deno.land/std/testing/asserts.ts";
+import { Status } from "./vendor/https/deno.land/std/http/http_status.ts";
 import { createMockRequest, createMockBodyReader } from "./test_util.ts";
 import { Context } from "./context.ts";
 import { Header, MIME } from "./constants.ts";
@@ -188,5 +188,3 @@ test("context custom", function (): void {
 
   assertEquals(cc.hello(), "hello");
 });
-
-runIfMain(import.meta);

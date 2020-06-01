@@ -1,7 +1,12 @@
 import type { MiddlewareFunc, Renderer, HandlerFunc } from "./types.ts";
-import type { Server, HTTPOptions, HTTPSOptions } from "./deps.ts";
+import type {
+  Server,
+  HTTPOptions,
+  HTTPSOptions,
+} from "./vendor/https/deno.land/std/http/server.ts";
 
-import { serve, serveTLS, path } from "./deps.ts";
+import { serve, serveTLS } from "./vendor/https/deno.land/std/http/server.ts";
+import { join } from "./vendor/https/deno.land/std/path/mod.ts";
 import { Context } from "./context.ts";
 import { Router } from "./router.ts";
 import { Group } from "./group.ts";
@@ -172,7 +177,7 @@ export class Application {
     }
     const h: HandlerFunc = (c) => {
       const filepath = c.path.substr(prefix.length);
-      return c.file(path.join(root, filepath));
+      return c.file(join(root, filepath));
     };
     return this.get(`${prefix}/*`, h, ...m);
   }

@@ -1,13 +1,13 @@
-import { path } from "../deps.ts";
+import { join } from "../vendor/https/deno.land/std/path/mod.ts";
 import {
   assert,
   assertEquals,
-  TextProtoReader,
-  BufReader,
-} from "../dev_deps.ts";
-const { run, test, execPath } = Deno;
+} from "../vendor/https/deno.land/std/testing/asserts.ts";
+import { BufReader } from "../vendor/https/deno.land/std/io/bufio.ts";
+import { TextProtoReader } from "../vendor/https/deno.land/std/textproto/mod.ts";
+const { run, test, execPath, chdir } = Deno;
 
-const dir = path.join(import.meta.url, "..");
+const dir = join(import.meta.url, "..");
 const addr = "http://localhost:8080";
 let server: Deno.Process;
 
@@ -28,7 +28,7 @@ function killServer(): void {
 }
 
 test("exmaples cat app", async function () {
-  await startServer(path.join(dir, "./cat_app/main.ts"));
+  await startServer(join(dir, "./cat_app/main.ts"));
   try {
     const cat = { name: "zhmushan", age: 18 };
     const createdCat = await fetch(addr, {
@@ -50,7 +50,7 @@ test("exmaples cat app", async function () {
 });
 
 test("exmaples jsx", async function () {
-  await startServer(path.join(dir, "./jsx/main.jsx"));
+  await startServer(join(dir, "./jsx/main.jsx"));
   try {
     const text = await fetch(addr).then((resp) => resp.text());
     assertEquals(text, `<h1 data-reactroot="">Hello</h1>`);
@@ -59,12 +59,13 @@ test("exmaples jsx", async function () {
   }
 });
 
-// test("exmaples template", async function () {
-//   await startServer(path.join(dir, "./template/main.ts"));
-//   try {
-//     const text = await fetch(addr).then((resp) => resp.text());
-//     assert(text.includes("hello, zhmushan!"));
-//   } finally {
-//     killServer();
-//   }
-// });
+test("exmaples template", async function () {
+  chdir(join(dir, "./template").replace("file:\\", ""));
+  await startServer(join(dir, "./template/main.ts"));
+  try {
+    const text = await fetch(addr).then((resp) => resp.text());
+    assert(text.includes("hello, zhmushan!"));
+  } finally {
+    killServer();
+  }
+});

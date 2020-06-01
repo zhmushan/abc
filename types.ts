@@ -1,6 +1,6 @@
+import type { ServerRequest } from "./vendor/https/deno.land/std/http/server.ts";
 import type { Context } from "./context.ts";
 import type { Application } from "./app.ts";
-import type { ServerRequest } from "./deps.ts";
 
 /** `Renderer` is the interface that wraps the `render` function.  */
 export type Renderer = {

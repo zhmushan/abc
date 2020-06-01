@@ -1,7 +1,7 @@
 import type { HandlerFunc } from "./types.ts";
 
-import { assertEquals, runIfMain } from "./dev_deps.ts";
-import { Status } from "./deps.ts";
+import { assertEquals } from "./vendor/https/deno.land/std/testing/asserts.ts";
+import { Status } from "./vendor/https/deno.land/std/http/http_status.ts";
 import { createApplication } from "./test_util.ts";
 import { NotFoundHandler } from "./util.ts";
 import { NotFoundException } from "./http_exception.ts";
@@ -215,5 +215,3 @@ test("app use after router", async function (): Promise<void> {
   assertEquals(handlerUname, "zhmushan");
   await app.close();
 });
-
-runIfMain(import.meta);

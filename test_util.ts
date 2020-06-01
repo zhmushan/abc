@@ -1,6 +1,6 @@
-import type { ServerRequest } from "./deps.ts";
+import type { ServerRequest } from "./vendor/https/deno.land/std/http/server.ts";
 
-import { encode } from "./deps.ts";
+import { encode } from "./vendor/https/deno.land/std/encoding/utf8.ts";
 import { Application } from "./app.ts";
 
 export function createApplication(): Application {

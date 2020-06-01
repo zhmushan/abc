@@ -1,9 +1,9 @@
 import type { MiddlewareFunc, HandlerFunc } from "../types.ts";
 import type { Skipper } from "./skipper.ts";
 
+import { Status } from "../vendor/https/deno.land/std/http/http_status.ts";
 import { DefaultSkipper } from "./skipper.ts";
 import { HttpMethod, Header } from "../constants.ts";
-import { Status } from "../deps.ts";
 
 export const DefaultCORSConfig: CORSConfig = {
   skipper: DefaultSkipper,

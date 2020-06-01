@@ -1,8 +1,8 @@
 import type { HandlerFunc } from "./types.ts";
 import type { Context } from "./context.ts";
 
-import { Node } from "./deps.ts";
-import { NotFoundHandler } from "./util.ts";
+import { Node } from "./vendor/https/deno.land/x/router/mod.ts";
+import { NotFoundHandler, hasTrailingSlash } from "./util.ts";
 
 export class Router {
   trees: Record<string, Node> = {};
@@ -10,6 +10,10 @@ export class Router {
   add(method: string, path: string, h: HandlerFunc): void {
     if (path[0] !== "/") {
       path = `/${path}`;
+    }
+
+    if (hasTrailingSlash(path)) {
+      path = path.slice(0, path.length - 1);
     }
 
     let root = this.trees[method];
@@ -23,9 +27,13 @@ export class Router {
 
   find(method: string, c: Context): HandlerFunc {
     const node = this.trees[method];
+    let path = c.path;
+    if (hasTrailingSlash(path)) {
+      path = path.slice(0, path.length - 1);
+    }
     let h: HandlerFunc | undefined;
     if (node) {
-      const [handle, params] = node.find(c.path);
+      const [handle, params] = node.find(path);
       if (params) {
         for (const [k, v] of params) {
           c.params[k] = v;

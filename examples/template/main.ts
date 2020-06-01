@@ -1,5 +1,5 @@
 import { Application } from "../../mod.ts";
-import { renderFile } from "https://deno.land/x/dejs/mod.ts";
+import { renderFile } from "../../vendor/https/deno.land/x/dejs/mod.ts";
 
 const app = new Application();
 

@@ -1,0 +1,39 @@
+{
+  "modules": [
+    {
+      "protocol": "https",
+      "path": "deno.land/std",
+      "version": "0.54.0",
+      "files": [
+        "/encoding/utf8.ts",
+        "/http/cookie.ts",
+        "/http/http_status.ts",
+        "/http/server.ts",
+        "/io/bufio.ts",
+        "/mime/multipart.ts",
+        "/path/mod.ts",
+        "/testing/asserts.ts",
+        "/testing/bench.ts",
+        "/textproto/mod.ts",
+        "/ws/mod.ts"
+      ]
+    },
+    {
+      "protocol": "https",
+      "path": "deno.land/x/dejs",
+      "version": "master",
+      "files": [
+        "/mod.ts"
+      ]
+    },
+    {
+      "protocol": "https",
+      "path": "deno.land/x/router",
+      "version": "v1.0.0-rc2",
+      "files": [
+        "/mod.ts"
+      ]
+    }
+  ],
+  "aliases": {}
+}

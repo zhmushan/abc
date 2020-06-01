@@ -1,7 +1,7 @@
 import type { MiddlewareFunc, HandlerFunc } from "./types.ts";
 
-import { assertEquals, runIfMain } from "./dev_deps.ts";
-import { Status } from "./deps.ts";
+import { assertEquals } from "./vendor/https/deno.land/std/testing/asserts.ts";
+import { Status } from "./vendor/https/deno.land/std/http/http_status.ts";
 import { createApplication } from "./test_util.ts";
 const { test } = Deno;
 
@@ -36,5 +36,3 @@ test("group middleware", async function (): Promise<void> {
   assertEquals(await res.text(), "");
   await app.close();
 });
-
-runIfMain(import.meta);
