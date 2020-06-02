@@ -1,13 +1,33 @@
 import { join } from "../vendor/https/deno.land/std/path/mod.ts";
-const { readDir, cwd } = Deno;
+const { readDir, run, execPath } = Deno;
 
-const vendorPath = join(cwd(), "vendor");
+const files: string[] = [];
+const dirs = ["vendor", "benchmarks", "examples"];
 
-await resolveDir(vendorPath);
+for (const i of dirs) {
+  await resolveDir(i);
+}
 
-export async function resolveDir(p: string): Promise<void> {
+const processes: Promise<any>[] = [];
+
+for (const i of files) {
+  processes.push(
+    run({
+      cmd: [execPath(), "cache", i],
+      stdout: "piped",
+    }).output(),
+  );
+}
+
+await Promise.all(processes);
+
+async function resolveDir(p: string): Promise<void> {
   for await (const entry of readDir(p)) {
     const np = join(p, entry.name);
-    entry.isDirectory ? await resolveDir(np) : await import(`file:///${np}`);
+    if (entry.isDirectory) {
+      await resolveDir(np);
+    } else if (/\.[j|t]sx?$/.test(np)) {
+      files.push(np);
+    }
   }
 }
