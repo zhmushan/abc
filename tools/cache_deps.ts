@@ -1,9 +1,9 @@
 import { join } from "../vendor/https/deno.land/std/path/mod.ts";
-const { readDir, cwd, run, execPath } = Deno;
+const { readDir, run, execPath } = Deno;
 
 const files: string[] = [];
 
-await resolveDir(cwd());
+await resolveDir(".");
 
 const processes: Promise<any>[] = [];
 
