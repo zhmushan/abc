@@ -67,5 +67,6 @@ test("exmaples template", async function () {
     assert(text.includes("hello, zhmushan!"));
   } finally {
     killServer();
+    chdir("../../");
   }
 });
