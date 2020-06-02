@@ -14,6 +14,7 @@ jobs:
 
       - run: deno --version
       - run: deno fmt --check
+      - run: deno run --allow-read --allow-net ./tools/pre_cache_deps.ts
       - run: deno test -A
 
       - name: Benchmarks
