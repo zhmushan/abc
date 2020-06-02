@@ -3,7 +3,7 @@ const { readDir, run, execPath } = Deno;
 
 const files: string[] = [];
 
-await resolveDir(".");
+await resolveDir("./");
 
 const processes: Promise<any>[] = [];
 
