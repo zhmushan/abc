@@ -59,13 +59,14 @@ test("exmaples jsx", async function () {
   }
 });
 
-// test("exmaples template", async function () {
-//   chdir(join(cwd(), "./examples/template"));
-//   await startServer(join(dir, "./template/main.ts"));
-//   try {
-//     const text = await fetch(addr).then((resp) => resp.text());
-//     assert(text.includes("hello, zhmushan!"));
-//   } finally {
-//     killServer();
-//   }
-// });
+test("exmaples template", async function () {
+  chdir(join(cwd(), "./examples/template"));
+  await startServer(join(dir, "./template/main.ts"));
+  try {
+    const text = await fetch(addr).then((resp) => resp.text());
+    assert(text.includes("hello, zhmushan!"));
+  } finally {
+    killServer();
+    chdir("../../");
+  }
+});
