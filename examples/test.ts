@@ -9,7 +9,7 @@ const { run, test, execPath, chdir, cwd } = Deno;
 
 const dir = join(import.meta.url, "..");
 const addr = "http://localhost:8080";
-let server: Deno.Process;
+let server: Deno.Process<Deno.RunOptions & { stdout: "piped" }>;
 
 async function startServer(fpath: string): Promise<void> {
   server = run({
@@ -17,6 +17,7 @@ async function startServer(fpath: string): Promise<void> {
     stdout: "piped",
   });
   assert(server.stdout != null);
+
   const r = new TextProtoReader(new BufReader(server.stdout));
   const s = await r.readLine();
   assert(s !== null && s.includes("server listening"));
