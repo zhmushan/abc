@@ -1,6 +1,7 @@
 import type { HandlerFunc } from "../../mod.ts";
+import { CatDTO } from "./cat.ts";
 
-import { Cat, CatDTO } from "./cat.ts";
+import { Cat } from "./cat.ts";
 
 const cats: Cat[] = [];
 

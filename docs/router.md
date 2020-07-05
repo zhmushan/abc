@@ -1,26 +1,50 @@
 ## Router
 
-The router based on [radix tree](https://en.wikipedia.org/wiki/Radix_tree), making route lookup really fast.
+The router module based on [zhmushan/router](https://github.com/zhmushan/router).
 
-## Path Parameters
+We will always match according to the rules of **Static > Param > Any**. For static routes, we always match strictly equal strings.
 
+**_Pattern: /\* ,/user/:name, /user/zhmushan_**
+
+|      path       |     route      |
+| :-------------: | :------------: |
+|    /zhmushan    |      /\*       |
+| /users/zhmushan |      /\*       |
+| /user/zhmushan  | /user/zhmushan |
+|   /user/other   |  /user/:name   |
+
+### Basic route
+
+```ts
+import { Application } from "https://deno.land/x/abc/mod.ts";
+
+const app = new Application();
+
+app.get("/user/:name", (c) => {
+  const { name } = c.params;
+  return `Hello ${name}!`;
+});
 ```
-Pattern: /user/:name
 
-/user/my              match
-/user/you             match
-/user/my/profile      no match
-/user/                no match
+### Group route
+
+```ts
+// user_group.ts
+import type { Group } from "https://deno.land/x/abc/mod.ts";
+
+export default function (g: Group) {
+  g.get("/:name", (c) => {
+    const { name } = c.params;
+    return `Hello ${name}!`;
+  });
+}
 ```
 
-**Note**: You can not register the patterns `/user/new` and `/user/:name` for the same request method at the same time. The routing of different request methods is independent from each other.
+```ts
+import { Application } from "https://deno.land/x/abc/mod.ts";
+import userGroup from "./user_group.ts";
 
-## Catch All Parameters
+const app = new Application();
 
-```
-Pattern: /src/*filepath
-
-/src/                   match
-/src/somefile           match
-/src/subdir/somefile    match
+userGroup(app.group("user"));
 ```

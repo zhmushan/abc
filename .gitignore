@@ -1,6 +1,7 @@
 /types
 .DS_Store
 /.vscode
+/.idea
 node_modules
 /package*.json
 /deno.d.ts
