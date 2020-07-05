@@ -10,14 +10,14 @@
 
 #### Quick links
 
-- [API Reference](https://doc.deno.land/https/deno.land/x/abc/mod.ts)
-- [Guides](https://deno.land/x/abc/docs/table_of_contents.md)
+- [API Reference](https://doc.deno.land/https/deno.land/x/abc@v1/mod.ts)
+- [Guides](https://deno.land/x/abc@v1/docs/table_of_contents.md)
 - [Examples](./examples)
 
 ## Hello World
 
 ```ts
-import { Application } from "https://deno.land/x/abc@v1.0.0-rc10/mod.ts";
+import { Application } from "https://deno.land/x/abc@v1/mod.ts";
 
 const app = new Application();
 
