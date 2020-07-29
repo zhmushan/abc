@@ -29,8 +29,9 @@ export class Application {
 
   #process: Promise<void> | undefined;
 
-  #start = async (): Promise<void> => {
-    for await (const req of this.server!) {
+  #start = async (s: Server): Promise<void> => {
+    this.server = s;
+    for await (const req of this.server) {
       const c = new Context({
         r: req,
         app: this,
@@ -65,14 +66,12 @@ export class Application {
 
   /** `start` starts an HTTP server. */
   start(sc: HTTPOptions): void {
-    this.server = serve(sc);
-    this.#process = this.#start();
+    this.#process = this.#start(serve(sc));
   }
 
-  /** `start` starts an HTTPS server. */
+  /** `startTLS` starts an HTTPS server. */
   startTLS(sc: HTTPSOptions): void {
-    this.server = serveTLS(sc);
-    this.#process = this.#start();
+    this.#process = this.#start(serveTLS(sc));
   }
 
   async close(): Promise<void> {
