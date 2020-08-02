@@ -1,4 +1,4 @@
-## CORS
+## Session
 
 Serverside sessions are used to store values across multiple requests without the end-user accessing it.
 

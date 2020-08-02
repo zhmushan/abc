@@ -87,7 +87,9 @@ export class SessionMemoryStore {
   }
 
   public setValue(sessionID: string, key: string, value: any) {
+    if (this.sessionExists(sessionID)) {
     this.sessions[sessionID][key] = value;
+    }
   }
 
   public getValue(sessionID: string, key: string): any {
