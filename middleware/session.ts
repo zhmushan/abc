@@ -1,7 +1,10 @@
 import type { HandlerFunc, MiddlewareFunc, Context } from "../mod.ts";
+import type { Skipper } from "./skipper.ts";
+import { DefaultSkipper } from "./skipper.ts";
 
 export const DefaultSessionConfig: SessionConfig = {
   name: "abc.session",
+  skipper: DefaultSkipper,
 };
 
 export function session(
@@ -10,8 +13,13 @@ export function session(
   const store = new SessionMemoryStore();
   return (next: HandlerFunc): HandlerFunc => {
     const sessionKey = config.name || "abc.session";
+    const skipper = config.skipper || DefaultSkipper;
 
     return (c: Context) => {
+      if (skipper(c)) {
+        return next(c);
+      }
+
       const sid = c.cookies[sessionKey];
       if (sid === undefined || !store.sessionExists(sid)) {
         c.session = new Session(store);
@@ -102,6 +110,7 @@ export class SessionMemoryStore {
 
 export interface SessionConfig {
   name?: string;
+  skipper?: Skipper;
 }
 
 export interface Sessions {
