@@ -12,7 +12,7 @@
 
 - [API Reference](https://doc.deno.land/https/deno.land/x/abc@v1/mod.ts)
 - [Guides](https://deno.land/x/abc@v1/docs/table_of_contents.md)
-- [Examples](./examples)
+- [Examples](https://deno.land/x/abc@v1/examples)
 
 ## Hello World
 
