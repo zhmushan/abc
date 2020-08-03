@@ -11,5 +11,6 @@
 
 - [Logger](./logger.md)
 - [CORS](./cors.md)
+- [Session](./session.md)
 
 [Style Guide](./style_guide.md)
