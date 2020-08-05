@@ -10,14 +10,16 @@
 
 #### Quick links
 
-- [API Reference](https://doc.deno.land/https/deno.land/x/abc@v1/mod.ts)
-- [Guides](https://deno.land/x/abc@v1/docs/table_of_contents.md)
-- [Examples](https://deno.land/x/abc@v1/examples)
+- [API Reference](https://doc.deno.land/https/deno.land/x/abc@v1.0.2/mod.ts)
+- [Guides](https://deno.land/x/abc@v1.0.2/docs/table_of_contents.md)
+- [Examples](https://deno.land/x/abc@v1.0.2/examples)
 
 ## Hello World
 
 ```ts
-import { Application } from "https://deno.land/x/abc@v1/mod.ts";
+import { Application } from "https://denolib.com/zhmushan/abc@v1/mod.ts";
+// OR
+// import { Application } from "https://deno.land/x/abc@v1.0.2/mod.ts";
 
 const app = new Application();
 

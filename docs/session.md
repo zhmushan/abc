@@ -5,8 +5,8 @@ Serverside sessions are used to store values across multiple requests without th
 ### Usage
 
 ```ts
-import { Application } from "https://deno.land/x/abc@v1/mod.ts";
-import { session } from "https://deno.land/x/abc@v1/middleware/session.ts";
+import { Application } from "https://denolib.com/zhmushan/abc@v1/mod.ts";
+import { session } from "https://denolib.com/zhmushan/abc@v1/middleware/session.ts";
 
 const app = new Application();
 app.use(session());

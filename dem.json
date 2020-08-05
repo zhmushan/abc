@@ -28,7 +28,7 @@
     },
     {
       "protocol": "https",
-      "path": "deno.land/x/router",
+      "path": "denolib.com/zhmushan/router",
       "version": "v1",
       "files": [
         "/mod.ts"
