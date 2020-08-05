@@ -29,7 +29,7 @@
     {
       "protocol": "https",
       "path": "deno.land/x/router",
-      "version": "v1",
+      "version": "v1.0.1",
       "files": [
         "/mod.ts"
       ]

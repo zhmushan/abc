@@ -3,7 +3,7 @@
 Create `server.ts`
 
 ```ts
-import { Application } from "https://deno.land/x/abc@v1/mod.ts";
+import { Application } from "https://deno.land/x/abc@v1.0.2/mod.ts";
 
 const app = new Application();
 
