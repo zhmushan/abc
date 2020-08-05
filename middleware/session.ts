@@ -113,10 +113,5 @@ export interface SessionConfig {
   skipper?: Skipper;
 }
 
-export interface Sessions {
-  [sessionID: string]: SessionData;
-}
-
-export interface SessionData {
-  [key: string]: any;
-}
+export type SessionData = Record<string, any>;
+export type Sessions = Record<string, SessionData>
