@@ -80,8 +80,11 @@ export class SessionMemoryStore {
     return Object.keys(this.sessions).includes(sessionID);
   }
 
-  public getSession(sessionID: string): SessionData {
-    return this.sessions[sessionID];
+  public getSession(sessionID: string): SessionData | undefined {
+    if (this,this.sessionExists(sessionID)) {
+      return this.sessions[sessionID];
+    }
+    return undefined;
   }
 
   public createSession(sessionID: string) {
@@ -100,7 +103,7 @@ export class SessionMemoryStore {
     }
   }
 
-  public getValue(sessionID: string, key: string): any {
+  public getValue(sessionID: string, key: string): any | undefined {
     if (this.sessionExists(sessionID)) {
       return this.sessions[sessionID][key];
     }
