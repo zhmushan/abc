@@ -21,7 +21,7 @@
     {
       "protocol": "https",
       "path": "deno.land/x/dejs",
-      "version": "master",
+      "version": "0.8.0",
       "files": [
         "/mod.ts"
       ]
