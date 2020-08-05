@@ -13,6 +13,7 @@
 - [API Reference](https://doc.deno.land/https/deno.land/x/abc/mod.ts)
 - [Guides](https://deno.land/x/abc/docs/table_of_contents.md)
 - [Examples](https://deno.land/x/abc/examples)
+- [Changelog](https://deno.land/x/abc/CHANGELOG.md)
 
 ## Hello World
 
