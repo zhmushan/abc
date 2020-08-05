@@ -3,7 +3,7 @@ import type { Skipper } from "./skipper.ts";
 import { DefaultSkipper } from "./skipper.ts";
 
 export const DefaultSessionConfig: SessionConfig = {
-  name: "abc.session",
+  key: "abc.session",
   skipper: DefaultSkipper,
 };
 
@@ -12,8 +12,8 @@ export function session(
 ): MiddlewareFunc {
   const store = new SessionMemoryStore();
   return (next: HandlerFunc): HandlerFunc => {
-    const sessionKey = config.name || "abc.session";
-    const skipper = config.skipper || DefaultSkipper;
+    const sessionKey = config.key || DefaultSessionConfig.key!;
+    const skipper = config.skipper || DefaultSessionConfig.skipper!;
 
     return (c: Context) => {
       if (skipper(c)) {
@@ -37,12 +37,12 @@ export function session(
 }
 
 export class Session {
-  public store: SessionMemoryStore;
+  private store: SessionMemoryStore;
   public sessionID: string;
 
   constructor(store: SessionMemoryStore, sessionID?: string) {
     this.store = store;
-    this.sessionID = sessionID ? sessionID : this.generateID();
+    this.sessionID = sessionID ? sessionID : Session.generateID();
   }
 
   public init() {
@@ -55,6 +55,10 @@ export class Session {
     return this.store.getValue(this.sessionID, key);
   }
 
+  public all(): SessionData | undefined {
+    return this.store.getSession(this.sessionID);
+  }
+
   public set(key: string, value: any) {
     this.store.setValue(this.sessionID, key, value);
   }
@@ -63,7 +67,12 @@ export class Session {
     this.store.deleteSession(this.sessionID);
   }
 
-  private generateID(): string {
+  public reset() {
+    this.destroy();
+    this.init();
+  }
+
+  private static generateID(): string {
     const values = new Uint8Array(64 / 2);
     crypto.getRandomValues(values);
     return Array.from(
@@ -81,7 +90,7 @@ export class SessionMemoryStore {
   }
 
   public getSession(sessionID: string): SessionData | undefined {
-    if (this,this.sessionExists(sessionID)) {
+    if (this.sessionExists(sessionID)) {
       return this.sessions[sessionID];
     }
     return undefined;
@@ -112,9 +121,9 @@ export class SessionMemoryStore {
 }
 
 export interface SessionConfig {
-  name?: string;
+  key?: string;
   skipper?: Skipper;
 }
 
 export type SessionData = Record<string, any>;
-export type Sessions = Record<string, SessionData>
+export type Sessions = Record<string, SessionData>;
