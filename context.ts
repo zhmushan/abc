@@ -34,6 +34,8 @@ export class Context {
   params: Record<string, string> = {};
   customContext: any;
 
+  #store?: Map<string | symbol, unknown>;
+
   get cookies(): Cookies {
     return getCookies(this.request);
   }
@@ -52,6 +54,18 @@ export class Context {
       params[k] = v;
     }
     return params;
+  }
+
+  get(key: string | symbol): unknown {
+    return this.#store?.get(key);
+  }
+
+  set(key: string | symbol, val: unknown): void {
+    if (this.#store === undefined) {
+      this.#store = new Map();
+    }
+
+    this.#store.set(key, val);
   }
 
   constructor(opts: ContextOptions);
