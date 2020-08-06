@@ -188,3 +188,16 @@ test("context custom", function (): void {
 
   assertEquals(cc.hello(), "hello");
 });
+
+test("context get set", function (): void {
+  const c = new Context({ app: undefined!, r: createMockRequest() });
+
+  c.set("Hello", "World");
+  assertEquals(c.get("hello"), undefined);
+  assertEquals(c.get("Hello"), "World");
+
+  const key = Symbol("Hello");
+  c.set(key, "World");
+  assertEquals(c.get(Symbol("Hello")), undefined);
+  assertEquals(c.get(key), "World");
+});

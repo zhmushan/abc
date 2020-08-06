@@ -1,5 +1,18 @@
 ## Context
 
+### Data sharing
+
+```ts
+app.use((next) => (c) => {
+  c.set("Name", "Mu Shan");
+  return next(c);
+});
+
+app.get("/", (c) => {
+  return `Hello ${c.get("Name")}`;
+});
+```
+
 ### Use a custom context
 
 ```ts
