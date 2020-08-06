@@ -37,37 +37,37 @@ export function session(
 }
 
 export class Session {
-  private store: SessionMemoryStore;
-  public sessionID: string;
+  #store: SessionMemoryStore;
+  sessionID: string;
 
   constructor(store: SessionMemoryStore, sessionID?: string) {
-    this.store = store;
+    this.#store = store;
     this.sessionID = sessionID ? sessionID : Session.generateID();
   }
 
-  public init() {
-    if (!this.store.sessionExists(this.sessionID)) {
-      this.store.createSession(this.sessionID);
+  init() {
+    if (!this.#store.sessionExists(this.sessionID)) {
+      this.#store.createSession(this.sessionID);
     }
   }
 
-  public get(key: string): any {
-    return this.store.getValue(this.sessionID, key);
+  get(key: string): any {
+    return this.#store.getValue(this.sessionID, key);
   }
 
-  public all(): SessionData | undefined {
-    return this.store.getSession(this.sessionID);
+  all(): SessionData | undefined {
+    return this.#store.getSession(this.sessionID);
   }
 
-  public set(key: string, value: any) {
-    this.store.setValue(this.sessionID, key, value);
+  set(key: string, value: any) {
+    this.#store.setValue(this.sessionID, key, value);
   }
 
-  public destroy() {
-    this.store.deleteSession(this.sessionID);
+  destroy() {
+    this.#store.deleteSession(this.sessionID);
   }
 
-  public reset() {
+  reset() {
     this.destroy();
     this.init();
   }
@@ -83,38 +83,38 @@ export class Session {
 }
 
 export class SessionMemoryStore {
-  private sessions: Sessions = {};
+  #sessions: Sessions = {};
 
-  public sessionExists(sessionID: string): boolean {
-    return Object.keys(this.sessions).includes(sessionID);
+  sessionExists(sessionID: string): boolean {
+    return Object.keys(this.#sessions).includes(sessionID);
   }
 
-  public getSession(sessionID: string): SessionData | undefined {
+  getSession(sessionID: string): SessionData | undefined {
     if (this.sessionExists(sessionID)) {
-      return this.sessions[sessionID];
+      return this.#sessions[sessionID];
     }
     return undefined;
   }
 
-  public createSession(sessionID: string) {
-    this.sessions[sessionID] = {};
+  createSession(sessionID: string) {
+    this.#sessions[sessionID] = {};
   }
 
-  public deleteSession(sessionID: string) {
+  deleteSession(sessionID: string) {
     if (this.sessionExists(sessionID)) {
-      delete this.sessions[sessionID];
+      delete this.#sessions[sessionID];
     }
   }
 
-  public setValue(sessionID: string, key: string, value: any) {
+  setValue(sessionID: string, key: string, value: any) {
     if (this.sessionExists(sessionID)) {
-      this.sessions[sessionID][key] = value;
+      this.#sessions[sessionID][key] = value;
     }
   }
 
-  public getValue(sessionID: string, key: string): any | undefined {
+  getValue(sessionID: string, key: string): any | undefined {
     if (this.sessionExists(sessionID)) {
-      return this.sessions[sessionID][key];
+      return this.#sessions[sessionID][key];
     }
     return undefined;
   }

@@ -16,7 +16,7 @@ app.use(session());
 
 ```ts
 export const DefaultSessionConfig: SessionConfig = {
-    name: "abc.session",
+    key: "abc.session",
     skipper: DefaultSkipper,
 };
 ```
