@@ -1,10 +1,12 @@
 import type { HandlerFunc, MiddlewareFunc, Context } from "../mod.ts";
 import type { Skipper } from "./skipper.ts";
 import { DefaultSkipper } from "./skipper.ts";
+import type { SameSite } from "../vendor/https/deno.land/std/http/cookie.ts";
 
 export const DefaultSessionConfig: SessionConfig = {
   key: "abc.session",
   skipper: DefaultSkipper,
+  cookieOptions: {},
 };
 
 export function session(
@@ -23,8 +25,9 @@ export function session(
       const sid = c.cookies[sessionKey];
       if (sid === undefined || !store.sessionExists(sid)) {
         c.session = new Session(store);
+        // TODO: Check `path option` with path sessions
         c.setCookie(
-          { name: sessionKey, value: c.session.sessionID, path: "/" },
+          { name: sessionKey, value: c.session.sessionID, path: "/", ...config.cookieOptions },
         );
         c.session.init();
       } else {
@@ -123,7 +126,17 @@ export class SessionMemoryStore {
 export interface SessionConfig {
   key?: string;
   skipper?: Skipper;
+  cookieOptions: CookieOptions;
 }
 
 export type SessionData = Record<string, any>;
 export type Sessions = Record<string, SessionData>;
+export type CookieOptions = {
+  expires?: Date;
+  maxAge?: number;
+  domain?: string;
+  secure?: boolean;
+  httpOnly?: boolean;
+  sameSite?: SameSite;
+  unparsed?: string[];
+}
