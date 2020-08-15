@@ -79,7 +79,8 @@ export namespace MIME {
     TextPlain = "text/plain",
     TextPlainCharsetUTF8 = TextPlain + "; " + charsetUTF8,
     MultipartForm = "multipart/form-data",
-    OctetStream = "application/octet-stream";
+    OctetStream = "application/octet-stream",
+    ImageSVG = "image/svg+xml";
 
   export const DB: Record<string, string | undefined> = {
     ".md": TextMarkdownCharsetUTF8,
@@ -93,5 +94,6 @@ export namespace MIME {
     ".js": ApplicationJavaScriptCharsetUTF8,
     ".jsx": ApplicationJavaScriptCharsetUTF8,
     ".gz": ApplicationGZip,
+    ".svg": ImageSVG,
   };
 }
