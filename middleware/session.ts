@@ -1,7 +1,12 @@
 import type { HandlerFunc, MiddlewareFunc, Context } from "../mod.ts";
+import type { Skipper } from "./skipper.ts";
+import { DefaultSkipper } from "./skipper.ts";
+import type { SameSite } from "../vendor/https/deno.land/std/http/cookie.ts";
 
 export const DefaultSessionConfig: SessionConfig = {
-  name: "abc.session",
+  key: "abc.session",
+  skipper: DefaultSkipper,
+  cookieOptions: {},
 };
 
 export function session(
@@ -9,14 +14,20 @@ export function session(
 ): MiddlewareFunc {
   const store = new SessionMemoryStore();
   return (next: HandlerFunc): HandlerFunc => {
-    const sessionKey = config.name || "abc.session";
+    const sessionKey = config.key || DefaultSessionConfig.key!;
+    const skipper = config.skipper || DefaultSessionConfig.skipper!;
 
     return (c: Context) => {
+      if (skipper(c)) {
+        return next(c);
+      }
+
       const sid = c.cookies[sessionKey];
       if (sid === undefined || !store.sessionExists(sid)) {
         c.session = new Session(store);
+        // TODO: Check `path option` with path sessions
         c.setCookie(
-          { name: sessionKey, value: c.session.sessionID, path: "/" },
+          { name: sessionKey, value: c.session.sessionID, path: "/", ...config.cookieOptions },
         );
         c.session.init();
       } else {
@@ -29,33 +40,42 @@ export function session(
 }
 
 export class Session {
-  public store: SessionMemoryStore;
-  public sessionID: string;
+  #store: SessionMemoryStore;
+  sessionID: string;
 
   constructor(store: SessionMemoryStore, sessionID?: string) {
-    this.store = store;
-    this.sessionID = sessionID ? sessionID : this.generateID();
+    this.#store = store;
+    this.sessionID = sessionID ? sessionID : Session.generateID();
   }
 
-  public init() {
-    if (!this.store.sessionExists(this.sessionID)) {
-      this.store.createSession(this.sessionID);
+  init() {
+    if (!this.#store.sessionExists(this.sessionID)) {
+      this.#store.createSession(this.sessionID);
     }
   }
 
-  public get(key: string): any {
-    return this.store.getValue(this.sessionID, key);
+  get(key: string): any {
+    return this.#store.getValue(this.sessionID, key);
   }
 
-  public set(key: string, value: any) {
-    this.store.setValue(this.sessionID, key, value);
+  all(): SessionData | undefined {
+    return this.#store.getSession(this.sessionID);
   }
 
-  public destroy() {
-    this.store.deleteSession(this.sessionID);
+  set(key: string, value: any) {
+    this.#store.setValue(this.sessionID, key, value);
   }
 
-  private generateID(): string {
+  destroy() {
+    this.#store.deleteSession(this.sessionID);
+  }
+
+  reset() {
+    this.destroy();
+    this.init();
+  }
+
+  private static generateID(): string {
     const values = new Uint8Array(64 / 2);
     crypto.getRandomValues(values);
     return Array.from(
@@ -66,48 +86,57 @@ export class Session {
 }
 
 export class SessionMemoryStore {
-  private sessions: Sessions = {};
+  #sessions: Sessions = {};
 
-  public sessionExists(sessionID: string): boolean {
-    return Object.keys(this.sessions).includes(sessionID);
+  sessionExists(sessionID: string): boolean {
+    return Object.keys(this.#sessions).includes(sessionID);
   }
 
-  public getSession(sessionID: string): SessionData {
-    return this.sessions[sessionID];
-  }
-
-  public createSession(sessionID: string) {
-    this.sessions[sessionID] = {};
-  }
-
-  public deleteSession(sessionID: string) {
+  getSession(sessionID: string): SessionData | undefined {
     if (this.sessionExists(sessionID)) {
-      delete this.sessions[sessionID];
+      return this.#sessions[sessionID];
+    }
+    return undefined;
+  }
+
+  createSession(sessionID: string) {
+    this.#sessions[sessionID] = {};
+  }
+
+  deleteSession(sessionID: string) {
+    if (this.sessionExists(sessionID)) {
+      delete this.#sessions[sessionID];
     }
   }
 
-  public setValue(sessionID: string, key: string, value: any) {
+  setValue(sessionID: string, key: string, value: any) {
     if (this.sessionExists(sessionID)) {
-      this.sessions[sessionID][key] = value;
+      this.#sessions[sessionID][key] = value;
     }
   }
 
-  public getValue(sessionID: string, key: string): any {
+  getValue(sessionID: string, key: string): any | undefined {
     if (this.sessionExists(sessionID)) {
-      return this.sessions[sessionID][key];
+      return this.#sessions[sessionID][key];
     }
     return undefined;
   }
 }
 
 export interface SessionConfig {
-  name?: string;
+  key?: string;
+  skipper?: Skipper;
+  cookieOptions: CookieOptions;
 }
 
-export interface Sessions {
-  [sessionID: string]: SessionData;
-}
-
-export interface SessionData {
-  [key: string]: any;
+export type SessionData = Record<string, any>;
+export type Sessions = Record<string, SessionData>;
+export type CookieOptions = {
+  expires?: Date;
+  maxAge?: number;
+  domain?: string;
+  secure?: boolean;
+  httpOnly?: boolean;
+  sameSite?: SameSite;
+  unparsed?: string[];
 }
