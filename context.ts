@@ -8,7 +8,6 @@ import type {
 } from "./vendor/https/deno.land/std/http/cookie.ts";
 import type { Application } from "./app.ts";
 import type { ContextOptions } from "./types.ts";
-import type { Session } from "./middleware/session.ts";
 
 import { Status } from "./vendor/https/deno.land/std/http/http_status.ts";
 import { join } from "./vendor/https/deno.land/std/path/mod.ts";
@@ -27,8 +26,6 @@ export class Context {
   app!: Application;
   request!: ServerRequest;
   url!: URL;
-
-  session!: Session;
 
   response: Response & { headers: Headers } = { headers: new Headers() };
   params: Record<string, string> = {};
