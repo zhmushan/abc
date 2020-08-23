@@ -34,7 +34,7 @@ export class Application {
   get θprocess(): Promise<void> | undefined {
     console.warn(yellow("`Application#θprocess` is UNSTABLE!"));
     return this.#process;
-  };
+  }
 
   #start = async (s: Server): Promise<void> => {
     this.server = s;
