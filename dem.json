@@ -6,6 +6,7 @@
       "version": "0.66.0",
       "files": [
         "/encoding/utf8.ts",
+        "/fmt/colors.ts",
         "/http/cookie.ts",
         "/http/http_status.ts",
         "/http/server.ts",

@@ -7,6 +7,7 @@ import type {
 
 import { serve, serveTLS } from "./vendor/https/deno.land/std/http/server.ts";
 import { join } from "./vendor/https/deno.land/std/path/mod.ts";
+import { yellow } from "./vendor/https/deno.land/std/fmt/colors.ts";
 import { Context } from "./context.ts";
 import { Router } from "./router.ts";
 import { Group } from "./group.ts";
@@ -27,8 +28,13 @@ export class Application {
   middleware: MiddlewareFunc[] = [];
   premiddleware: MiddlewareFunc[] = [];
 
+  #process: Promise<void> | undefined;
+
   /** Unstable */
-  θprocess: Promise<void> | undefined;
+  get θprocess(): Promise<void> | undefined {
+    console.warn(yellow("`Application#θprocess` is UNSTABLE!"));
+    return this.#process;
+  };
 
   #start = async (s: Server): Promise<void> => {
     this.server = s;
@@ -67,19 +73,19 @@ export class Application {
 
   /** `start` starts an HTTP server. */
   start(sc: HTTPOptions): void {
-    this.θprocess = this.#start(serve(sc));
+    this.#process = this.#start(serve(sc));
   }
 
   /** `startTLS` starts an HTTPS server. */
   startTLS(sc: HTTPSOptions): void {
-    this.θprocess = this.#start(serveTLS(sc));
+    this.#process = this.#start(serveTLS(sc));
   }
 
   async close(): Promise<void> {
     if (this.server) {
       this.server.close();
     }
-    await this.θprocess;
+    await this.#process;
   }
   /** `pre` adds middleware which is run before router. */
   pre(...m: MiddlewareFunc[]): Application {
