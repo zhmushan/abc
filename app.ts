@@ -27,7 +27,8 @@ export class Application {
   middleware: MiddlewareFunc[] = [];
   premiddleware: MiddlewareFunc[] = [];
 
-  #process: Promise<void> | undefined;
+  /** Unstable */
+  θprocess: Promise<void> | undefined;
 
   #start = async (s: Server): Promise<void> => {
     this.server = s;
@@ -66,19 +67,19 @@ export class Application {
 
   /** `start` starts an HTTP server. */
   start(sc: HTTPOptions): void {
-    this.#process = this.#start(serve(sc));
+    this.θprocess = this.#start(serve(sc));
   }
 
   /** `startTLS` starts an HTTPS server. */
   startTLS(sc: HTTPSOptions): void {
-    this.#process = this.#start(serveTLS(sc));
+    this.θprocess = this.#start(serveTLS(sc));
   }
 
   async close(): Promise<void> {
     if (this.server) {
       this.server.close();
     }
-    await this.#process;
+    await this.θprocess;
   }
   /** `pre` adds middleware which is run before router. */
   pre(...m: MiddlewareFunc[]): Application {
