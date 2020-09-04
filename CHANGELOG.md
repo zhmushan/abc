@@ -1,5 +1,11 @@
 # Changelog
 
+### v1.1.0 / 2020.09.04
+
+- BREAKING: get body use "get" accessor
+- fix: context.body cannot be read multiple times
+- upgrade: deno_std 0.67.0
+
 ### v1.0.3 / 2020.08.16
 
 - feat: Support get & set data to context
