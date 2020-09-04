@@ -2,7 +2,7 @@
 
 ### v1.1.0 / 2020.09.04
 
-- BREAKING: get body use "get" accessor
+- BREAKING: context.body use "get" accessor
 - fix: context.body cannot be read multiple times
 - upgrade: deno_std 0.67.0
 
