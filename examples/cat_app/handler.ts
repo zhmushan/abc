@@ -11,7 +11,7 @@ export const findOne: HandlerFunc = (c) => {
   return cats.find((cat) => cat.id.toString() === id);
 };
 export const create: HandlerFunc = async (c) => {
-  const { name, age } = await c.body<CatDTO>();
+  const { name, age } = await c.body as CatDTO;
   const cat = new Cat({ name, age });
   cats.push(cat);
   return cat;

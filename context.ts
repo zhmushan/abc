@@ -33,6 +33,8 @@ export class Context {
 
   #store?: Map<string | symbol, unknown>;
 
+  #body: Promise<unknown> | undefined;
+
   get cookies(): Cookies {
     return getCookies(this.request);
   }
@@ -51,6 +53,10 @@ export class Context {
       params[k] = v;
     }
     return params;
+  }
+
+  get body(): Promise<unknown> {
+    return this.#body ?? (this.#body = this.#readBody());
   }
 
   get(key: string | symbol): unknown {
@@ -87,7 +93,7 @@ export class Context {
     }
   };
 
-  async body<T extends unknown>(): Promise<T> {
+  #readBody = async (): Promise<unknown> => {
     const contentType = this.request.headers.get(Header.ContentType);
     walk: {
       let data: Record<string, unknown> = {};
@@ -119,11 +125,11 @@ export class Context {
         break walk;
       }
 
-      return data as T;
+      return data;
     }
 
-    return decode(await readAll(this.request.body)) as T;
-  }
+    return decode(await readAll(this.request.body));
+  };
 
   string(v: string, code: Status = Status.OK): void {
     this.#writeContentType(MIME.TextPlain);

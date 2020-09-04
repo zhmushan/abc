@@ -115,7 +115,7 @@ test("context multipart/form-data req", async function (): Promise<void> {
     }),
   };
   const c = new Context(options);
-  const body = await c.body();
+  const body = await c.body;
 
   assertEquals(body, {
     foo: "bar",
@@ -136,7 +136,7 @@ test("context application/x-www-form-urlencoded req", async function (): Promise
   };
 
   const c = new Context(options);
-  const body = await c.body();
+  const body = await c.body;
 
   assertEquals(body, { foo: "bar" });
 });
@@ -151,7 +151,7 @@ test("context application/json req", async function (): Promise<void> {
   };
 
   const c = new Context(options);
-  const body = await c.body();
+  const body = await c.body;
 
   assertEquals(body, { foo: "bar" });
 });
@@ -166,7 +166,7 @@ test("context text/plain req", async function (): Promise<void> {
   };
 
   const c = new Context(options);
-  const body = await c.body();
+  const body = await c.body;
 
   assertEquals(body, `{"foo":"bar"}`);
 });
@@ -200,4 +200,20 @@ test("context get set", function (): void {
   c.set(key, "World");
   assertEquals(c.get(Symbol("Hello")), undefined);
   assertEquals(c.get(key), "World");
+});
+
+test("context read body twice", async function (): Promise<void> {
+  const options = {
+    app: undefined!,
+    r: createMockRequest({
+      body: createMockBodyReader(`{"foo":"bar"}`),
+      headers: new Headers({ [Header.ContentType]: MIME.ApplicationJSON }),
+    }),
+  };
+
+  const c = new Context(options);
+  const body = await c.body;
+
+  assertEquals(body, { foo: "bar" });
+  assertEquals(await c.body, body);
 });
