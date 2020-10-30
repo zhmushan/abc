@@ -1,8 +1,8 @@
-import type { MiddlewareFunc, Renderer, HandlerFunc } from "./types.ts";
+import type { HandlerFunc, MiddlewareFunc, Renderer } from "./types.ts";
 import type {
-  Server,
   HTTPOptions,
   HTTPSOptions,
+  Server,
 } from "./vendor/https/deno.land/std/http/server.ts";
 
 import { serve, serveTLS } from "./vendor/https/deno.land/std/http/server.ts";
@@ -12,9 +12,9 @@ import { Context } from "./context.ts";
 import { Router } from "./router.ts";
 import { Group } from "./group.ts";
 import {
-  InternalServerErrorException,
-  HttpException,
   createHttpExceptionBody,
+  HttpException,
+  InternalServerErrorException,
 } from "./http_exception.ts";
 
 export function NotImplemented(): Error {

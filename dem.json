@@ -3,7 +3,7 @@
     {
       "protocol": "https",
       "path": "deno.land/std",
-      "version": "0.67.0",
+      "version": "0.75.0",
       "files": [
         "/encoding/utf8.ts",
         "/fmt/colors.ts",
@@ -30,7 +30,7 @@
     {
       "protocol": "https",
       "path": "deno.land/x/router",
-      "version": "v1.0.1",
+      "version": "v2.0.0",
       "files": [
         "/mod.ts"
       ]

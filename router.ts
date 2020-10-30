@@ -2,7 +2,7 @@ import type { HandlerFunc } from "./types.ts";
 import type { Context } from "./context.ts";
 
 import { Node } from "./vendor/https/deno.land/x/router/mod.ts";
-import { NotFoundHandler, hasTrailingSlash } from "./util.ts";
+import { hasTrailingSlash, NotFoundHandler } from "./util.ts";
 
 export class Router {
   trees: Record<string, Node> = {};

@@ -1,8 +1,8 @@
 import type { Context } from "../context.ts";
 
 import {
-  assertEquals,
   assert,
+  assertEquals,
 } from "../vendor/https/deno.land/std/testing/asserts.ts";
 import { DefaultFormatter, logger } from "./logger.ts";
 const { test, makeTempFileSync, readFileSync, openSync, removeSync } = Deno;

@@ -1,6 +1,6 @@
 import type {
-  ServerRequest,
   Response,
+  ServerRequest,
 } from "./vendor/https/deno.land/std/http/server.ts";
 import type {
   Cookie,
@@ -12,11 +12,11 @@ import type { ContextOptions } from "./types.ts";
 import { Status } from "./vendor/https/deno.land/std/http/http_status.ts";
 import { join } from "./vendor/https/deno.land/std/path/mod.ts";
 import {
-  setCookie,
   getCookies,
+  setCookie,
 } from "./vendor/https/deno.land/std/http/cookie.ts";
 import { MultipartReader } from "./vendor/https/deno.land/std/mime/multipart.ts";
-import { encode, decode } from "./vendor/https/deno.land/std/encoding/utf8.ts";
+import { decode, encode } from "./vendor/https/deno.land/std/encoding/utf8.ts";
 import { Header, MIME } from "./constants.ts";
 import { contentType, NotFoundHandler } from "./util.ts";
 

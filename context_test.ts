@@ -1,6 +1,6 @@
 import { assertEquals } from "./vendor/https/deno.land/std/testing/asserts.ts";
 import { Status } from "./vendor/https/deno.land/std/http/http_status.ts";
-import { createMockRequest, createMockBodyReader } from "./test_util.ts";
+import { createMockBodyReader, createMockRequest } from "./test_util.ts";
 import { Context } from "./context.ts";
 import { Header, MIME } from "./constants.ts";
 const { test } = Deno;

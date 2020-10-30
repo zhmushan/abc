@@ -1,4 +1,4 @@
-import type { MiddlewareFunc, HandlerFunc } from "./types.ts";
+import type { HandlerFunc, MiddlewareFunc } from "./types.ts";
 
 import { assertEquals } from "./vendor/https/deno.land/std/testing/asserts.ts";
 import { Status } from "./vendor/https/deno.land/std/http/http_status.ts";

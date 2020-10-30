@@ -1,4 +1,4 @@
-import type { MiddlewareFunc, HandlerFunc } from "./types.ts";
+import type { HandlerFunc, MiddlewareFunc } from "./types.ts";
 import type { Application } from "./app.ts";
 
 import { join } from "./vendor/https/deno.land/std/path/mod.ts";

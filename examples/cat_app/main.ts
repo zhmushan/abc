@@ -1,5 +1,5 @@
 import { Application } from "../../mod.ts";
-import { findAll, findOne, create } from "./handler.ts";
+import { create, findAll, findOne } from "./handler.ts";
 
 const app = new Application();
 
