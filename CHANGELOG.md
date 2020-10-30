@@ -1,5 +1,10 @@
 # Changelog
 
+### v1.2.0 / 2020.10.30
+
+- upgrade: deno_std 0.75.0
+- upgrade: router v2.0.0
+
 ### v1.1.0 / 2020.09.04
 
 - BREAKING: context.body use "get" accessor
