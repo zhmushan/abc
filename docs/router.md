@@ -16,7 +16,7 @@ We will always match according to the rules of **Static > Param > Any**. For sta
 ### Basic route
 
 ```ts
-import { Application } from "https://deno.land/x/abc@v1.1.0/mod.ts";
+import { Application } from "https://deno.land/x/abc@v1.2.0/mod.ts";
 
 const app = new Application();
 
@@ -30,7 +30,7 @@ app.get("/user/:name", (c) => {
 
 ```ts
 // user_group.ts
-import type { Group } from "https://deno.land/x/abc@v1.1.0/mod.ts";
+import type { Group } from "https://deno.land/x/abc@v1.2.0/mod.ts";
 
 export default function (g: Group) {
   g.get("/:name", (c) => {
@@ -41,7 +41,7 @@ export default function (g: Group) {
 ```
 
 ```ts
-import { Application } from "https://deno.land/x/abc@v1.1.0/mod.ts";
+import { Application } from "https://deno.land/x/abc@v1.2.0/mod.ts";
 import userGroup from "./user_group.ts";
 
 const app = new Application();
