@@ -21,6 +21,17 @@ export function NotImplemented(): Error {
   return new Error("Not Implemented");
 }
 
+/**
+ * Hello World.
+ * 
+ *    const app = new Application();
+ * 
+ *    app
+ *      .get("/hello", (c) => {
+ *        return "Hello, Abc!";
+ *      })
+ *      .start({ port: 8080 });
+ */
 export class Application {
   server: Server | undefined;
   renderer: Renderer | undefined;
@@ -71,22 +82,32 @@ export class Application {
     return h;
   };
 
-  /** `start` starts an HTTP server. */
+  /**
+   * Start an HTTP server.
+   * 
+   *    app.start({ port: 8080 });
+   */
   start(sc: HTTPOptions): void {
     this.#process = this.#start(serve(sc));
   }
 
-  /** `startTLS` starts an HTTPS server. */
+  /** Start an HTTPS server. */
   startTLS(sc: HTTPSOptions): void {
     this.#process = this.#start(serveTLS(sc));
   }
 
+  /**
+   * Stop the server immediately.
+   * 
+   *    await app.close();
+   */
   async close(): Promise<void> {
     if (this.server) {
       this.server.close();
     }
     await this.#process;
   }
+
   /** `pre` adds middleware which is run before router. */
   pre(...m: MiddlewareFunc[]): Application {
     this.premiddleware.push(...m);
@@ -98,33 +119,43 @@ export class Application {
     this.middleware.push(...m);
     return this;
   }
+
   connect(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Application {
     return this.add("CONNECT", path, h, ...m);
   }
+
   delete(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Application {
     return this.add("DELETE", path, h, ...m);
   }
+
   get(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Application {
     return this.add("GET", path, h, ...m);
   }
+
   head(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Application {
     return this.add("HEAD", path, h, ...m);
   }
+
   options(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Application {
     return this.add("OPTIONS", path, h, ...m);
   }
+
   patch(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Application {
     return this.add("PATCH", path, h, ...m);
   }
+
   post(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Application {
     return this.add("POST", path, h, ...m);
   }
+
   put(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Application {
     return this.add("PUT", path, h, ...m);
   }
+
   trace(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Application {
     return this.add("TRACE", path, h, ...m);
   }
+
   any(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Application {
     const methods = [
       "CONNECT",
@@ -142,6 +173,7 @@ export class Application {
     }
     return this;
   }
+
   match(
     methods: string[],
     path: string,
@@ -153,6 +185,7 @@ export class Application {
     }
     return this;
   }
+
   add(
     method: string,
     path: string,
@@ -176,7 +209,12 @@ export class Application {
     return g;
   }
 
-  /** `static` registers a new route with path prefix to serve static files from the provided root directory. */
+  /** 
+   * Register a new route with path prefix to serve static files from the provided root directory.
+   * For example, a request to `/static/js/main.js` will fetch and serve `assets/js/main.js` file.
+   * 
+   *    app.static("/static", "assets");
+   */
   static(prefix: string, root: string, ...m: MiddlewareFunc[]): Application {
     if (prefix[prefix.length - 1] === "/") {
       prefix = prefix.slice(0, prefix.length - 1);
@@ -188,7 +226,11 @@ export class Application {
     return this.get(`${prefix}/*`, h, ...m);
   }
 
-  /** `file` registers a new route with path to serve a static file with optional route-level middleware. */
+  /** 
+   * Register a new route with path to serve a static file with optional route-level middleware.
+   * 
+   *    app.file("/", "public/index.html");
+   */
   file(path: string, filepath: string, ...m: MiddlewareFunc[]): Application {
     return this.get(path, (c) => c.file(filepath), ...m);
   }
