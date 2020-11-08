@@ -1,4 +1,7 @@
-import { assertEquals } from "./vendor/https/deno.land/std/testing/asserts.ts";
+import {
+  assertEquals,
+  assertStringIncludes,
+} from "./vendor/https/deno.land/std/testing/asserts.ts";
 import { Status } from "./vendor/https/deno.land/std/http/http_status.ts";
 import { createMockBodyReader, createMockRequest } from "./test_util.ts";
 import { Context } from "./context.ts";
@@ -23,7 +26,10 @@ test("context string resp", function (): void {
     c.string(r);
     assertEquals(c.response.status, 200);
     assertEquals(c.response.body, new TextEncoder().encode(r));
-    assertEquals(c.response.headers!.get("Content-Type"), "text/plain");
+    assertStringIncludes(
+      c.response.headers!.get("Content-Type") ?? "",
+      "text/plain",
+    );
   }
 });
 
@@ -38,7 +44,10 @@ test("context json resp", function (): void {
       c.response.body,
       new TextEncoder().encode(typeof r === "object" ? JSON.stringify(r) : r),
     );
-    assertEquals(c.response.headers!.get("Content-Type"), "application/json");
+    assertStringIncludes(
+      c.response.headers!.get("Content-Type") ?? "",
+      "application/json",
+    );
   }
 });
 
@@ -60,7 +69,10 @@ test("context html resp", function (): void {
     c.html(r);
     assertEquals(c.response.status, 200);
     assertEquals(c.response.body, new TextEncoder().encode(r));
-    assertEquals(c.response.headers!.get("Content-Type"), "text/html");
+    assertStringIncludes(
+      c.response.headers!.get("Content-Type") ?? "",
+      "text/html",
+    );
   }
 });
 

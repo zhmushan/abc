@@ -132,27 +132,27 @@ export class Context {
   };
 
   string(v: string, code: Status = Status.OK): void {
-    this.#writeContentType(MIME.TextPlain);
+    this.#writeContentType(MIME.TextPlainCharsetUTF8);
     this.response.status = code;
     this.response.body = encode(v);
   }
 
   json(v: Record<string, any> | string, code: Status = Status.OK): void {
-    this.#writeContentType(MIME.ApplicationJSON);
+    this.#writeContentType(MIME.ApplicationJSONCharsetUTF8);
     this.response.status = code;
     this.response.body = encode(typeof v === "object" ? JSON.stringify(v) : v);
   }
 
   /** Sends an HTTP response with status code. */
   html(v: string, code: Status = Status.OK): void {
-    this.#writeContentType(MIME.TextHTML);
+    this.#writeContentType(MIME.TextHTMLCharsetUTF8);
     this.response.status = code;
     this.response.body = encode(v);
   }
 
   /** Sends an HTTP blob response with status code. */
   htmlBlob(b: Uint8Array | Deno.Reader, code: Status = Status.OK): void {
-    this.blob(b, MIME.TextHTML, code);
+    this.blob(b, MIME.TextHTMLCharsetUTF8, code);
   }
 
   /**
