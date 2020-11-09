@@ -1,0 +1,7 @@
+{
+  "imports": {
+    "react-router-dom": "https://cdn.skypack.dev/react-router-dom@5.2.0?dts",
+    "react-dom": "https://cdn.skypack.dev/react-dom@v16.13.1?dts",
+    "react": "https://cdn.skypack.dev/react@16.13.1?dts"
+  }
+}

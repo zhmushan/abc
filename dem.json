@@ -7,6 +7,7 @@
       "files": [
         "/encoding/utf8.ts",
         "/fmt/colors.ts",
+        "/hash/md5.ts",
         "/http/cookie.ts",
         "/http/http_status.ts",
         "/http/server.ts",
@@ -23,6 +24,14 @@
       "protocol": "https",
       "path": "deno.land/x/dejs",
       "version": "0.8.0",
+      "files": [
+        "/mod.ts"
+      ]
+    },
+    {
+      "protocol": "https",
+      "path": "deno.land/x/mysql",
+      "version": "v2.6.0",
       "files": [
         "/mod.ts"
       ]
