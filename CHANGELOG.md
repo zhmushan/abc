@@ -1,5 +1,9 @@
 # Changelog
 
+### v1.2.2 / 2020.11.24
+
+- upgrade: deno_std 0.79.0
+
 ### v1.2.1 / 2020.11.08
 
 - fix: the default content type should carry utf8
