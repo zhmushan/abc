@@ -1,5 +1,9 @@
 # Changelog
 
+### v1.2.3 / 2020.12.02
+
+- refactor: remove namespace
+
 ### v1.2.2 / 2020.11.24
 
 - upgrade: deno_std 0.79.0
