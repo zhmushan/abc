@@ -21,7 +21,8 @@ export const ApplicationGZip = "application/gzip",
   TextPlainCharsetUTF8 = TextPlain + "; " + charsetUTF8,
   MultipartForm = "multipart/form-data",
   OctetStream = "application/octet-stream",
-  ImageSVG = "image/svg+xml";
+  ImageSVG = "image/svg+xml",
+  ApplicationWASM = "application/wasm";
 
 export const DB: Record<string, string | undefined> = {
   ".md": TextMarkdownCharsetUTF8,
@@ -36,4 +37,5 @@ export const DB: Record<string, string | undefined> = {
   ".jsx": ApplicationJavaScriptCharsetUTF8,
   ".gz": ApplicationGZip,
   ".svg": ImageSVG,
+  ".wasm": ApplicationWASM,
 };
