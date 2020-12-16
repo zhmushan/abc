@@ -1,5 +1,10 @@
 # Changelog
 
+### v1.2.4 / 2020.12.16
+
+- fix: add wasm in mimetypes
+- upgrade: deno_std 0.81.0
+
 ### v1.2.3 / 2020.12.02
 
 - refactor: remove namespace
