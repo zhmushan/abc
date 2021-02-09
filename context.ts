@@ -137,10 +137,11 @@ export class Context {
     this.response.body = encode(v);
   }
 
-  json(v: Record<string, any> | string, code: Status = Status.OK): void {
+  json<T>(v: T, code: Status = Status.OK): T {
     this.#writeContentType(MIME.ApplicationJSONCharsetUTF8);
     this.response.status = code;
     this.response.body = encode(typeof v === "object" ? JSON.stringify(v) : v);
+    return v;
   }
 
   /** Sends an HTTP response with status code. */
