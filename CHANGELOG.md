@@ -1,9 +1,11 @@
 # Changelog
 
-### v1.2.5 / 2021.02.19
+### v1.2.6 / 2021.02.19
 
 - fix(middleware/cors): Fix the matching error of `allowOrigins`
 - upgrade: deno_std 0.87.0
+
+### v1.2.5 **deprecated**
 
 ### v1.2.4 / 2020.12.16
 
