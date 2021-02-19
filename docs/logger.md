@@ -5,8 +5,8 @@ Logger logs the information about each HTTP request.
 ### Usage
 
 ```ts
-import { Application } from "https://deno.land/x/abc@v1.2.4/mod.ts";
-import { logger } from "https://deno.land/x/abc@v1.2.4/middleware/logger.ts";
+import { Application } from "https://deno.land/x/abc@v1.2.5/mod.ts";
+import { logger } from "https://deno.land/x/abc@v1.2.5/middleware/logger.ts";
 
 const app = new Application();
 app.use(logger());
