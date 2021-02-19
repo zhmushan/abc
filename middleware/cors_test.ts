@@ -46,4 +46,21 @@ test("middleware cors", function (): void {
     allowOrigins: ["http://foo.com", "http://bar.com"],
   })((c) => c)(ctx);
   assertEquals(headers.get(Header.AccessControlAllowOrigin), "http://bar.com");
+
+  headers = new Headers();
+  ctx = {
+    request: {
+      headers: new Headers({ [Header.Origin]: "http://bar.com/xyz/" }),
+    },
+    response: {
+      headers,
+    },
+  } as Context;
+  cors({
+    allowOrigins: ["http://foo.com", "http://bar.com"],
+  })((c) => c)(ctx);
+  assertEquals(
+    headers.get(Header.AccessControlAllowOrigin),
+    "http://bar.com/xyz/",
+  );
 });

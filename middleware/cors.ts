@@ -49,7 +49,10 @@ export function cors(config: CORSConfig = DefaultCORSConfig): MiddlewareFunc {
           allowOrigin = o;
           break;
         }
-        if (o.startsWith(origin)) {
+        if (origin === null) {
+          break;
+        }
+        if (origin.startsWith(o)) {
           allowOrigin = origin;
           break;
         }
