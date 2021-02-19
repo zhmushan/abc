@@ -18,14 +18,14 @@ app.use(logger());
 export const DefaultLoggerConfig: LoggerConfig = {
   skipper: DefaultSkipper,
   formatter: DefaultFormatter,
-  output: Deno.stdout
+  output: Deno.stdout,
 };
 ```
 
 ### Default Formatter
 
 ```ts
-export const DefaultFormatter: Formatter = c => {
+export const DefaultFormatter: Formatter = (c) => {
   const req = c.request;
 
   const time = new Date().toISOString();

@@ -20,7 +20,8 @@ Start server
 $ deno run --allow-net ./server.ts
 ```
 
-Browse to http://localhost:8080/hello and you should see Hello, Abc! on the page.
+Browse to http://localhost:8080/hello and you should see Hello, Abc! on the
+page.
 
 ## Routing
 
@@ -43,7 +44,8 @@ const findOne: HandlerFunc = (c) => {
 // app.get("/users/:id", findOne);
 ```
 
-Browse to http://localhost:8080/users/zhmushan and you should see "zhmushan" on the page.
+Browse to http://localhost:8080/users/zhmushan and you should see "zhmushan" on
+the page.
 
 ## Query Parameters
 
@@ -58,7 +60,8 @@ const paging: HandlerFunc = (c) => {
 // app.get("/list", paging);
 ```
 
-Browse to http://localhost:8080/list?page=0&size=5 and you should see "page: 0, size: 5" on the page.
+Browse to http://localhost:8080/list?page=0&size=5 and you should see "page: 0,
+size: 5" on the page.
 
 ## Static Content
 
@@ -71,10 +74,11 @@ app.static("/sample", "./folder/sample");
 ## Middleware
 
 ```ts
-const track: MiddlewareFunc = (next) => (c) => {
-  console.log(`request to ${c.path}`);
-  return next(c);
-};
+const track: MiddlewareFunc = (next) =>
+  (c) => {
+    console.log(`request to ${c.path}`);
+    return next(c);
+  };
 
 // Root middleware
 app.use(logger());
@@ -89,6 +93,6 @@ app.get(
   (c) => {
     return "/users";
   },
-  track
+  track,
 );
 ```

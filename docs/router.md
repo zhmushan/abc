@@ -1,8 +1,10 @@
 ## Router
 
-The router module based on [zhmushan/router](https://github.com/zhmushan/router).
+The router module based on
+[zhmushan/router](https://github.com/zhmushan/router).
 
-We will always match according to the rules of **Static > Param > Any**. For static routes, we always match strictly equal strings.
+We will always match according to the rules of **Static > Param > Any**. For
+static routes, we always match strictly equal strings.
 
 **_Pattern: /\* ,/user/:name, /user/zhmushan_**
 

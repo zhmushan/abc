@@ -2,10 +2,7 @@ import type {
   Response,
   ServerRequest,
 } from "./vendor/https/deno.land/std/http/server.ts";
-import type {
-  Cookie,
-  Cookies,
-} from "./vendor/https/deno.land/std/http/cookie.ts";
+import type { Cookie } from "./vendor/https/deno.land/std/http/cookie.ts";
 import type { Application } from "./app.ts";
 import type { ContextOptions } from "./types.ts";
 
@@ -35,7 +32,7 @@ export class Context {
 
   #body: Promise<unknown> | undefined;
 
-  get cookies(): Cookies {
+  get cookies(): Record<string, string> {
     return getCookies(this.request);
   }
 

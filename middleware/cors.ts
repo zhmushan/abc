@@ -39,7 +39,7 @@ export function cors(config: CORSConfig = DefaultCORSConfig): MiddlewareFunc {
       const origin = req.headers!.get(Header.Origin)!;
       if (!resp.headers) resp.headers = new Headers();
 
-      let allowOrigin = "";
+      let allowOrigin: string | null = null;
       for (const o of config.allowOrigins!) {
         if (o == "*" && config.allowCredentials) {
           allowOrigin = origin;
@@ -49,7 +49,7 @@ export function cors(config: CORSConfig = DefaultCORSConfig): MiddlewareFunc {
           allowOrigin = o;
           break;
         }
-        if (origin.startsWith(o)) {
+        if (o.startsWith(origin)) {
           allowOrigin = origin;
           break;
         }
@@ -61,7 +61,9 @@ export function cors(config: CORSConfig = DefaultCORSConfig): MiddlewareFunc {
       }
 
       if (req.method != HttpMethod.Options) {
-        resp.headers.set(Header.AccessControlAllowOrigin, allowOrigin);
+        if (allowOrigin) {
+          resp.headers.set(Header.AccessControlAllowOrigin, allowOrigin);
+        }
         if (config.exposeHeaders && config.exposeHeaders.length != 0) {
           resp.headers.set(
             Header.AccessControlExposeHeaders,
@@ -73,7 +75,9 @@ export function cors(config: CORSConfig = DefaultCORSConfig): MiddlewareFunc {
       }
       resp.headers.append(Header.Vary, Header.AccessControlAllowMethods);
       resp.headers.append(Header.Vary, Header.AccessControlAllowHeaders);
-      resp.headers.set(Header.AccessControlAllowOrigin, allowOrigin);
+      if (allowOrigin) {
+        resp.headers.set(Header.AccessControlAllowOrigin, allowOrigin);
+      }
       resp.headers.set(
         Header.AccessControlAllowMethods,
         config.allowMethods!.join(","),

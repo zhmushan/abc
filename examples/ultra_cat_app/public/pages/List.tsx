@@ -91,7 +91,9 @@ export default () => {
               <td>{c.id}</td>
               <td>{c.name}</td>
               <td>{c.age}</td>
-              <td><button onClick={() => del(c.id!)}>Delete</button></td>
+              <td>
+                <button onClick={() => del(c.id!)}>Delete</button>
+              </td>
             </tr>
           ))}
         </tbody>

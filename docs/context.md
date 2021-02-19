@@ -3,10 +3,12 @@
 ### Data sharing
 
 ```ts
-app.use((next) => (c) => {
-  c.set("Name", "Mu Shan");
-  return next(c);
-});
+app.use((next) =>
+  (c) => {
+    c.set("Name", "Mu Shan");
+    return next(c);
+  }
+);
 
 app.get("/", (c) => {
   return `Hello ${c.get("Name")}`;
@@ -28,10 +30,12 @@ class CustomContext extends Context {
 }
 
 // Replace the original `Context`
-app.pre((next) => (c) => {
-  const cc = new CustomContext(c);
-  return next(cc);
-});
+app.pre((next) =>
+  (c) => {
+    const cc = new CustomContext(c);
+    return next(cc);
+  }
+);
 
 app.get("/", (c) => {
   const cc: CustomContext = c.customContext!;

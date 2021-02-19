@@ -20,13 +20,13 @@ export type MyType = string;
 // Bad
 enum Color {
   RED,
-  BLACK
+  BLACK,
 }
 
 // Good
 enum Color {
   Red,
-  Black
+  Black,
 }
 ```
 

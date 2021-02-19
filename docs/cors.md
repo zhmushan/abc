@@ -1,14 +1,14 @@
 ## CORS
 
-`CORS` is a mechanism that allows resources to be requested from another domain, which enable secure cross-domain
-data transfers.
+`CORS` is a mechanism that allows resources to be requested from another domain,
+which enable secure cross-domain data transfers.
 
 ### Usage
 
 ```ts
 const config: CORSConfig = {
   allowOrigins: ["https://a.com", "https://b.com", "https://c.com"],
-  allowMethods: [HttpMethod.Get]
+  allowMethods: [HttpMethod.Get],
 };
 const app = new Application();
 app.use(cors(config));
@@ -26,7 +26,7 @@ export const DefaultCORSConfig: CORSConfig = {
     HttpMethod.Head,
     HttpMethod.Patch,
     HttpMethod.Post,
-    HttpMethod.Put
-  ]
+    HttpMethod.Put,
+  ],
 };
 ```

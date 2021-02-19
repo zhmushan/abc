@@ -1,12 +1,14 @@
 ## Exception Filter
 
-Abc comes with a built-in `exceptions layer` that handles all unhandled exceptions in the application and then automatically sends an appropriate user-friendly response.
+Abc comes with a built-in `exceptions layer` that handles all unhandled
+exceptions in the application and then automatically sends an appropriate
+user-friendly response.
 
 ### Usage
 
 ```ts
 const app = new Application();
-app.post("/admin", c => {
+app.post("/admin", (c) => {
   throw new HttpException("Forbidden", Status.Forbidden);
 });
 ```
@@ -24,13 +26,13 @@ You can also customize the content of the response body.
 
 ```ts
 const app = new Application();
-app.post("/admin", c => {
+app.post("/admin", (c) => {
   throw new HttpException(
     {
       status: Status.Forbidden,
-      error: "This is a custom message"
+      error: "This is a custom message",
     },
-    Status.Forbidden
+    Status.Forbidden,
   );
 });
 ```
@@ -46,7 +48,8 @@ Using the above, this is how the response would look:
 
 ### Custom Exception
 
-Once you inherit `HttpException`, Abc will recognize your exception and automatically take care of the error response.
+Once you inherit `HttpException`, Abc will recognize your exception and
+automatically take care of the error response.
 
 ```ts
 export class ForbiddenException extends HttpException {
@@ -56,7 +59,7 @@ export class ForbiddenException extends HttpException {
 }
 
 const app = new Application();
-app.post("/admin", c => {
+app.post("/admin", (c) => {
   throw new ForbiddenException();
 });
 ```
