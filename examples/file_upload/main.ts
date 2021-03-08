@@ -1,6 +1,7 @@
 import type { FormFile } from "../../vendor/https/deno.land/std/mime/multipart.ts";
 import { Application } from "../../mod.ts";
-import { decoder } from "../../vendor/https/deno.land/std/encoding/utf8.ts";
+
+const decoder = new TextDecoder();
 
 const app = new Application();
 

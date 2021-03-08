@@ -3,11 +3,9 @@
     {
       "protocol": "https",
       "path": "deno.land/std",
-      "version": "0.87.0",
+      "version": "0.89.0",
       "files": [
-        "/encoding/utf8.ts",
         "/fmt/colors.ts",
-        "/hash/md5.ts",
         "/http/cookie.ts",
         "/http/http_status.ts",
         "/http/server.ts",

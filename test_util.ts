@@ -1,7 +1,8 @@
 import type { ServerRequest } from "./vendor/https/deno.land/std/http/server.ts";
 
-import { encode } from "./vendor/https/deno.land/std/encoding/utf8.ts";
 import { Application } from "./app.ts";
+
+const encoder = new TextEncoder();
 
 export function createApplication(): Application {
   const app = new Application();
@@ -26,7 +27,7 @@ export function createMockRequest(
 }
 
 export function createMockBodyReader(data: string): Deno.Reader {
-  const buf = encode(data);
+  const buf = encoder.encode(data);
   let offset = 0;
   return {
     async read(p: Uint8Array): Promise<number | null> {

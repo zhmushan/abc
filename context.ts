@@ -13,11 +13,13 @@ import {
   setCookie,
 } from "./vendor/https/deno.land/std/http/cookie.ts";
 import { MultipartReader } from "./vendor/https/deno.land/std/mime/multipart.ts";
-import { decode, encode } from "./vendor/https/deno.land/std/encoding/utf8.ts";
 import { Header, MIME } from "./constants.ts";
 import { contentType, NotFoundHandler } from "./util.ts";
 
 const { cwd, readFile, readAll } = Deno;
+
+const encoder = new TextEncoder();
+const decoder = new TextDecoder();
 
 export class Context {
   app!: Application;
@@ -96,11 +98,11 @@ export class Context {
       let data: Record<string, unknown> = {};
       if (contentType) {
         if (contentType.includes(MIME.ApplicationJSON)) {
-          data = JSON.parse(decode(await readAll(this.request.body)));
+          data = JSON.parse(decoder.decode(await readAll(this.request.body)));
         } else if (contentType.includes(MIME.ApplicationForm)) {
           for (
             const [k, v] of new URLSearchParams(
-              decode(await readAll(this.request.body)),
+              decoder.decode(await readAll(this.request.body)),
             )
           ) {
             data[k] = v;
@@ -125,26 +127,28 @@ export class Context {
       return data;
     }
 
-    return decode(await readAll(this.request.body));
+    return decoder.decode(await readAll(this.request.body));
   };
 
   string(v: string, code: Status = Status.OK): void {
     this.#writeContentType(MIME.TextPlainCharsetUTF8);
     this.response.status = code;
-    this.response.body = encode(v);
+    this.response.body = encoder.encode(v);
   }
 
   json(v: Record<string, any> | string, code: Status = Status.OK): void {
     this.#writeContentType(MIME.ApplicationJSONCharsetUTF8);
     this.response.status = code;
-    this.response.body = encode(typeof v === "object" ? JSON.stringify(v) : v);
+    this.response.body = encoder.encode(
+      typeof v === "object" ? JSON.stringify(v) : v,
+    );
   }
 
   /** Sends an HTTP response with status code. */
   html(v: string, code: Status = Status.OK): void {
     this.#writeContentType(MIME.TextHTMLCharsetUTF8);
     this.response.status = code;
-    this.response.body = encode(v);
+    this.response.body = encoder.encode(v);
   }
 
   /** Sends an HTTP blob response with status code. */
