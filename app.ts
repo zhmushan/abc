@@ -40,6 +40,7 @@ export class Application {
   premiddleware: MiddlewareFunc[] = [];
 
   #process: Promise<void> | undefined;
+  #groups: Group[] = [];
 
   /** Unstable */
   get θprocess(): Promise<void> | undefined {
@@ -49,12 +50,17 @@ export class Application {
 
   #start = async (s: Server): Promise<void> => {
     this.server = s;
+
     for await (const req of this.server) {
       const c = new Context({
         r: req,
         app: this,
       });
       let h: HandlerFunc;
+
+      for (const i of this.#groups) {
+        i.θapplyMiddleware();
+      }
 
       if (this.premiddleware.length === 0) {
         h = this.router.find(req.method, c);
@@ -205,6 +211,7 @@ export class Application {
   /** `group` creates a new router group with prefix and optional group level middleware. */
   group(prefix: string, ...m: MiddlewareFunc[]): Group {
     const g = new Group({ app: this, prefix });
+    this.#groups.push(g);
     g.use(...m);
     return g;
   }

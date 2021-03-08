@@ -2,54 +2,64 @@ import type { HandlerFunc, MiddlewareFunc } from "./types.ts";
 import type { Application } from "./app.ts";
 
 import { join } from "./vendor/https/deno.land/std/path/mod.ts";
-import { NotFoundHandler } from "./util.ts";
 
 export class Group {
   prefix: string;
   middleware: MiddlewareFunc[];
   app: Application;
 
+  #willBeAdded: Array<
+    [method: string, path: string, h: HandlerFunc, m: MiddlewareFunc[]]
+  >;
+
   constructor(opts: { app: Application; prefix: string }) {
     this.prefix = opts.prefix || "";
     this.app = opts.app || ({} as Application);
 
     this.middleware = [];
+    this.#willBeAdded = [];
   }
 
   use(...m: MiddlewareFunc[]): Group {
     this.middleware.push(...m);
-    if (this.middleware.length !== 0) {
-      this.any("", NotFoundHandler);
-    }
     return this;
   }
 
   connect(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group {
-    return this.add("CONNECT", path, h, ...m);
+    this.#willBeAdded.push(["CONNECT", path, h, m]);
+    return this;
   }
   delete(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group {
-    return this.add("DELETE", path, h, ...m);
+    this.#willBeAdded.push(["DELETE", path, h, m]);
+    return this;
   }
   get(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group {
-    return this.add("GET", path, h, ...m);
+    this.#willBeAdded.push(["GET", path, h, m]);
+    return this;
   }
   head(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group {
-    return this.add("HEAD", path, h, ...m);
+    this.#willBeAdded.push(["HEAD", path, h, m]);
+    return this;
   }
   options(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group {
-    return this.add("OPTIONS", path, h, ...m);
+    this.#willBeAdded.push(["OPTIONS", path, h, m]);
+    return this;
   }
   patch(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group {
-    return this.add("PATCH", path, h, ...m);
+    this.#willBeAdded.push(["PATCH", path, h, m]);
+    return this;
   }
   post(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group {
-    return this.add("POST", path, h, ...m);
+    this.#willBeAdded.push(["POST", path, h, m]);
+    return this;
   }
   put(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group {
-    return this.add("PUT", path, h, ...m);
+    this.#willBeAdded.push(["PUT", path, h, m]);
+    return this;
   }
   trace(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group {
-    return this.add("TRACE", path, h, ...m);
+    this.#willBeAdded.push(["TRACE", path, h, m]);
+    return this;
   }
   any(path: string, h: HandlerFunc, ...m: MiddlewareFunc[]): Group {
     const methods = [
@@ -64,7 +74,7 @@ export class Group {
       "TRACE",
     ];
     for (const method of methods) {
-      this.add(method, path, h, ...m);
+      this.#willBeAdded.push([method, path, h, m]);
     }
     return this;
   }
@@ -75,7 +85,7 @@ export class Group {
     ...m: MiddlewareFunc[]
   ): Group {
     for (const method of methods) {
-      this.add(method, path, h, ...m);
+      this.#willBeAdded.push([method, path, h, m]);
     }
     return this;
   }
@@ -85,13 +95,7 @@ export class Group {
     handler: HandlerFunc,
     ...middleware: MiddlewareFunc[]
   ): Group {
-    this.app.add(
-      method,
-      this.prefix + path,
-      handler,
-      ...this.middleware,
-      ...middleware,
-    );
+    this.#willBeAdded.push([method, path, handler, middleware]);
     return this;
   }
 
@@ -108,5 +112,18 @@ export class Group {
   group(prefix: string, ...m: MiddlewareFunc[]): Group {
     const g = this.app.group(this.prefix + prefix, ...this.middleware, ...m);
     return g;
+  }
+
+  θapplyMiddleware(): void {
+    for (const [method, path, handler, middleware] of this.#willBeAdded) {
+      this.app.add(
+        method,
+        this.prefix + path,
+        handler,
+        ...this.middleware,
+        ...middleware,
+      );
+    }
+    this.#willBeAdded = [];
   }
 }

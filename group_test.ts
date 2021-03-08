@@ -34,5 +34,34 @@ test("group middleware", async function (): Promise<void> {
   res = await fetch(`${addr}/group/405`);
   assertEquals(res.status, Status.MethodNotAllowed);
   assertEquals(await res.text(), "");
+
+  const u = app.group("user");
+
+  const check: MiddlewareFunc = (next) => {
+    return function (c) {
+      const { id } = c.params as { id: string };
+      if (id === "zhmushan") {
+        c.set("role", "admin");
+      } else {
+        c.set("role", "user");
+      }
+      return next(c);
+    };
+  };
+
+  u.get("/", (_) => "/");
+  u.get("/:id", (c) => {
+    const role = c.get("role") as string;
+    return role;
+  });
+
+  u.use(check);
+
+  res = await fetch(`${addr}/user/zhmushan`);
+  assertEquals(res.status, Status.OK);
+  assertEquals(await res.text(), "admin");
+  res = await fetch(`${addr}/user/MuShan`);
+  assertEquals(res.status, Status.OK);
+  assertEquals(await res.text(), "user");
   await app.close();
 });
