@@ -1,5 +1,11 @@
 # Changelog
 
+### v1.3.0 / 2021.03.08
+
+- feat: Make "group.use" available anywhere
+- feat: Add ".mjs", ".css" to mime
+- upgrade: deno_std to 0.89.0
+
 ### v1.2.6 / 2021.02.19
 
 - fix(middleware/cors): Fix the matching error of `allowOrigins`
