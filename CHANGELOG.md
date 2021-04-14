@@ -1,5 +1,9 @@
 # Changelog
 
+### v1.3.1 / 2021.04.14
+
+- upgrade: deno_std to 0.92.0
+
 ### v1.3.0 / 2021.03.08
 
 - feat: Make "group.use" available anywhere
