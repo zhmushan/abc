@@ -23,9 +23,9 @@ export function NotImplemented(): Error {
 
 /**
  * Hello World.
- * 
+ *
  *    const app = new Application();
- * 
+ *
  *    app
  *      .get("/hello", (c) => {
  *        return "Hello, Abc!";
@@ -90,7 +90,7 @@ export class Application {
 
   /**
    * Start an HTTP server.
-   * 
+   *
    *    app.start({ port: 8080 });
    */
   start(sc: HTTPOptions): void {
@@ -104,7 +104,7 @@ export class Application {
 
   /**
    * Stop the server immediately.
-   * 
+   *
    *    await app.close();
    */
   async close(): Promise<void> {
@@ -216,10 +216,10 @@ export class Application {
     return g;
   }
 
-  /** 
+  /**
    * Register a new route with path prefix to serve static files from the provided root directory.
    * For example, a request to `/static/js/main.js` will fetch and serve `assets/js/main.js` file.
-   * 
+   *
    *    app.static("/static", "assets");
    */
   static(prefix: string, root: string, ...m: MiddlewareFunc[]): Application {
@@ -233,9 +233,9 @@ export class Application {
     return this.get(`${prefix}/*`, h, ...m);
   }
 
-  /** 
+  /**
    * Register a new route with path to serve a static file with optional route-level middleware.
-   * 
+   *
    *    app.file("/", "public/index.html");
    */
   file(path: string, filepath: string, ...m: MiddlewareFunc[]): Application {
