@@ -1,5 +1,9 @@
 # Changelog
 
+### v1.3.2 / 2021.06.15
+
+- upgrade: deno_std to 0.98.0
+
 ### v1.3.1 / 2021.04.14
 
 - upgrade: deno_std to 0.92.0
