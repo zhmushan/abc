@@ -1,5 +1,10 @@
 # Changelog
 
+### v1.3.3 / 2021.06.23
+
+- feat: Add ".ico" to mime
+- upgrade: deno_std to 0.99.0
+
 ### v1.3.2 / 2021.06.15
 
 - upgrade: deno_std to 0.98.0
