@@ -24,6 +24,7 @@ export const ApplicationGZip = "application/gzip",
   MultipartForm = "multipart/form-data",
   OctetStream = "application/octet-stream",
   ImageSVG = "image/svg+xml",
+  ImageXIcon = "image/x-icon",
   ApplicationWASM = "application/wasm";
 
 export const DB: Record<string, string | undefined> = {
@@ -42,4 +43,5 @@ export const DB: Record<string, string | undefined> = {
   ".wasm": ApplicationWASM,
   ".mjs": ApplicationJavaScriptCharsetUTF8,
   ".css": TextCSSCharsetUTF8,
+  ".ico": ImageXIcon,
 };
