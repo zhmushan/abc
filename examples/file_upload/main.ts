@@ -9,7 +9,7 @@ app.start({ port: 8080 });
 
 console.log(`server listening on http://localhost:8080`);
 
-app.post("/file", async (c) => {
+app.post("/file", async ({ req }) => {
   const { file } = await c.body as { file: FormFile };
   return {
     name: file.filename,

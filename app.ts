@@ -1,11 +1,7 @@
 import type { HandlerFunc, MiddlewareFunc, Renderer } from "./types.ts";
-import type {
-  HTTPOptions,
-  HTTPSOptions,
-  Server,
-} from "./vendor/https/deno.land/std/http/server.ts";
+import type { Handler } from "./vendor/https/deno.land/std/http/server.ts";
 
-import { serve, serveTLS } from "./vendor/https/deno.land/std/http/server.ts";
+import { serve, Server } from "./vendor/https/deno.land/std/http/server.ts";
 import { join } from "./vendor/https/deno.land/std/path/mod.ts";
 import { yellow } from "./vendor/https/deno.land/std/fmt/colors.ts";
 import { Context } from "./context.ts";
@@ -16,6 +12,8 @@ import {
   HttpException,
   InternalServerErrorException,
 } from "./http_exception.ts";
+
+const { listen, listenTls } = Deno;
 
 export function NotImplemented(): Error {
   return new Error("Not Implemented");
@@ -33,14 +31,15 @@ export function NotImplemented(): Error {
  *      .start({ port: 8080 });
  */
 export class Application {
-  server: Server | undefined;
-  renderer: Renderer | undefined;
+  server?: Server;
+  renderer?: Renderer;
   router = new Router();
   middleware: MiddlewareFunc[] = [];
   premiddleware: MiddlewareFunc[] = [];
 
-  #process: Promise<void> | undefined;
+  #process?: Promise<void>;
   #groups: Group[] = [];
+  #closed = false;
 
   /** Unstable */
   get θprocess(): Promise<void> | undefined {
@@ -48,10 +47,8 @@ export class Application {
     return this.#process;
   }
 
-  #start = async (s: Server): Promise<void> => {
-    this.server = s;
-
-    for await (const req of this.server) {
+  async #start(listener: Deno.Listener): Promise<void> {
+    const handler: Handler = (req) => {
       const c = new Context({
         r: req,
         app: this,
@@ -74,11 +71,12 @@ export class Application {
         h = this.#applyMiddleware(h, ...this.premiddleware);
       }
 
-      this.#transformResult(c, h).then((): void => {
-        req.respond(c.response).catch(() => {});
-      });
-    }
-  };
+      return this.#transformResult(c, h).then(() => c.res);
+    };
+
+    const s = this.server = new Server({ handler });
+    await s.serve(listener);
+  }
 
   #applyMiddleware = (h: HandlerFunc, ...m: MiddlewareFunc[]): HandlerFunc => {
     for (let i = m.length - 1; i >= 0; --i) {
@@ -93,13 +91,13 @@ export class Application {
    *
    *    app.start({ port: 8080 });
    */
-  start(sc: HTTPOptions): void {
-    this.#process = this.#start(serve(sc));
+  start(listenOptions: Deno.ListenOptions): void {
+    this.#process = this.#start(listen(listenOptions));
   }
 
   /** Start an HTTPS server. */
-  startTLS(sc: HTTPSOptions): void {
-    this.#process = this.#start(serveTLS(sc));
+  startTLS(listenOptions: Deno.ListenTlsOptions): void {
+    this.#process = this.#start(listenTls(listenOptions));
   }
 
   /**
@@ -108,6 +106,7 @@ export class Application {
    *    await app.close();
    */
   async close(): Promise<void> {
+    // console.log(this.listener);
     if (this.server) {
       this.server.close();
     }
@@ -242,7 +241,7 @@ export class Application {
     return this.get(path, (c) => c.file(filepath), ...m);
   }
 
-  #transformResult = async (c: Context, h: HandlerFunc): Promise<void> => {
+  async #transformResult(c: Context, h: HandlerFunc): Promise<void> {
     let result: unknown;
     try {
       result = await h(c);
@@ -279,5 +278,5 @@ export class Application {
           c.string(String(result));
       }
     }
-  };
+  }
 }

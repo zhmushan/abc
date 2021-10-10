@@ -9,15 +9,8 @@ export type Formatter = (c: Context) => string;
 
 const encoder = new TextEncoder();
 
-export const DefaultFormatter: Formatter = (c) => {
-  const req = c.request;
-
-  const time = new Date().toISOString();
-  const method = req.method;
-  const url = req.url || "/";
-  const protocol = c.request.proto;
-
-  return `${time} ${method} ${url} ${protocol}\n`;
+export const DefaultFormatter: Formatter = ({ method, path }) => {
+  return `${new Date().toISOString()} ${method} ${path}\n`;
 };
 
 export const DefaultLoggerConfig: LoggerConfig = {

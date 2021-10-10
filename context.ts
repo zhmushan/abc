@@ -1,7 +1,3 @@
-import type {
-  Response,
-  ServerRequest,
-} from "./vendor/https/deno.land/std/http/server.ts";
 import type { Cookie } from "./vendor/https/deno.land/std/http/cookie.ts";
 import type { Application } from "./app.ts";
 import type { ContextOptions } from "./types.ts";
@@ -12,30 +8,31 @@ import {
   getCookies,
   setCookie,
 } from "./vendor/https/deno.land/std/http/cookie.ts";
-import { MultipartReader } from "./vendor/https/deno.land/std/mime/multipart.ts";
 import { Header, MIME } from "./constants.ts";
 import { contentType, NotFoundHandler } from "./util.ts";
 
-const { cwd, readFile, readAll } = Deno;
+const { cwd, readFile } = Deno;
 
 const encoder = new TextEncoder();
-const decoder = new TextDecoder();
 
 export class Context {
   app!: Application;
-  request!: ServerRequest;
+  #request!: Request;
   url!: URL;
 
-  response: Response & { headers: Headers } = { headers: new Headers() };
+  response: {
+    body?: BodyInit;
+    headers: Headers;
+    status?: number;
+    statusText?: string;
+  } = { headers: new Headers() };
   params: Record<string, string> = {};
   customContext: any;
 
   #store?: Map<string | symbol, unknown>;
 
-  #body: Promise<unknown> | undefined;
-
   get cookies(): Record<string, string> {
-    return getCookies(this.request);
+    return getCookies(this.#request.headers);
   }
 
   get path(): string {
@@ -43,7 +40,7 @@ export class Context {
   }
 
   get method(): string {
-    return this.request.method;
+    return this.#request.method;
   }
 
   get queryParams(): Record<string, string> {
@@ -54,8 +51,13 @@ export class Context {
     return params;
   }
 
-  get body(): Promise<unknown> {
-    return this.#body ?? (this.#body = this.#readBody());
+  get req(): Request {
+    return this.#request;
+  }
+
+  get res(): Response {
+    const { body, headers, status, statusText } = this.response;
+    return new Response(body, { headers, status, statusText });
   }
 
   get(key: string | symbol): unknown {
@@ -81,53 +83,15 @@ export class Context {
 
     const opts = optionsOrContext;
     this.app = opts.app;
-    this.request = opts.r;
+    this.#request = opts.r;
 
-    this.url = new URL(this.request.url, `http://0.0.0.0`);
+    this.url = new URL(this.#request.url, `http://0.0.0.0`);
   }
 
   #writeContentType = (v: string): void => {
     if (!this.response.headers.has(Header.ContentType)) {
       this.response.headers.set(Header.ContentType, v);
     }
-  };
-
-  #readBody = async (): Promise<unknown> => {
-    const contentType = this.request.headers.get(Header.ContentType);
-    walk: {
-      let data: Record<string, unknown> = {};
-      if (contentType) {
-        if (contentType.includes(MIME.ApplicationJSON)) {
-          data = JSON.parse(decoder.decode(await readAll(this.request.body)));
-        } else if (contentType.includes(MIME.ApplicationForm)) {
-          for (
-            const [k, v] of new URLSearchParams(
-              decoder.decode(await readAll(this.request.body)),
-            )
-          ) {
-            data[k] = v;
-          }
-        } else if (contentType.includes(MIME.MultipartForm)) {
-          const match = contentType.match(/boundary=([^\s]+)/);
-          const boundary = match ? match[1] : undefined;
-          if (boundary) {
-            const mr = new MultipartReader(this.request.body, boundary);
-            const form = await mr.readForm();
-            for (const [k, v] of form.entries()) {
-              data[k] = v;
-            }
-          }
-        } else {
-          break walk;
-        }
-      } else {
-        break walk;
-      }
-
-      return data;
-    }
-
-    return decoder.decode(await readAll(this.request.body));
   };
 
   string(v: string, code: Status = Status.OK): void {
@@ -152,7 +116,7 @@ export class Context {
   }
 
   /** Sends an HTTP blob response with status code. */
-  htmlBlob(b: Uint8Array | Deno.Reader, code: Status = Status.OK): void {
+  htmlBlob(b: Uint8Array, code: Status = Status.OK): void {
     this.blob(b, MIME.TextHTMLCharsetUTF8, code);
   }
 
@@ -174,7 +138,7 @@ export class Context {
 
   /** Sends a blob response with content type and status code. */
   blob(
-    b: Uint8Array | Deno.Reader,
+    b: Uint8Array,
     contentType?: string,
     code: Status = Status.OK,
   ): void {
@@ -196,7 +160,7 @@ export class Context {
 
   /** append a `Set-Cookie` header to the response */
   setCookie(c: Cookie): void {
-    setCookie(this.response, c);
+    setCookie(this.response.headers, c);
   }
 
   /** Redirects a response to a specific URL. the `code` defaults to `302` if omitted */

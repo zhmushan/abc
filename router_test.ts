@@ -12,7 +12,7 @@ test("router basic", function (): void {
   const h: HandlerFunc = (c) => c.path;
   const c = new Context({
     app: undefined!,
-    r: createMockRequest({ url: "/get" }),
+    r: createMockRequest({ url: "https://example.com/get" }),
   });
   r.add(HttpMethod.Get, "/get", h);
   assertEquals(r.find(HttpMethod.Get, c), h);

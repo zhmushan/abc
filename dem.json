@@ -3,13 +3,15 @@
     {
       "protocol": "https",
       "path": "deno.land/std",
-      "version": "0.99.0",
+      "version": "0.110.0",
       "files": [
         "/fmt/colors.ts",
         "/http/cookie.ts",
         "/http/http_status.ts",
         "/http/server.ts",
+        "/io/buffer.ts",
         "/io/bufio.ts",
+        "/io/util.ts",
         "/mime/multipart.ts",
         "/path/mod.ts",
         "/testing/asserts.ts",
@@ -21,7 +23,7 @@
     {
       "protocol": "https",
       "path": "deno.land/x/dejs",
-      "version": "0.9.3",
+      "version": "0.10.1",
       "files": [
         "/mod.ts"
       ]

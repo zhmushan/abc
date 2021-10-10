@@ -10,8 +10,8 @@ export const findOne: HandlerFunc = (c) => {
   const { id } = c.params as { id: string };
   return cats.find((cat) => cat.id.toString() === id);
 };
-export const create: HandlerFunc = async (c) => {
-  const { name, age } = await c.body as CatDTO;
+export const create: HandlerFunc = async ({ req }) => {
+  const { name, age } = await req.json() as CatDTO;
   const cat = new Cat({ name, age });
   cats.push(cat);
   return cat;

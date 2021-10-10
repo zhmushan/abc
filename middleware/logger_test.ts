@@ -9,11 +9,8 @@ const { test, makeTempFileSync, readFileSync, openSync, removeSync } = Deno;
 
 const dt = new Date();
 const ctx = {
-  request: {
-    method: "GET",
-    url: "",
-    proto: "HTTP/1.1",
-  },
+  method: "GET",
+  path: "/",
 } as Context;
 const decoder = new TextDecoder();
 
@@ -24,7 +21,7 @@ test("middleware logger", function (): void {
     output: f,
   })((c) => c)(ctx);
   const out = decoder.decode(readFileSync(fpath));
-  assert(out.includes(" GET / HTTP/1.1\n"));
+  assert(out.includes(" GET /\n"));
   assert(new Date(out.split(" ")[0]).getTime() >= dt.getTime());
   f.close();
   removeSync(fpath);
@@ -32,7 +29,7 @@ test("middleware logger", function (): void {
 
 test("middleware logger default formatter", function (): void {
   const logInfo = DefaultFormatter(ctx);
-  assert(logInfo.endsWith(" GET / HTTP/1.1\n"));
+  assert(logInfo.endsWith(" GET /\n"));
   assert(new Date(logInfo.split(" ")[0]).getTime() >= dt.getTime());
 });
 

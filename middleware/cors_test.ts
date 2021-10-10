@@ -8,7 +8,7 @@ const { test } = Deno;
 test("middleware cors", function (): void {
   let headers = new Headers();
   let ctx = {
-    request: {
+    req: {
       headers: new Headers(),
     },
     response: {
@@ -21,7 +21,7 @@ test("middleware cors", function (): void {
 
   headers = new Headers();
   ctx = {
-    request: {
+    req: {
       headers: new Headers(),
     },
     response: {
@@ -35,7 +35,7 @@ test("middleware cors", function (): void {
 
   headers = new Headers();
   ctx = {
-    request: {
+    req: {
       headers: new Headers({ [Header.Origin]: "http://bar.com" }),
     },
     response: {
@@ -49,7 +49,7 @@ test("middleware cors", function (): void {
 
   headers = new Headers();
   ctx = {
-    request: {
+    req: {
       headers: new Headers({ [Header.Origin]: "http://bar.com/xyz/" }),
     },
     response: {

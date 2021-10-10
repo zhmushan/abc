@@ -34,7 +34,7 @@ export function cors(config: CORSConfig = DefaultCORSConfig): MiddlewareFunc {
       if (config.skipper!(c)) {
         return next(c);
       }
-      const req = c.request;
+      const req = c.req;
       const resp = c.response;
       const origin = req.headers!.get(Header.Origin)!;
       if (!resp.headers) resp.headers = new Headers();
